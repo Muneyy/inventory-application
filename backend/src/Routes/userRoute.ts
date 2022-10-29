@@ -3,7 +3,7 @@ import async = require('async');
 const { body, validationResult } = require('express-validator');
 
 import User from '../Models/user';
-import Collection from '../Models/collection';
+import Group from '../Models/collection';
 
 const router = express.Router();
 
@@ -18,8 +18,6 @@ router.get('/', (req, res, next) => {
         });
 });
 
-
-
 router.get('/:userId', (req, res, next) => {
     async.parallel(
         {
@@ -27,8 +25,8 @@ router.get('/:userId', (req, res, next) => {
                 User.findById(req.params.userId)
                     .exec(callback);
             },
-            user_collections(callback) {
-                Collection
+            user_groups(callback) {
+                Group
                     .find({user: req.params.userId})
                     .exec(callback);
             },
@@ -39,14 +37,14 @@ router.get('/:userId', (req, res, next) => {
             }
             if (results.user == null) {
                 // No results.
-                const err = new Error('User not found');
+                const err:any = new Error('User not found');
                 err.status = 404;
                 return next(err);
             }
             res.send(
                 {
                     user: results.user, 
-                    user_collections: results.user_collections,
+                    user_groups: results.user_groups,
                 },
             );
         },

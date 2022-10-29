@@ -1,53 +1,53 @@
 import express = require('express');
 import async = require('async');
-import Collection from '../Models/collection';
+import Group from '../Models/collection';
 import Item from '../Models/item';
 const { body, validationResult } = require('express-validator');
 
 const router = express.Router();
 
 router.get('/', (req, res, next) => {
-    Collection.find()
+    Group.find()
         .populate('user')
         .sort([['name', 'ascending']])
-        .exec((err, list_collection) => {
+        .exec((err, list_group) => {
             if (err) {
                 return next(err);
             }
-            res.send(list_collection);
+            res.send(list_group);
         });
 });
 
-router.get('/:collectionId', (req, res, next) => {
-   async.parallel(
-    {
-        collection(callback) {
-            Collection
-                .findById(req.params.collectionId)
-                .exec(callback);
+router.get('/:groupId', (req, res, next) => {
+    async.parallel(
+        {
+            group(callback) {
+                Group
+                    .findById(req.params.groupId)
+                    .exec(callback);
+            },
+            group_items(callback) {
+                Item
+                    .find({ group: req.params.groupId})
+                    .exec(callback);
+            },
         },
-        collection_items(callback) {
-            Item
-                .find({ collection: req.params.collectionId})
-                .exec(callback)
+        (err, results) => {
+            if (err) {
+                return next(err);
+            }
+            if (results.group == null) {
+                const err:any = new Error('group not found');
+                err.status = 404;
+                return next(err);
+            }
+            res.send({
+                group: results.group,
+                group_items: results.group_items,
+            });
         },
-    },
-    (err, results) => {
-        if (err) => {
-            return next(err)
-        }
-        if (results.collection == null) {
-            const err = new Error('Collection not found');
-            err.status = 404;
-            return next(err);
-        }
-        res.send({
-            collection: results.collection,
-            collection_items: results.collection_items,
-        })
-    }
-   )
-})
+    );
+});
 
 router.post('/', [
     body('name', 'Name must be specified.')
@@ -70,23 +70,23 @@ router.post('/', [
     (req: any, res: any, next:any) => {
         const errors = validationResult(req);
 
-        const collection = new Collection({
+        const group = new Group({
             name: req.body.name,
             summary: req.body.summary,
             img_url: req.body.img_url,
-            group: req.body.group,
+            user: req.body.user,
         });
 
         if (!errors.isEmpty()) {
             res.send(errors.array());
         }
 
-        collection.save((err) => {
-            if (err) => {
-                return next(err)
+        group.save((err) => {
+            if (err) {
+                return next(err);
             }
-            res.send("Collection successfully saved!");
-        })
+            res.send("Group successfully saved!");
+        });
     },
 ]);
 

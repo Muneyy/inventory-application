@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-const collectionSchema = new Schema(
+const groupSchema = new Schema(
     {
         name: {
             type: String,
@@ -22,12 +22,12 @@ const collectionSchema = new Schema(
     { timestamps: true },
 );
 
-collectionSchema
+groupSchema
     .virtual('url')
     .get(function() {
         return `/collections/${this._id}`;
     });
 
-const Collection = mongoose.model('Collection', collectionSchema);
+const Group = mongoose.model('Group', groupSchema);
 
-export default Collection;
+export default Group;
