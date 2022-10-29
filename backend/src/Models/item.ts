@@ -16,10 +16,17 @@ const itemSchema = new Schema(
         group: {
             type: Schema.Types.ObjectId,
             ref: 'Collection',
+            required: true,
         },
     },
     { timestamps: true },
 );
+
+itemSchema
+    .virtual('url')
+    .get(function() {
+        return `/items/${this._id}`;
+    });
 
 const Item = mongoose.model('Item', itemSchema);
 
