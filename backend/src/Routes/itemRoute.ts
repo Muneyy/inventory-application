@@ -1,5 +1,6 @@
 import express = require('express');
 import Item from '../Models/item';
+import async = require('async');
 const { body, validationResult } = require('express-validator');
 
 const router = express.Router();
@@ -16,6 +17,32 @@ router.get('/', (req, res, next) => {
         });
 });
 
+router.get('/itemId', (req: any, res, next) => {
+    async.parallel(
+        {
+            item(callback) {
+                Item.findById(req.params.itemId)
+                    .exec(callback);
+            },
+        },
+        (err, results) => {
+            if (err) {
+                return next(err);
+            }
+
+            if (results.item == null) {
+                const err:any = new Error('group not found');
+                err.status = 404;
+                return next(err);
+            }
+
+            res.send({
+                item: results.item,
+            });
+        },
+    );
+});
+
 router.post('/', [
     body('name', 'Name must be specified.')
         .trim()
@@ -30,7 +57,7 @@ router.post('/', [
         .trim()
         .isLength( {min: 1})
         .escape(),
-    body('group', 'Please specify a collection this item belongs to.')
+    body('group', 'Please specify a group this item belongs to.')
         .trim()
         .isLength( {min: 1})
         .escape(),

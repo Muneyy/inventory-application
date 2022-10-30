@@ -83,7 +83,6 @@ router.post('/', [
                     if (err) {
                         return next(err);
                     }
-
                     if (found_user) {
                         res.send("Username already exists, please use another one.");
                     } else {
@@ -91,7 +90,7 @@ router.post('/', [
                             if (err) {
                                 return next(err);
                             }
-                            res.send("SUCESS!");
+                            res.send("User successfully created!");
                         });
                     }
                 });

@@ -15,7 +15,7 @@ const itemSchema = new Schema(
         },
         group: {
             type: Schema.Types.ObjectId,
-            ref: 'Collection',
+            ref: 'Group',
             required: true,
         },
     },
