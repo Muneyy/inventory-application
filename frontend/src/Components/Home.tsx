@@ -6,19 +6,25 @@ import {ArrowForwardIcon} from '@chakra-ui/icons'
 
 function Home() {
     const [loading, setLoading] = useState(0);
-    const [reqData, setReqData] = useState<any>({});
+    const [reqUserData, setReqUserData] = useState<any>([]);
+    const [reqCollectionData, setReqCollectionData] = useState<any>([]);
 
     useEffect(() => {
-        const fetchUsers = async () => {
+        const fetchData = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/users')
+                const endpoints = ['http://localhost:3000/users', 'http://localhost:3000/collections'];
+                axios.all(endpoints.map((endpoint) => 
+                    axios.get(endpoint)
+                )).then(axios.spread((users, collections) => {
+                    setReqUserData(users.data);
+                    setReqCollectionData(collections.data);
+                }))
                 setLoading(1);
-                setReqData(response.data);
             } catch (error) {
                 console.error(error);
             }
         }
-        fetchUsers();
+        fetchData();
     }, []);
 
     return (
@@ -27,18 +33,28 @@ function Home() {
                 <Center mt={"5rem"}>
                     <Container borderWidth='1px' borderRadius='lg' py={"5"} px={"10"} w={"1000px"} centerContent>
                         <Heading fontSize="6xl" fontWeight="extrabold">
-                            Welcome
+                            Create Here!
                         </Heading>
                         <Heading size="m">Current Users:</Heading>
-                        {reqData.map((user:any) => {
+                        {reqUserData.map((user:any) => {
                             return (
-                                <Container key={uuidv4()} borderWidth='1px' borderRadius='lg'>
-                                    <Text>{user.username}</Text>
-                                    <Text>{user.bio}</Text>
+                                <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
+                                    <Text fontSize="xl" fontWeight="bold">{user.username}</Text>
+                                    <Text fontSize="m">{user.bio}</Text>
                                 </Container>
                             )
                         })}
-                        <Text>
+                        <Heading size="m">Current Collections:</Heading>
+                        {reqCollectionData.map((collection:any) => {
+                            return (
+                                <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
+                                    <Text fontSize="xl" fontWeight="bold">{collection.name}</Text>
+                                    <Text fontSize="m">{collection.summary}</Text>
+                                    <Text fontSize="m">Owned by: {collection.user.username}</Text>
+                                </Container>
+                            )
+                        })}
+                        <Text mt="1rem">
                             Select which category you would like to create:
                         </Text>
                         <Stack direction="row" spacing={4} mt={3}>
