@@ -54,14 +54,19 @@ router.get('/:userId', (req, res, next) => {
 type UserReq = {
     body: {
         username: string,
+        password: string,
         bio: string,
     }
 }
 
 router.post('/', [
-    body('username', 'Username required or username is invalid.')
+    body('username', 'Username invalid.')
         .trim()
         .isLength( {min : 1})
+        .escape(),
+    body('password', 'Password invalid.')
+        .trim()
+        .isLength( {min : 8})
         .escape(),
     body('bio', 'Bio must be specfiied.')
         .trim()
@@ -72,6 +77,7 @@ router.post('/', [
 
         const user = new User({
             username: req.body.username,
+            password: req.body.password,
             bio: req.body.bio,
         });
 

@@ -6,6 +6,7 @@ import Home from './Components/Home';
 import { ChakraProvider } from '@chakra-ui/react'
 import CreateUser from './Components/CreateUser';
 import CreateCollection from './Components/CreateCollection';
+import LogIn from './Components/LogIn';
 
 function App() {
     return (
@@ -15,6 +16,7 @@ function App() {
                     <Route path ='/' element={<Home/>}/>
                     <Route path ='/createUser' element={<CreateUser/>} />
                     <Route path ='/createCollection' element={<CreateCollection/>} />
+                    <Route path ='/login' element={<LogIn/>} />
                 </Routes>
             </BrowserRouter>
         </ChakraProvider>

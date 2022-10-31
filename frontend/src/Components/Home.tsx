@@ -32,7 +32,7 @@ function Home() {
             ? (
                 <Center mt={"5rem"}>
                     <Container borderWidth='1px' borderRadius='lg' py={"5"} px={"10"} w={"1000px"} centerContent>
-                        <Heading fontSize="6xl" fontWeight="extrabold">
+                        <Heading fontSize="5xl" fontWeight="extrabold">
                             Create Here!
                         </Heading>
                         <Heading size="m">Current Users:</Heading>
@@ -60,16 +60,21 @@ function Home() {
                         <Stack direction="row" spacing={4} mt={3}>
                             <Link href='/createUser' textDecoration="none">
                                 <Button rightIcon={<ArrowForwardIcon />} variant="solid" colorScheme="teal">
-                                    User
+                                    Sign up
+                                </Button>
+                            </Link>
+                            <Link href='/login' textDecoration="none">
+                                <Button rightIcon={<ArrowForwardIcon />} variant="solid" colorScheme="teal">
+                                    Log in
                                 </Button>
                             </Link>
                             <Link href='/createCollection'>
-                                <Button rightIcon={<ArrowForwardIcon />} variant="solid" colorScheme="teal">
+                                <Button rightIcon={<ArrowForwardIcon />} variant="outline" colorScheme="teal">
                                     Collection
                                 </Button>
                             </Link>
                             <Link href='/createItem'>
-                                <Button rightIcon={<ArrowForwardIcon />} variant="solid" colorScheme="teal">
+                                <Button rightIcon={<ArrowForwardIcon />} variant="outline" colorScheme="teal">
                                     Item
                                 </Button>
                             </Link>

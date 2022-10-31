@@ -5,39 +5,37 @@ import {useNavigate} from 'react-router-dom';
 import { FormControl, FormLabel, FormErrorMessage, FormHelperText, Input } from '@chakra-ui/react';
 import { useFormik } from "formik";
 
-function CreateUser () {
-    const [loading, setLoading] = useState(1);
-    const navigate = useNavigate();
+function LogIn () {
+
+    const [currentUser, setCurrentUser] = useState<any>()
 
     const formik = useFormik({
         initialValues: {
             username: "",
             password: "",
-            bio: ""
         },
-        onSubmit: (values) => {
-
+        onSubmit: async (values) => {
             const submitUser = {
                 username: values.username,
                 password: values.password,
-                bio: values.bio
             }
 
-            axios.post('http://localhost:3000/users', submitUser)
+            await axios.post('http://localhost:3000/log-in', submitUser)
                 .then(res => {
-                    console.log(res);
-                    navigate('/');
+                    setCurrentUser(res.data)
                 })
         }
     })
 
-    return(
-        (loading)
-            ? (
+    return (
+        (currentUser) ? (
+            <Heading> Welcome back {currentUser.username} </Heading>
+        )
+            : (
                 <Center>
                     <Center flexDirection="column" mt="5rem">
-                        <Heading size='2xl' fontWeight="extrabold">Sign Up!</Heading>
-                        <Heading size='l'> Please fill out the fields below.</Heading>
+                        <Heading size='2xl' fontWeight="extrabold">Log In</Heading>
+                        <Heading size='l'> Enter your credentials</Heading>
                         <Container borderWidth='3px' borderRadius='lg' py={"30px"} px={"50px"} mt="1rem" centerContent>
                             <form onSubmit={formik.handleSubmit}>
                                 <FormControl isRequired w="md">
@@ -49,7 +47,6 @@ function CreateUser () {
                                         onChange={formik.handleChange}
                                         value={formik.values.username} 
                                     />
-                                    <FormHelperText>Username cannot be empty.</FormHelperText>
                                 </FormControl>
                                 <Divider my="1rem"/>
                                 <FormControl isRequired>
@@ -62,19 +59,6 @@ function CreateUser () {
                                         value={formik.values.password}
                                         minLength={8}
                                     />
-                                    <FormHelperText>Minimum of 8 characters.</FormHelperText>
-                                </FormControl>
-                                <Divider my="1rem"/>
-                                <FormControl isRequired>
-                                    <FormLabel>Bio:</FormLabel>
-                                    <Input 
-                                        type="text" 
-                                        name="bio" 
-                                        id="bio" 
-                                        onChange={formik.handleChange}
-                                        value={formik.values.bio} 
-                                    />
-                                    <FormHelperText>Some text to introduce yourself.</FormHelperText>
                                 </FormControl>
                                 <Divider my="1rem"/>
                                 <Button type='submit' colorScheme="teal">Create!</Button>
@@ -82,18 +66,9 @@ function CreateUser () {
                         </Container>
                     </Center>
                 </Center>
-            )
-            : (
-                <div>
-                    <h1>
-                        <Center mt={"5rem"}>
-                            <Spinner />
-                        </Center>
-                    </h1>
-                </div>
-            )
-    );
 
+            )
+    )
 }
 
-export default CreateUser;
+export default LogIn;
