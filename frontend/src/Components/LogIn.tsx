@@ -4,11 +4,17 @@ import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
 import { FormControl, FormLabel, FormErrorMessage, FormHelperText, Input } from '@chakra-ui/react';
 import { useFormik } from "formik";
+import { login, logout } from '../Features/currentUserSlice';
+import { useAppSelector, useAppDispatch } from '../app/hooks'
 
 function LogIn () {
-
     const [currentUser, setCurrentUser] = useState<any>()
+    const dispatch = useAppDispatch();
 
+    const navigate = useNavigate();
+
+
+    // Formik to handle form
     const formik = useFormik({
         initialValues: {
             username: "",
@@ -22,15 +28,23 @@ function LogIn () {
 
             await axios.post('http://localhost:3000/log-in', submitUser)
                 .then(res => {
-                    setCurrentUser(res.data)
+                    // Change REDUX current state user here
+                    // setCurrentUser(res.data)
+                    console.log(res.data);
+                    dispatch(login(res.data));
+                    setCurrentUser(res.data);
+                    navigate("/");
                 })
         }
     })
 
     return (
-        (currentUser) ? (
-            <Heading> Welcome back {currentUser.username} </Heading>
-        )
+        (currentUser) 
+            ? (
+                <Center mt="5rem">
+                    <Heading> Welcome back {currentUser.username} </Heading>
+                </Center>
+            )
             : (
                 <Center>
                     <Center flexDirection="column" mt="5rem">
