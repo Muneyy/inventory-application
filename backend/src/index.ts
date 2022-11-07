@@ -10,7 +10,15 @@ import collectionRouter = require('./Routes/collectionRoute');
 
 import session = require("express-session");
 import passport = require("passport");
+
+// imports for JSON web token
+import jwt = require('jsonwebtoken');
+import passportJWT = require("passport-jwt");
+const JWTStrategy = passportJWT.Strategy;
+const ExtractJWT = passportJWT.ExtractJwt;
 import User from './Models/user';
+import { doesNotMatch } from 'assert';
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const LocalStrategy = require("passport-local").Strategy;
 
@@ -35,6 +43,25 @@ passport.use(
         });
     }),
 );
+
+
+passport.use(new JWTStrategy({
+    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+    secretOrKey : `${process.env.SESSION_SECRET}`,
+},
+function (jwtPayload, done) {
+    //find the user in db if needed. This functionality may be omitted if you store everything you'll need in JWT payload.
+    return User.findById(jwtPayload.id, (err: any, user: any) => {
+        if (err) {
+            return done(err, false);
+        }
+        if (!user) {
+            return done(null, false);
+        }
+        return done(null, user);
+    });
+},
+));
 
 passport.serializeUser(function(user: any, done) {
     done(null, user.id);
@@ -84,9 +111,23 @@ app.post("/sign-up", (req, res, next) => {
 
 app.post(
     "/log-in",
-    passport.authenticate("local"),
-    (req, res) => {
-        res.send(req.user);
+    (req, res, next) => {
+        passport.authenticate("local", {session: false},
+            (err: any, user: any, info: any) => {
+                if (err || !user) {
+                    return res.status(400).json({
+                        message: 'Something is not right',
+                        user : user,
+                    });
+                }
+                req.login(user, {session: false}, (err) => {
+                    if (err) {
+                        res.send(err);
+                    }
+                    const token = jwt.sign(user.toJSON(), `${process.env.SESSION_SECRET}`);
+                    res.send({user, token});
+                });
+            })(req, res);
     },
 );
 

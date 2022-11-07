@@ -5,6 +5,7 @@ import {useNavigate} from 'react-router-dom';
 import { FormControl, FormLabel, FormErrorMessage, FormHelperText, Input } from '@chakra-ui/react';
 import { useFormik } from "formik";
 import { login, logout } from '../Features/currentUserSlice';
+import { setToken, removeToken } from '../Features/currentTokenSlice';
 import { useAppSelector, useAppDispatch } from '../app/hooks'
 
 function LogIn () {
@@ -29,10 +30,10 @@ function LogIn () {
             await axios.post('http://localhost:3000/log-in', submitUser)
                 .then(res => {
                     // Change REDUX current state user here
-                    // setCurrentUser(res.data)
-                    console.log(res.data);
-                    dispatch(login(res.data));
-                    setCurrentUser(res.data);
+                    console.log(res.data.user);
+                    dispatch(login(res.data.user));
+                    dispatch(setToken(res.data.token));
+                    setCurrentUser(res.data.user);
                     navigate("/");
                 })
         }
@@ -75,7 +76,7 @@ function LogIn () {
                                     />
                                 </FormControl>
                                 <Divider my="1rem"/>
-                                <Button type='submit' colorScheme="teal">Create!</Button>
+                                <Button type='submit' colorScheme="teal">Login</Button>
                             </form>
                         </Container>
                     </Center>
