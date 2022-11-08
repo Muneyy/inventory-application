@@ -5,13 +5,22 @@ import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
 import { FormControl, FormLabel, FormErrorMessage, FormHelperText, Input } from '@chakra-ui/react';
 import { useFormik } from "formik";
+import { useAppSelector } from '../app/hooks';
 
 function CreateCollection () {
     const [loading, setLoading] = useState(1);
     const navigate = useNavigate();
     const [reqData, setReqData] = useState([]);
+    const currentUser: {
+        returned: [
+            {username: string,
+            _id: string}
+        ]
+            
+    } = useAppSelector(state => state.currentUser);
 
     const formik = useFormik({
+        enableReinitialize: true,
         initialValues: {
             name: "",
             summary: "",
@@ -23,7 +32,7 @@ function CreateCollection () {
                 name: values.name,
                 summary: values.summary,
                 img_url: values.img_url,
-                user: values.user
+                user: currentUser.returned[0]._id,
             }
 
             console.log("This is what I am submitting:")
@@ -52,68 +61,75 @@ function CreateCollection () {
     return(
         (loading)
             ? (
-                <Center>
-                    <Center flexDirection="column" mt="5rem" w="600px">
-                        <Heading size='2xl' fontWeight="extrabold">Create a Collection</Heading>
-                        <Heading size='l'> Please fill out the fields below.</Heading>
-                        <Container borderWidth='1px' borderRadius='lg' py={"5"} px={"10"} mt="1rem" centerContent>
-                            <form onSubmit={formik.handleSubmit}>
-                                <FormControl isRequired>
-                                    <FormLabel>Name:</FormLabel>
-                                    <Input 
-                                        width="400px"
-                                        type="text" 
-                                        name="name" 
-                                        id="name" 
-                                        onChange={formik.handleChange}
-                                        value={formik.values.name} 
-                                    />
-                                    <FormHelperText>Username cannot be empty.</FormHelperText>
-                                </FormControl>
-                                <Divider my="1rem"/>
-                                <FormControl isRequired>
-                                    <FormLabel>Summary:</FormLabel>
-                                    <Input 
-                                        type="text" 
-                                        name="summary" 
-                                        id="summary" 
-                                        onChange={formik.handleChange}
-                                        value={formik.values.summary} 
-                                    />
-                                    <FormHelperText>Some text to introduce yourself.</FormHelperText>
-                                </FormControl>
-                                <Divider my="1rem"/>
-                                <FormControl>
-                                    <FormLabel>Image URL:</FormLabel>
-                                    <Input 
-                                        type="text" 
-                                        name="img_url" 
-                                        id="img_url" 
-                                        onChange={formik.handleChange}
-                                        value={formik.values.img_url} 
-                                    />
-                                    <FormHelperText>Optional. URL for your pfp.</FormHelperText>
-                                </FormControl>
-                                <Divider my="1rem"/>
-                                <Select 
-                                    id ="user" 
-                                    name="user" 
-                                    placeholder='Select user to assign collection to.' 
-                                    onChange={formik.handleChange}
-                                    value={formik.values.user}
-                                    isRequired>
-                                    {reqData.map((user: any) => {
-                                        return (
-                                            <option key={uuidv4()} value={user._id}>{user.username}</option>
-                                        )
-                                    })}
-                                </Select>
-                                <Divider my="1rem"/>
-                                <Button type='submit' colorScheme="teal">Create!</Button>
-                            </form>
-                        </Container>
-                    </Center>
-                </Center>
+                (currentUser.returned.length === 1)
+                    ? (
+                        <Center>
+                            <Center flexDirection="column" mt="5rem" w="600px">
+                                <Heading size='2xl' fontWeight="extrabold">Create a Collection</Heading>
+                                <Heading size='l'> Please fill out the fields below.</Heading>
+                                <Container borderWidth='1px' borderRadius='lg' py={"5"} px={"10"} mt="1rem" centerContent>
+                                    <form onSubmit={formik.handleSubmit}>
+                                        <FormControl isRequired>
+                                            <FormLabel>Name:</FormLabel>
+                                            <Input 
+                                                width="400px"
+                                                type="text" 
+                                                name="name" 
+                                                id="name" 
+                                                onChange={formik.handleChange}
+                                                value={formik.values.name} 
+                                            />
+                                            <FormHelperText>Username cannot be empty.</FormHelperText>
+                                        </FormControl>
+                                        <Divider my="1rem"/>
+                                        <FormControl isRequired>
+                                            <FormLabel>Summary:</FormLabel>
+                                            <Input 
+                                                type="text" 
+                                                name="summary" 
+                                                id="summary" 
+                                                onChange={formik.handleChange}
+                                                value={formik.values.summary} 
+                                            />
+                                            <FormHelperText>Some text to introduce yourself.</FormHelperText>
+                                        </FormControl>
+                                        <Divider my="1rem"/>
+                                        <FormControl>
+                                            <FormLabel>Image URL:</FormLabel>
+                                            <Input 
+                                                type="text" 
+                                                name="img_url" 
+                                                id="img_url" 
+                                                onChange={formik.handleChange}
+                                                value={formik.values.img_url} 
+                                            />
+                                            <FormHelperText>Optional. URL for your pfp.</FormHelperText>
+                                        </FormControl>
+                                        <Divider my="1rem"/>
+                                        <Select 
+                                            id ="user" 
+                                            name="user" 
+                                            placeholder={currentUser.returned[0].username}
+                                            onChange={formik.handleChange}
+                                            // defaultValue={formik.values.user}
+                                            value={formik.values.user}
+                                            isRequired
+                                            disabled>
+                                            <option key={uuidv4()} value={currentUser.returned[0]._id}>{currentUser.returned[0].username}</option>
+                                        </Select>
+                                        <Divider my="1rem"/>
+                                        <Button type='submit' colorScheme="teal">Create!</Button>
+                                    </form>
+                                </Container>
+                            </Center>
+                        </Center>
+                    ) : (
+                        <Center mt="5rem">
+                            <Heading>
+                                Please login first to create a collection.
+                            </Heading>
+                        </Center>
+                    )
             )
             : (
 

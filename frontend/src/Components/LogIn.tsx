@@ -11,9 +11,7 @@ import { useAppSelector, useAppDispatch } from '../app/hooks'
 function LogIn () {
     const [currentUser, setCurrentUser] = useState<any>()
     const dispatch = useAppDispatch();
-
     const navigate = useNavigate();
-
 
     // Formik to handle form
     const formik = useFormik({
