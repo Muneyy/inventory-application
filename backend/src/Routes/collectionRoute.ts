@@ -49,6 +49,15 @@ router.get('/:groupId', (req, res, next) => {
     );
 });
 
+type collectionReq = {
+    body: {
+        name: string,
+        summary: string,
+        img_url: string,
+        user: string
+    }
+}
+
 router.post('/', [
     body('name', 'Name must be specified.')
         .trim()
@@ -67,7 +76,7 @@ router.post('/', [
         .trim()
         .isLength( {min: 1})
         .escape(),
-    (req: any, res: any, next:any) => {
+    (req: collectionReq, res: any, next:any) => {
         const errors = validationResult(req);
 
         const group = new Group({

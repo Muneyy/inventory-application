@@ -7,6 +7,7 @@ import mongoose from 'mongoose';
 import itemRouter = require('./Routes/itemRoute');
 import userRouter = require('./Routes/userRoute');
 import collectionRouter = require('./Routes/collectionRoute');
+import friendRouter = require('./Routes/friendRoute')
 
 import session = require("express-session");
 import passport = require("passport");
@@ -51,7 +52,7 @@ passport.use(new JWTStrategy({
 },
 function (jwtPayload, done) {
     //find the user in db if needed. This functionality may be omitted if you store everything you'll need in JWT payload.
-    return User.findById(jwtPayload.id, (err: any, user: any) => {
+    return User.findById(jwtPayload.id, (err: Error, user: any) => {
         if (err) {
             return done(err, false);
         }
@@ -91,6 +92,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/users", (userRouter as any));
 app.use("/collections", (collectionRouter as any));
 app.use("/items", (itemRouter as any));
+app.use("/friends", (friendRouter as any));
 
 app.get('/', (req, res) => {
     res.send('Hello');

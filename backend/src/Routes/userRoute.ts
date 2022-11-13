@@ -10,6 +10,7 @@ const router = express.Router();
 router.get('/', (req, res, next) => {
     User.find()
         .sort([['name', 'ascending']])
+        .populate('friends')
         .exec((err, list_user) => {
             if (err) {
                 return next(err);

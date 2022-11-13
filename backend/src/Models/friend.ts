@@ -4,10 +4,12 @@ const friendSchema = new Schema(
     {
         requester: {
             type: Schema.Types.ObjectId,
+            ref: 'User',
             required: true,
         },
         recipient: {
             type: Schema.Types.ObjectId,
+            ref: 'User',
             required: true,
         },
         status: {

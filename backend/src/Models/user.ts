@@ -14,6 +14,13 @@ const userSchema = new Schema(
             type: String,
             required: true,
         },
+        email: {
+            type: String,
+        },
+        friends: [{
+            type: Schema.Types.ObjectId,
+            ref: 'Friend',
+        }],
     },
     { timestamps: true },
 );
