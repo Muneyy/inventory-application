@@ -4,13 +4,22 @@ const { body, validationResult } = require('express-validator');
 
 import User from '../Models/user';
 import Group from '../Models/collection';
+import Friend from '../Models/friend';
 
 const router = express.Router();
 
 router.get('/', (req, res, next) => {
     User.find()
         .sort([['name', 'ascending']])
-        .populate('friends')
+        // .populate('friends')
+        .populate({
+            path: 'friends',
+            model: 'Friend',
+            populate: {
+                path: 'recipient',
+                model: 'User',
+            },
+        })
         .exec((err, list_user) => {
             if (err) {
                 return next(err);

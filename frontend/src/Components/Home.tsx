@@ -8,12 +8,18 @@ import { useAppSelector, useAppDispatch } from '../app/hooks'
 import { useNavigate } from 'react-router-dom';
 import {Link as RouteLink} from "react-router-dom";
 import { useFormik } from 'formik';
+import { current } from '@reduxjs/toolkit';
+import { userInfo } from 'os';
 
 function Home() {
     const [loading, setLoading] = useState(0);
     const [reqUserData, setReqUserData] = useState<any>([]);
     const [reqCollectionData, setReqCollectionData] = useState<any>([]);
 
+    // Local state to hold sent friend requests
+    const [friendRequests, sentFriendRequests] = useState([]);
+
+    // Retrieve logged in user state and JWT token from Redux
     const currentUser = useAppSelector(state => state.currentUser);
     const Token = useAppSelector(state => state.currentToken);
 
@@ -31,8 +37,29 @@ function Home() {
                 )).then(axios.spread((users, collections) => {
                     setReqUserData(users.data);
                     setReqCollectionData(collections.data);
+                    console.log(JSON.parse(JSON.stringify(currentUser)));
                 }))
+
+                // Get list of sent friend requests logged in user has sent (pending status)
+                // if (currentUser.returned.length === 1 && currentUser.returned[0].friends.length != 0) {
+                //     currentUser.returned[0].friends.forEach((friend: { status: number, recipient: string; }) => {
+                //         if (friend.status == 2) {
+
+                //         }
+                //     })
+
+
+                //     // await axios.get('http://localhost:3000/getSentFriendRequests',
+                //     //     {
+                //     //         params: {
+                //     //             friends: currentUser.returned[0].friends
+                //     //         }
+                //     //     })
+                //     //     .then()
+                // }
+
                 console.log(JSON.parse(JSON.stringify(reqUserData)));
+
                 setLoading(1);
             } catch (error) {
                 console.error(error);
@@ -108,16 +135,28 @@ function Home() {
                                     <Heading size="m">Current Users:</Heading>
                                     {reqUserData.map((user:any) => {
                                         return (
-                                            <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
-                                                <Text fontSize="xl" fontWeight="bold">{user.username}</Text>
-                                                <Text fontSize="m">{user.bio}</Text>
-                                                {(currentUser.returned.length === 1)
-                                                    ? (
-                                                        <Button colorScheme="teal" onClick={() => sendFriendRequest(user._id)}>Add Friend</Button>
-                                                    ) : (
-                                                        <Button size="m" colorScheme="teal" disabled> Please login to add them as a friend.</Button>
-                                                    )}
-                                            </Container>
+                                            (currentUser.returned.length === 1)
+                                                ? (
+                                                    (currentUser.returned[0].username == user.username)
+                                                        ? (
+                                                            <></>
+                                                        ) : (
+        
+                                                    // Do not display logged in user in list of current users.
+                                                            <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
+                                                                <Text fontSize="xl" fontWeight="bold">{user.username}</Text>
+                                                                <Text fontSize="m">{user.bio}</Text>
+                                                                {(currentUser.returned.length === 1)
+                                                                    ? (
+                                                                        <Button colorScheme="teal" onClick={() => sendFriendRequest(user._id)}>Add Friend</Button>
+                                                                    ) : (
+                                                                        <Button size="m" colorScheme="teal" disabled> Please login to add them as a friend.</Button>
+                                                                    )}
+                                                            </Container>
+                                                        )
+                                                ) : (
+                                                    <></>
+                                                )
                                         )
                                     })}
                                 </Center>

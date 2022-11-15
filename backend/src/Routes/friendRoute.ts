@@ -7,6 +7,12 @@ import Friend from '../Models/friend';
 
 const router = express.Router();
 
+// router.get('/getSentFriendRequests', async (req: any, res, next) => {
+//     const friends = req.params.friends;
+
+//     Friend.find()
+// })
+
 router.post('/sendFriendRequest', async (req, res, next) => {
     const userRequester = req.body.requester;
     const userRecipient = req.body.recipient;
