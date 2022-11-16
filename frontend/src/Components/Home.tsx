@@ -21,6 +21,13 @@ function Home() {
 
     // Retrieve logged in user state and JWT token from Redux
     const currentUser = useAppSelector(state => state.currentUser);
+    let loggedinUser: any = {};
+
+    // Refactor code so it is not too long
+    if (currentUser.returned.length === 1) {
+        loggedinUser = currentUser.returned[0];
+    }
+
     const Token = useAppSelector(state => state.currentToken);
 
     const dispatch = useAppDispatch();
@@ -38,11 +45,12 @@ function Home() {
                     setReqUserData(users.data);
                     setReqCollectionData(collections.data);
                     console.log(JSON.parse(JSON.stringify(currentUser)));
+                    console.log("huh?");
                 }))
 
                 // Get list of sent friend requests logged in user has sent (pending status)
-                // if (currentUser.returned.length === 1 && currentUser.returned[0].friends.length != 0) {
-                //     currentUser.returned[0].friends.forEach((friend: { status: number, recipient: string; }) => {
+                // if (currentUser.returned.length === 1 && loggedinUser.friends.length != 0) {
+                //     loggedinUser.friends.forEach((friend: { status: number, recipient: string; }) => {
                 //         if (friend.status == 2) {
 
                 //         }
@@ -52,7 +60,7 @@ function Home() {
                 //     // await axios.get('http://localhost:3000/getSentFriendRequests',
                 //     //     {
                 //     //         params: {
-                //     //             friends: currentUser.returned[0].friends
+                //     //             friends: loggedinUser.friends
                 //     //         }
                 //     //     })
                 //     //     .then()
@@ -77,7 +85,7 @@ function Home() {
     // Sends a friend request to backend
     function sendFriendRequest (recipient: string) {
         const friendRequest = {
-            requester: currentUser.returned[0]._id,
+            requester: loggedinUser._id,
             recipient,
         }
 
@@ -96,19 +104,34 @@ function Home() {
                         {(currentUser.returned.length === 1)
                             ? (
                                 <>
-                                    <Heading> Welcome back {currentUser.returned[0].username}. </Heading>
+                                    <Heading> Welcome back {loggedinUser.username}. </Heading>
                                     <Button onClick={logoutUser}> Logout </Button>
                                     <Center mt="5rem" flexDirection="column">
-                                        {/* Code to display friends array (even if not accepted yet) */}
-                                        {(currentUser.returned[0].friends.length != 0)
+                                        {/* Code to display sent friend requests */}
+                                        {(loggedinUser.friends.length != 0)
                                             ? (
                                                 <>
-                                                    {currentUser.returned[0].friends.map((friend: any) => {
-                                                        <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
-                                                            <Text fontSize="xl" fontWeight="bold">{friend.username}</Text>
-                                                            <Button colorScheme="teal" disabled> Accept </Button>
-                                                            <Button colorScheme="red" disabled> Reject </Button>
-                                                        </Container>
+                                                    {/* <Heading size="md">Incoming Friend Requests:</Heading>
+                                                    {loggedinUser.friends.map((friend: any) => {
+                                                        return (
+                                                            <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
+                                                                <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
+                                                                <Button colorScheme="teal" disabled> Accept </Button>
+                                                                <Button colorScheme="red" disabled> Reject </Button>
+                                                            </Container>    
+
+                                                        )
+                                                    })} */}
+                                                    <Heading size="md">Sent Friend Requests:</Heading>
+                                                    {loggedinUser.friends.map((friend: any) => {
+                                                        return (
+                                                            <Container key={uuidv4()} display="flex" flexDir="column" borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
+                                                                <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
+                                                                <Text fontSize="lg" color="gray">{friend.recipient.bio}</Text>
+                                                                <Button colorScheme="gray" alignSelf="end" disabled> Pending </Button>
+                                                            </Container>    
+
+                                                        )
                                                     })}
                                                 </>
                                             ): (
@@ -137,9 +160,9 @@ function Home() {
                                         return (
                                             (currentUser.returned.length === 1)
                                                 ? (
-                                                    (currentUser.returned[0].username == user.username)
+                                                    (loggedinUser.username == user.username)
                                                         ? (
-                                                            <></>
+                                                            <Text key={uuidv4()}></Text>
                                                         ) : (
         
                                                     // Do not display logged in user in list of current users.
@@ -155,7 +178,7 @@ function Home() {
                                                             </Container>
                                                         )
                                                 ) : (
-                                                    <></>
+                                                    <Text key={uuidv4()}></Text>
                                                 )
                                         )
                                     })}
@@ -211,8 +234,9 @@ function Home() {
             : (
                 <div>
                     <h1>
-                        <Center mt={"5rem"}>
+                        <Center mt={"5rem"} display="flex" flexDir={"column"}>
                             <Spinner />
+                            <Text>Loading...</Text>
                         </Center>
                     </h1>
                 </div>

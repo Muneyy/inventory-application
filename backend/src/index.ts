@@ -41,6 +41,13 @@ passport.use(
                 return done(null, false, { message: "Incorrect password" });
             }
             return done(null, user);
+        }).populate({
+            path: 'friends',
+            model: 'Friend',
+            populate: {
+                path: 'recipient',
+                model: 'User',
+            },
         });
     }),
 );
