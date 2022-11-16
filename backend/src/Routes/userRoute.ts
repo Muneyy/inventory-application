@@ -11,15 +11,8 @@ const router = express.Router();
 router.get('/', (req, res, next) => {
     User.find()
         .sort([['name', 'ascending']])
+        // Do not need to populate friends of other users
         // .populate('friends')
-        .populate({
-            path: 'friends',
-            model: 'Friend',
-            populate: {
-                path: 'recipient',
-                model: 'User',
-            },
-        })
         .exec((err, list_user) => {
             if (err) {
                 return next(err);

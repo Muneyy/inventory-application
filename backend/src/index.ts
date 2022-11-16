@@ -44,10 +44,15 @@ passport.use(
         }).populate({
             path: 'friends',
             model: 'Friend',
-            populate: {
+            populate: [{
                 path: 'recipient',
+                select: 'username',
                 model: 'User',
-            },
+            },{
+                path: 'requester',
+                select: 'username',
+                model: 'User',
+            }],
         });
     }),
 );

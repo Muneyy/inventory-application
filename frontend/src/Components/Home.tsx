@@ -48,26 +48,7 @@ function Home() {
                     console.log("huh?");
                 }))
 
-                // Get list of sent friend requests logged in user has sent (pending status)
-                // if (currentUser.returned.length === 1 && loggedinUser.friends.length != 0) {
-                //     loggedinUser.friends.forEach((friend: { status: number, recipient: string; }) => {
-                //         if (friend.status == 2) {
-
-                //         }
-                //     })
-
-
-                //     // await axios.get('http://localhost:3000/getSentFriendRequests',
-                //     //     {
-                //     //         params: {
-                //     //             friends: loggedinUser.friends
-                //     //         }
-                //     //     })
-                //     //     .then()
-                // }
-
-                console.log(JSON.parse(JSON.stringify(reqUserData)));
-
+                // console.log(JSON.parse(JSON.stringify(reqUserData)));
                 setLoading(1);
             } catch (error) {
                 console.error(error);
@@ -109,27 +90,40 @@ function Home() {
                                     <Center mt="5rem" flexDirection="column">
                                         {/* Code to display sent friend requests */}
                                         {(loggedinUser.friends.length != 0)
-                                            ? (
+                                            ? ( 
                                                 <>
-                                                    {/* <Heading size="md">Incoming Friend Requests:</Heading>
+                                                    <Heading size="md">Incoming Friend Requests:</Heading>
                                                     {loggedinUser.friends.map((friend: any) => {
                                                         return (
-                                                            <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
-                                                                <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
-                                                                <Button colorScheme="teal" disabled> Accept </Button>
-                                                                <Button colorScheme="red" disabled> Reject </Button>
-                                                            </Container>    
+                                                            (friend.status === 2) 
+                                                                ? (
+                                                                    <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
+                                                                        <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
+                                                                        <Button size ="sm" colorScheme="teal"> Accept </Button>
+                                                                        <Button size ="sm" colorScheme="red"> Reject </Button>
+                                                                    </Container>    
+
+                                                                ) : (
+                                                                    <Text key={uuidv4()}></Text>
+                                                                )
 
                                                         )
-                                                    })} */}
+                                                    })}
                                                     <Heading size="md">Sent Friend Requests:</Heading>
                                                     {loggedinUser.friends.map((friend: any) => {
                                                         return (
-                                                            <Container key={uuidv4()} display="flex" flexDir="column" borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
-                                                                <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
-                                                                <Text fontSize="lg" color="gray">{friend.recipient.bio}</Text>
-                                                                <Button colorScheme="gray" alignSelf="end" disabled> Pending </Button>
-                                                            </Container>    
+                                                            (friend.status === 1)
+                                                                ? (
+
+                                                                    <Container key={uuidv4()} display="flex" flexDir="column" borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
+                                                                        <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
+                                                                        <Text fontSize="lg" color="gray">{friend.recipient.bio}</Text>
+                                                                        <Button size="sm" colorScheme="gray" alignSelf="end" disabled> Pending </Button>
+                                                                    </Container>    
+                                                                ) : (
+                                                                    <Text key={uuidv4()}></Text>
+
+                                                                )
 
                                                         )
                                                     })}
