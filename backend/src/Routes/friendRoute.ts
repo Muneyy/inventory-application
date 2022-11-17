@@ -19,13 +19,15 @@ router.post('/sendFriendRequest', async (req, res, next) => {
 
     // check if user has already been sent a friend request
     const checkerDocument = await Friend.findOne(
-        {requester: userRequester},
-        {recipient: userRecipient},
+        {
+            requester: userRequester,
+            recipient: userRecipient,
+        },
     ).exec(async (err, duplicate) => {
         if (err) {
             return next(err);
-        } else if (duplicate) {
-            return res.send("You've already added this user!");
+        } else if (duplicate != null || duplicate != undefined) {
+            return res.send("Error! You've already added this user!");
         } else {
             // Create new friend documents for each of the users
             // Push "friend" into each other users' friends array

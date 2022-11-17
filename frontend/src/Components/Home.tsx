@@ -69,7 +69,7 @@ function Home() {
             requester: loggedinUser._id,
             recipient,
         }
-        
+
         axios.post('http://localhost:3000/friends/sendFriendRequest', friendRequest)
             .then(res => {
                 console.log(res);
@@ -95,7 +95,7 @@ function Home() {
                                                     <Heading size="md">Incoming Friend Requests:</Heading>
                                                     {loggedinUser.friends.map((friend: any) => {
                                                         return (
-                                                            (friend.status === 2) 
+                                                            (friend.status === 1) 
                                                                 ? (
                                                                     <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
                                                                         <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
@@ -112,7 +112,7 @@ function Home() {
                                                     <Heading size="md">Sent Friend Requests:</Heading>
                                                     {loggedinUser.friends.map((friend: any) => {
                                                         return (
-                                                            (friend.status === 1)
+                                                            (friend.status === 2)
                                                                 ? (
 
                                                                     <Container key={uuidv4()} display="flex" flexDir="column" borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
