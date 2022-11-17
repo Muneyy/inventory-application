@@ -2,6 +2,7 @@ import express = require('express');
 import cors = require('cors');
 import 'dotenv/config';
 import mongoose from 'mongoose';
+import bcrypt = require('bcrypt');
 
 // import Routes
 import itemRouter = require('./Routes/itemRoute');
@@ -30,16 +31,23 @@ app.use(session({ secret: `${process.env.SESSION_SECRET}`, resave: false, saveUn
 
 passport.use(
     new LocalStrategy((username: string, password: string, done: any) => {
-        User.findOne({ username: username }, (err: any, user: any) => {
+        User.findOne({ username: username }, async (err: any, user: any) => {
             if (err) { 
                 return done(err);
             }
             if (!user) {
                 return done(null, false, { message: "Incorrect username" });
             }
-            if (user.password !== password) {
-                return done(null, false, { message: "Incorrect password" });
-            }
+            await bcrypt.compare(password, user.password, (err, res) => {
+                if (err) {
+                    // passwords do not match!
+                    return done(null, false, { message: "Incorrect password" });
+                } 
+                // else {
+                //     // passwords match! log user in
+                //     return done(null, user);
+                // }
+            });
             return done(null, user);
         }).populate({
             path: 'friends',

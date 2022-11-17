@@ -1,5 +1,9 @@
 import express = require('express');
 import async = require('async');
+import bcrypt = require('bcrypt');
+// Set saltrounds for hashing and salting using bcrypt
+const saltRounds = 10;
+
 const { body, validationResult } = require('express-validator');
 
 import User from '../Models/user';
@@ -75,12 +79,15 @@ router.post('/', [
         .trim()
         .isLength( {min : 1})
         .escape(),
-    (req: UserReq, res: any, next: any) => {
+    async (req: UserReq, res: any, next: any) => {
         const errors = validationResult(req);
+
+        const salt = await bcrypt.genSalt(saltRounds);
+        const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
         const user = new User({
             username: req.body.username,
-            password: req.body.password,
+            password: hashedPassword,
             bio: req.body.bio,
         });
 
