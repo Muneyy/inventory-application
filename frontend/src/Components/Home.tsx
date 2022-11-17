@@ -69,7 +69,7 @@ function Home() {
             requester: loggedinUser._id,
             recipient,
         }
-
+        
         axios.post('http://localhost:3000/friends/sendFriendRequest', friendRequest)
             .then(res => {
                 console.log(res);
@@ -154,6 +154,8 @@ function Home() {
                                         return (
                                             (currentUser.returned.length === 1)
                                                 ? (
+                                                    // Check if user is the logged in User,
+                                                    // if it is, then return an empty Text container
                                                     (loggedinUser.username == user.username)
                                                         ? (
                                                             <Text key={uuidv4()}></Text>
@@ -163,16 +165,15 @@ function Home() {
                                                             <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
                                                                 <Text fontSize="xl" fontWeight="bold">{user.username}</Text>
                                                                 <Text fontSize="m">{user.bio}</Text>
-                                                                {(currentUser.returned.length === 1)
-                                                                    ? (
-                                                                        <Button colorScheme="teal" onClick={() => sendFriendRequest(user._id)}>Add Friend</Button>
-                                                                    ) : (
-                                                                        <Button size="m" colorScheme="teal" disabled> Please login to add them as a friend.</Button>
-                                                                    )}
+                                                                <Button colorScheme="teal" onClick={() => sendFriendRequest(user._id)}>Add Friend</Button>
                                                             </Container>
                                                         )
                                                 ) : (
-                                                    <Text key={uuidv4()}></Text>
+                                                    <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
+                                                        <Text fontSize="xl" fontWeight="bold">{user.username}</Text>
+                                                        <Text fontSize="m">{user.bio}</Text>
+                                                        <Button size="m" colorScheme="teal" disabled> Please login to add them as a friend.</Button>
+                                                    </Container>
                                                 )
                                         )
                                     })}

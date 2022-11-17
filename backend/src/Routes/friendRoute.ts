@@ -17,28 +17,46 @@ router.post('/sendFriendRequest', async (req, res, next) => {
     const userRequester = req.body.requester;
     const userRecipient = req.body.recipient;
 
-    // Create new friend documents for each of the users
-    // Push "friend" into each other users' friends array
-    const docA = await Friend.findOneAndUpdate(
-        { requester: userRequester, recipient: userRecipient },
-        { $set: { status: 1 }},
-        { upsert: true, new: true },
-    );
-    const docB = await Friend.findOneAndUpdate(
-        { recipient: userRequester, requester: userRecipient },
-        { $set: { status: 2 }},
-        { upsert: true, new: true },
-    );
-    const updateUserRequester = await User.findOneAndUpdate(
-        { _id: userRequester },
-        { $push: { friends: docA._id }},
-    );
-    const updateUserRecipient = await User.findOneAndUpdate(
-        { _id: userRecipient },
-        { $push: { friends: docB._id }},
-    );
+    // check if user has already been sent a friend request
+    const checkerDocument = await Friend.findOne(
+        {requester: userRequester},
+        {recipient: userRecipient},
+    ).exec(async (err, duplicate) => {
+        if (err) {
+            return next(err);
+        } else if (duplicate) {
+            return res.send("You've already added this user!");
+        } else {
+            // Create new friend documents for each of the users
+            // Push "friend" into each other users' friends array
+            const docA = await Friend.findOneAndUpdate(
+                { requester: userRequester, recipient: userRecipient },
+                { $set: { status: 1 }},
+                { upsert: true, new: true },
+            );
+            const docB = await Friend.findOneAndUpdate(
+                { recipient: userRequester, requester: userRecipient },
+                { $set: { status: 2 }},
+                { upsert: true, new: true },
+            );
+            const updateUserRequester = await User.findOneAndUpdate(
+                { _id: userRequester },
+                { $push: { friends: docA._id }},
+            );
+            const updateUserRecipient = await User.findOneAndUpdate(
+                { _id: userRecipient },
+                { $push: { friends: docB._id }},
+            ).exec((err, success) => {
+                if (err) {
+                    return next(err);
+                }
+                return res.send("Friend Request successfully sent!");
+            });
+        }
+        
+    });
 
-    res.send("Friend Request successfully sent!");
+    
 
 });
 
