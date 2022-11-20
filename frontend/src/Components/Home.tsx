@@ -11,6 +11,9 @@ import { useFormik } from 'formik';
 import { current } from '@reduxjs/toolkit';
 import { userInfo } from 'os';
 
+import  IncomingFriendRequests  from "./Friends/incomingFR"
+import SentFriendRequests from './Friends/sentFR';
+
 function Home() {
     const [loading, setLoading] = useState(0);
     const [reqUserData, setReqUserData] = useState<any>([]);
@@ -100,7 +103,7 @@ function Home() {
                                                     <Box>
                                                         <Button onClick={onToggle} size="md">Incoming Friend Requests:</Button>
                                                         <Collapse in={isOpen} animateOpacity>
-                                                            {loggedinUser.friends.map((friend: any) => {
+                                                            {loggedinUser.friends?.map((friend: any) => {
                                                                 return (
                                                                     (friend.status === 2)
                                                                         ? (
@@ -117,8 +120,8 @@ function Home() {
                                                         </Collapse>
                                                     </Box>
                                                     <Box>
-                                                        <Button  onClick={onToggle} size="md">Sent Friend Requests:</Button>
-                                                        <Collapse  in={isOpen} animateOpacity>
+                                                        <Button onClick={onToggle} size="md">Sent Friend Requests:</Button>
+                                                        <Collapse in={isOpen} animateOpacity>
                                                             {loggedinUser.friends.map((friend: any) => {
                                                                 return (
                                                                     (friend.status === 1)

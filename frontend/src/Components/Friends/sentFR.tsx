@@ -2,17 +2,17 @@ import React from "react"
 import { v4 as uuidv4 } from 'uuid';
 import { useDisclosure, Button, Collapse, Container, Text } from "@chakra-ui/react"
 
-function IncomingFriendRequests (
+function SentFriendRequests (
     loggedinUser : any,
 ) {
     const { isOpen, onToggle } = useDisclosure()
     return (
         <>
-            <Button onClick={onToggle} size="md">Incoming Friend Requests:</Button>
+            <Button onClick={onToggle} size="md">Sent Friend Requests:</Button>
             <Collapse in={isOpen} animateOpacity>
                 {loggedinUser.friends?.map((friend: any) => {
                     return (
-                        (friend.status === 2)
+                        (friend.status === 1)
                             ? (
                                 <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
                                     <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
@@ -29,4 +29,4 @@ function IncomingFriendRequests (
     )
 }
 
-export default IncomingFriendRequests;
+export default SentFriendRequests;
