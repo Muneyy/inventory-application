@@ -26,8 +26,12 @@ router.post('/sendFriendRequest', async (req, res, next) => {
     ).exec(async (err, duplicate) => {
         if (err) {
             return next(err);
+        // If Friend document already exists, don't execute code to add friend
         } else if (duplicate != null || duplicate != undefined) {
             return res.send("Error! You've already added this user!");
+
+        // If recipient has not been added yet be requester,
+        // then execute this code to add appropriate objects
         } else {
             // Create new friend documents for each of the users
             // Push "friend" into each other users' friends array

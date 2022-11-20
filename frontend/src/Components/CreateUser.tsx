@@ -4,10 +4,16 @@ import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
 import { FormControl, FormLabel, FormErrorMessage, FormHelperText, Input } from '@chakra-ui/react';
 import { useFormik } from "formik";
+import { useDispatch } from 'react-redux';
+
+// import dispatch actions for logging out user in Redux
+import { login, logout } from '../Features/currentUserSlice';
 
 function CreateUser () {
     const [loading, setLoading] = useState(1);
     const navigate = useNavigate();
+
+    const dispatch = useDispatch();
 
     const formik = useFormik({
         initialValues: {
@@ -26,6 +32,7 @@ function CreateUser () {
             axios.post('http://localhost:3000/users', submitUser)
                 .then(res => {
                     console.log(res);
+                    dispatch(logout);
                     navigate('/');
                 })
         }

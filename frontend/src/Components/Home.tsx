@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { Spinner, Container, Heading, Center, Text, Button, Stack, Link, Grid, FormLabel, FormControl } from '@chakra-ui/react'
+import { Spinner, Container, Heading, Center, Text, Button, Stack, Link, Grid, FormLabel, FormControl, useDisclosure, Collapse, Box, Flex } from '@chakra-ui/react'
 import {ArrowForwardIcon} from '@chakra-ui/icons'
 import { login, logout } from '../Features/currentUserSlice';
 import { useAppSelector, useAppDispatch } from '../app/hooks'
@@ -30,8 +30,13 @@ function Home() {
 
     const Token = useAppSelector(state => state.currentToken);
 
+    // import dispatch to dispatch payloads to redux
     const dispatch = useAppDispatch();
+    // navigate to other routers in react-router
     const navigate = useNavigate();
+
+    // import needed chakra ui components for pop up boxes
+    const { isOpen, onToggle } = useDisclosure()
 
     useEffect(() => {
         // At page mount, get users and collections to display them
@@ -91,43 +96,46 @@ function Home() {
                                         {/* Code to display sent friend requests */}
                                         {(loggedinUser.friends.length != 0)
                                             ? ( 
-                                                <>
-                                                    <Heading size="md">Incoming Friend Requests:</Heading>
-                                                    {loggedinUser.friends.map((friend: any) => {
-                                                        return (
-                                                            (friend.status === 1) 
-                                                                ? (
-                                                                    <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
-                                                                        <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
-                                                                        <Button size ="sm" colorScheme="teal"> Accept </Button>
-                                                                        <Button size ="sm" colorScheme="red"> Reject </Button>
-                                                                    </Container>    
-
-                                                                ) : (
-                                                                    <Text key={uuidv4()}></Text>
+                                                <Flex flexDirection="row" gap="10">
+                                                    <Box>
+                                                        <Button onClick={onToggle} size="md">Incoming Friend Requests:</Button>
+                                                        <Collapse in={isOpen} animateOpacity>
+                                                            {loggedinUser.friends.map((friend: any) => {
+                                                                return (
+                                                                    (friend.status === 2)
+                                                                        ? (
+                                                                            <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
+                                                                                <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
+                                                                                <Button size ="sm" colorScheme="teal"> Accept </Button>
+                                                                                <Button size ="sm" colorScheme="red"> Reject </Button>
+                                                                            </Container>
+                                                                        ) : (
+                                                                            <Text key={uuidv4()}></Text>
+                                                                        )
                                                                 )
-
-                                                        )
-                                                    })}
-                                                    <Heading size="md">Sent Friend Requests:</Heading>
-                                                    {loggedinUser.friends.map((friend: any) => {
-                                                        return (
-                                                            (friend.status === 2)
-                                                                ? (
-
-                                                                    <Container key={uuidv4()} display="flex" flexDir="column" borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
-                                                                        <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
-                                                                        <Text fontSize="lg" color="gray">{friend.recipient.bio}</Text>
-                                                                        <Button size="sm" colorScheme="gray" alignSelf="end" disabled> Pending </Button>
-                                                                    </Container>    
-                                                                ) : (
-                                                                    <Text key={uuidv4()}></Text>
-
+                                                            })}
+                                                        </Collapse>
+                                                    </Box>
+                                                    <Box>
+                                                        <Button  onClick={onToggle} size="md">Sent Friend Requests:</Button>
+                                                        <Collapse  in={isOpen} animateOpacity>
+                                                            {loggedinUser.friends.map((friend: any) => {
+                                                                return (
+                                                                    (friend.status === 1)
+                                                                        ? (
+                                                                            <Container key={uuidv4()} display="flex" flexDir="column" borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
+                                                                                <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
+                                                                                <Text fontSize="lg" color="gray">{friend.recipient.bio}</Text>
+                                                                                <Button size="sm" colorScheme="gray" alignSelf="end" disabled> Pending </Button>
+                                                                            </Container>
+                                                                        ) : (
+                                                                            <Text key={uuidv4()}></Text>
+                                                                        )
                                                                 )
-
-                                                        )
-                                                    })}
-                                                </>
+                                                            })}
+                                                        </Collapse>
+                                                    </Box>
+                                                </Flex>
                                             ): (
                                                 <Text> No friends </Text>
                                             )}
