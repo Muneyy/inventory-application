@@ -72,13 +72,40 @@ function Home() {
     }
 
     // Sends a friend request to backend
-    function sendFriendRequest (recipient: string) {
+    async function sendFriendRequest (recipient: string) {
         const friendRequest = {
             requester: loggedinUser._id,
             recipient,
         }
 
-        axios.post('http://localhost:3000/friends/sendFriendRequest', friendRequest)
+        await axios.post('http://localhost:3000/friends/sendFriendRequest', friendRequest)
+            .then(res => {
+                console.log(res);
+            })
+
+        
+    }
+
+    // Accepts a friend request
+    async function acceptFriendRequest (recipient: string) {
+        const friendRequest = {
+            requester: loggedinUser._id,
+            recipient,
+        }
+
+        await axios.post('http://localhost:3000/friends/acceptFriendRequest', friendRequest)
+            .then(res => {
+                console.log(res);
+            })
+    }
+
+    async function rejectFriendRequest (recipient: string) {
+        const friendRequest = {
+            requester: loggedinUser._id,
+            recipient,
+        }
+
+        await axios.post('http://localhost:3000/friends/rejectFriendRequest', friendRequest)
             .then(res => {
                 console.log(res);
             })
@@ -109,8 +136,8 @@ function Home() {
                                                                         ? (
                                                                             <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
                                                                                 <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
-                                                                                <Button size ="sm" colorScheme="teal"> Accept </Button>
-                                                                                <Button size ="sm" colorScheme="red"> Reject </Button>
+                                                                                <Button onClick={() => acceptFriendRequest(friend.recipient._id)} size ="sm" colorScheme="teal"> Accept </Button>
+                                                                                <Button onClick={() => rejectFriendRequest(friend.recipient._id)} size ="sm" colorScheme="red"> Reject </Button>
                                                                             </Container>
                                                                         ) : (
                                                                             <Text key={uuidv4()}></Text>
@@ -130,6 +157,24 @@ function Home() {
                                                                                 <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
                                                                                 <Text fontSize="lg" color="gray">{friend.recipient.bio}</Text>
                                                                                 <Button size="sm" colorScheme="gray" alignSelf="end" disabled> Pending </Button>
+                                                                            </Container>
+                                                                        ) : (
+                                                                            <Text key={uuidv4()}></Text>
+                                                                        )
+                                                                )
+                                                            })}
+                                                        </Collapse>
+                                                    </Box>
+                                                    <Box>
+                                                        <Button onClick={onToggle} size="md">Friends:</Button>
+                                                        <Collapse in={isOpen} animateOpacity>
+                                                            {loggedinUser.friends?.map((friend: any) => {
+                                                                return (
+                                                                    (friend.status === 3)
+                                                                        ? (
+                                                                            <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
+                                                                                <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
+                                                                                <Button size ="sm" colorScheme="pink" disabled> Friend </Button>
                                                                             </Container>
                                                                         ) : (
                                                                             <Text key={uuidv4()}></Text>

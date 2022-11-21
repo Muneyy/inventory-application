@@ -70,14 +70,16 @@ router.post('/acceptFriendRequest', async (req,res,next) => {
     const userRequester = req.body.requester;
     const userRecipient = req.body.recipient;
 
-    Friend.findOneAndUpdate(
+    const docA = await Friend.findOneAndUpdate(
         { requester: userRequester, recipient: userRecipient },
         { $set: { status: 3 }},
     );
-    Friend.findOneAndUpdate(
+    const docB = await Friend.findOneAndUpdate(
         { recipient: userRequester, requester: userRecipient },
         { $set: { status: 3 }},
     );
+    res.send("You have accepted their friend request!");
+
 });
 
 router.post('/rejectFriendRequest', async (req, res, next) => {
@@ -102,6 +104,7 @@ router.post('/rejectFriendRequest', async (req, res, next) => {
             { $pull: { friends: docB._id }},
         );
     }
+    res.send("You have deleted their friend request!");
 });
 
 module.exports = router;
