@@ -72,7 +72,8 @@ passport.use(new JWTStrategy({
 },
 function (jwtPayload, done) {
     //find the user in db if needed. This functionality may be omitted if you store everything you'll need in JWT payload.
-    return User.findById(jwtPayload.id, (err: Error, user: any) => {
+    console.log(jwtPayload);
+    return User.findById(jwtPayload, (err: Error, user: any) => {
         if (err) {
             return done(err, false);
         }
@@ -111,7 +112,7 @@ app.use(express.urlencoded({ extended: true }));
 // Setup Routes
 app.use("/users", (userRouter as any));
 app.use("/collections", (collectionRouter as any));
-app.use("/items", (itemRouter as any));
+app.use("/items", passport.authenticate('jwt', { session: false }), (itemRouter as any));
 app.use("/friends", (friendRouter as any));
 
 app.get('/', (req, res) => {
@@ -146,7 +147,9 @@ app.post(
                     if (err) {
                         res.send(err);
                     }
-                    const token = jwt.sign(user.toJSON(), `${process.env.SESSION_SECRET}`);
+                    // sign JSON web token with entire user object
+                    // do not know if this is great practice
+                    const token = jwt.sign(user._id.toJSON(), `${process.env.SESSION_SECRET}`);
                     res.send({user, token});
                 });
             })(req, res);

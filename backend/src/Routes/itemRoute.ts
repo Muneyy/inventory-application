@@ -6,15 +6,16 @@ const { body, validationResult } = require('express-validator');
 const router = express.Router();
 
 router.get('/', (req, res, next) => {
-    Item.find()
-        .populate('group')
-        .sort([['name', 'ascending']])
-        .exec((err, list_item) => {
-            if (err) {
-                return next(err);
-            }
-            res.send(list_item);
-        });
+    res.send("successfully authenticated using JWT");
+    // Item.find()
+    //     .populate('group')
+    //     .sort([['name', 'ascending']])
+    //     .exec((err, list_item) => {
+    //         if (err) {
+    //             return next(err);
+    //         }
+    //         res.send(list_item);
+    //     });
 });
 
 router.get('/itemId', (req: any, res, next) => {

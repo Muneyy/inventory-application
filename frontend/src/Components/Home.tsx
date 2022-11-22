@@ -31,7 +31,13 @@ function Home() {
         loggedinUser = currentUser.returned[0];
     }
 
-    const Token = useAppSelector(state => state.currentToken);
+    // Get token and refactor
+    const token = useAppSelector(state => state.currentToken);
+    let tokenJWT = ""
+
+    if (token.returned.length === 1) {
+        tokenJWT = token.returned[0];
+    }
 
     // import dispatch to dispatch payloads to redux
     const dispatch = useAppDispatch();
@@ -45,7 +51,7 @@ function Home() {
         // At page mount, get users and collections to display them
         const fetchData = async () => {
             try {
-                axios.defaults.headers.common["Authorization"] = `Bearer ${Token}`;
+                axios.defaults.headers.common["Authorization"] = `Bearer ${tokenJWT}`;
                 const endpoints = ['http://localhost:3000/users', 'http://localhost:3000/collections'];
                 await axios.all(endpoints.map((endpoint) => 
                     axios.get(endpoint)
@@ -69,6 +75,17 @@ function Home() {
     function logoutUser () {
         dispatch(logout);
         window.location.reload();
+    }
+
+    async function testJWT () {
+        console.log(tokenJWT);
+        const config = {
+            headers: { Authorization: `Bearer ${tokenJWT}` }
+        };
+        await axios.get('http://localhost:3000/items', config)
+            .then(res => {
+                console.log(res);
+            })
     }
 
     // Sends a friend request to backend
@@ -270,11 +287,11 @@ function Home() {
                                     </Button>
                                 </RouteLink>
 
-                                <RouteLink to='/createItem' style={{ textDecoration: 'none' }}>
-                                    <Button rightIcon={<ArrowForwardIcon />} variant="outline" colorScheme="teal">
+                                {/* <RouteLink to='/createItem' style={{ textDecoration: 'none' }}> */}
+                                <Button onClick = {() => testJWT()} rightIcon={<ArrowForwardIcon />} variant="outline" colorScheme="teal">
                                     Item
-                                    </Button>
-                                </RouteLink>
+                                </Button>
+                                {/* </RouteLink> */}
                             </Stack>
                         </Container>
                     </Center>
