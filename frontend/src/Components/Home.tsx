@@ -139,14 +139,15 @@ function Home() {
                                 <>
                                     <Heading> Welcome back {loggedinUser.username}. </Heading>
                                     <Button onClick={logoutUser}> Logout </Button>
-                                    <Center mt="5rem" flexDirection="column">
+                                    <Button mt="1rem" onClick={onToggle} size="md" colorScheme={"telegram"}>Show Friends</Button>
+                                    <Center mt="2rem" flexDirection="column">
                                         {/* Code to display sent friend requests */}
                                         {(loggedinUser.friends.length != 0)
                                             ? ( 
-                                                <Flex flexDirection="row" gap="10">
+                                                <Flex flexDirection="row" gap="100">
                                                     <Box>
-                                                        <Button onClick={onToggle} size="md">Incoming Friend Requests:</Button>
                                                         <Collapse in={isOpen} animateOpacity>
+                                                            <Button onClick={onToggle} size="md">Incoming Friend Requests:</Button>
                                                             {loggedinUser.friends?.map((friend: any) => {
                                                                 return (
                                                                     (friend.status === 2)
@@ -164,8 +165,8 @@ function Home() {
                                                         </Collapse>
                                                     </Box>
                                                     <Box>
-                                                        <Button onClick={onToggle} size="md">Sent Friend Requests:</Button>
                                                         <Collapse in={isOpen} animateOpacity>
+                                                            <Button onClick={onToggle} size="md">Sent Friend Requests:</Button>
                                                             {loggedinUser.friends.map((friend: any) => {
                                                                 return (
                                                                     (friend.status === 1)
@@ -183,8 +184,8 @@ function Home() {
                                                         </Collapse>
                                                     </Box>
                                                     <Box>
-                                                        <Button onClick={onToggle} size="md">Friends:</Button>
                                                         <Collapse in={isOpen} animateOpacity>
+                                                            <Button onClick={onToggle} size="md">Friends:</Button>
                                                             {loggedinUser.friends?.map((friend: any) => {
                                                                 return (
                                                                     (friend.status === 3)
