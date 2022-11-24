@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { Spinner, Container, Heading, Center, Text, Button, Stack, Link, Grid, FormLabel, FormControl, useDisclosure, Collapse, Box, Flex, GridItem, Circle } from '@chakra-ui/react'
+import { Spinner, Container, Heading, Center, Text, Button, Stack, Link, Grid, FormLabel, FormControl, useDisclosure, Collapse, Box, Flex, GridItem, Circle, Avatar, AvatarBadge, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, Input, Alert, AlertDescription, AlertIcon, AlertTitle } from '@chakra-ui/react'
 import {ArrowForwardIcon} from '@chakra-ui/icons'
 import { login, logout } from '../Features/currentUserSlice';
 import { useAppSelector, useAppDispatch } from '../app/hooks'
@@ -28,26 +28,174 @@ function Profile () {
     }
     ////////////////////////////////////////////////
 
+    ////////////////////////////////////////////////
+    // Setup Friends Drawer using Chakra UI
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    const btnRef = React.useRef() as React.MutableRefObject<HTMLInputElement> & React.LegacyRef<HTMLButtonElement>;
+    ////////////////////////////////////////////////
+
+    ////////////////////////////////////////////////
+    // Sends a friend request to backend
+    async function sendFriendRequest (recipient: string) {
+        const friendRequest = {
+            requester: loggedinUser._id,
+            recipient,
+        }
+
+        await axios.post('http://localhost:3000/friends/sendFriendRequest', friendRequest)
+            .then(res => {
+                console.log(res);
+            })
+    }
+
+    // Accepts a friend request
+    async function acceptFriendRequest (recipient: string) {
+        const friendRequest = {
+            requester: loggedinUser._id,
+            recipient,
+        }
+
+        await axios.post('http://localhost:3000/friends/acceptFriendRequest', friendRequest)
+            .then(res => {
+                console.log(res);
+            })
+    }
+
+    // Reject friend request
+    async function rejectFriendRequest (recipient: string) {
+        const friendRequest = {
+            requester: loggedinUser._id,
+            recipient,
+        }
+
+        await axios.post('http://localhost:3000/friends/rejectFriendRequest', friendRequest)
+            .then(res => {
+                console.log(res);
+            })
+    }
+    ////////////////////////////////////////////////
+
+    const navigate = useNavigate();
+    function navigateHome () {
+        navigate("/");
+    }
+
     return (
-        (loggedinUser) 
+        (loggedinUser._id) 
             ?   (
                 <Center backgroundColor={"teal.300"} p={10}>
-                    <Box borderWidth='1px' borderRadius='lg' overflow='hidden' paddingX={15} paddingY={5}>
+                    <Box borderColor={"blackAlpha.300"} borderWidth='3px' borderRadius='lg' overflow='hidden' paddingX={15} paddingY={5}>
                         <Grid templateColumns={"3fr 5fr"} gap={4}>
                             <GridItem display={"flex"} alignItems="center" p={5}>
-                                <CheckCircleIcon w={100} h={100}></CheckCircleIcon>
+                                <Avatar size={"xl"}></Avatar>
                             </GridItem>
                             <GridItem display={"flex"} justifyContent="center" alignItems="start" p={5} flexDir="column">
                                 <Text fontSize="5xl" fontWeight={700}>{loggedinUser.username}</Text>
                                 <Text fontSize={"sm"} fontWeight={300}>@{loggedinUser.handle}</Text>
                                 <Text fontSize={"md"} fontWeight={500}>{loggedinUser.bio}</Text>
+                                <Button mt={1}  colorScheme="pink" ref={btnRef} onClick={onOpen} size="sm">Show Friends</Button>
+                                <Button mt={1} size="sm" onClick={()=>navigateHome()}>Home</Button>
+                                <Drawer
+                                    isOpen={isOpen}
+                                    placement='right'
+                                    onClose={onClose}
+                                    finalFocusRef={btnRef}
+                                >
+                                    <DrawerOverlay />
+                                    <DrawerContent>
+                                        <DrawerHeader>Friends</DrawerHeader>
+
+                                        <Container px={8} py={5}>
+                                            <Heading size="sm">Incoming Friend Requests:</Heading>
+                                            {loggedinUser.friends?.map((friend: any) => {
+                                                return (
+                                                    (friend.status === 2)
+                                                        ? (
+                                                            <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
+                                                                <Flex flexDir={"row"} alignItems="center" gap={5}>
+                                                                    <Avatar></Avatar>
+                                                                    <Flex flexDir={"column"}>
+                                                                        <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
+                                                                        <Text fontSize="sm" color="gray">@{friend.recipient.handle}</Text>
+
+                                                                        <Flex flexDir="row">
+                                                                            <Button onClick={() => acceptFriendRequest(friend.recipient._id)} size ="sm" colorScheme="teal"> Accept </Button>
+                                                                            <Button onClick={() => rejectFriendRequest(friend.recipient._id)} size ="sm" colorScheme="red" ml="2"> Reject </Button>
+                                                                        </Flex>
+                                                                    </Flex>
+                                                                </Flex>
+                                                            </Container>
+                                                        ) : (
+                                                            <Text key={uuidv4()}></Text>
+                                                        )
+                                                )
+                                            })}
+                                        </Container>
+                                        <Container px={8} py={5}>
+                                            <Heading size="sm">Sent Friend Requests:</Heading>
+                                            {loggedinUser.friends.map((friend: any) => {
+                                                return (
+                                                    (friend.status === 1)
+                                                        ? (
+                                                            <Container key={uuidv4()} display="flex" flexDir="column" borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
+                                                                <Flex flexDir="row" gap={5} alignItems="center">
+                                                                    <Avatar></Avatar>
+                                                                    <Flex flexDir="column">
+                                                                        <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
+                                                                        <Text fontSize="sm" color="gray">@{friend.recipient.handle}</Text>
+                                                                        <Button size="sm" colorScheme="gray" alignSelf="end" disabled> Pending </Button>
+                                                                    </Flex>
+                                                                </Flex>
+                                                            </Container>
+                                                        ) : (
+                                                            <Text key={uuidv4()}></Text>
+                                                        )
+                                                )
+                                            })}
+                                        </Container>
+
+                                        <Container px={8} py={5}>
+                                            <Heading size="sm">Friends:</Heading>
+                                            {loggedinUser.friends?.map((friend: any) => {
+                                                return (
+                                                    (friend.status === 3)
+                                                        ? (
+                                                            <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
+                                                                <Flex flexDir="row" gap={5} alignItems="center">
+                                                                    <Avatar></Avatar>
+                                                                    <Flex flexDir={"column"}>
+                                                                        <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
+                                                                        <Text fontSize="sm" color="gray">@{friend.recipient.handle}</Text>
+                                                                        <Button size ="sm" colorScheme="pink" disabled> Friend </Button>
+                                                                    </Flex>
+                                                                </Flex>
+                                                            </Container>
+                                                        ) : (
+                                                            <Text key={uuidv4()}></Text>
+                                                        )
+                                                )
+                                            })}
+                                        </Container>
+
+                                        {/* <DrawerFooter>
+                                            <Button variant='outline' mr={3} onClick={onClose}>
+              Cancel
+                                            </Button>
+                                            <Button colorScheme='teal'>Save</Button>
+                                        </DrawerFooter> */}
+                                    </DrawerContent>
+                                </Drawer>
                             </GridItem>
                         </Grid>
                     </Box>
                 </Center>
             ) 
             : (
-                <Heading>Please log in first.</Heading>
+                <Alert status='error'>
+                    <AlertIcon />
+                    <AlertTitle>Please log in first!</AlertTitle>
+                    <AlertDescription>View your profile here after logging in.</AlertDescription>
+                </Alert>
             )
     )
 }

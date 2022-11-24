@@ -113,6 +113,7 @@ function Home() {
             })
     }
 
+    // Reject friend request
     async function rejectFriendRequest (recipient: string) {
         const friendRequest = {
             requester: loggedinUser._id,
