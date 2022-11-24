@@ -19,14 +19,11 @@ function Home() {
     const [reqUserData, setReqUserData] = useState<any>([]);
     const [reqCollectionData, setReqCollectionData] = useState<any>([]);
 
-    // Local state to hold sent friend requests
-    const [friendRequests, sentFriendRequests] = useState([]);
-
     // Retrieve logged in user state and JWT token from Redux
     const currentUser = useAppSelector(state => state.currentUser);
     let loggedinUser: any = {};
 
-    // Refactor code so it is not too long
+    // Refactor code for convenience
     if (currentUser.returned.length === 1) {
         loggedinUser = currentUser.returned[0];
     }

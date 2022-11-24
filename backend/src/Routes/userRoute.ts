@@ -61,6 +61,8 @@ router.get('/:userId', (req, res, next) => {
 type UserReq = {
     body: {
         username: string,
+        handle: string,
+        email: string,
         password: string,
         bio: string,
     }
@@ -71,9 +73,17 @@ router.post('/', [
         .trim()
         .isLength( {min : 1})
         .escape(),
+    body('handle', 'Handle invalid or not unique.')
+        .trim()
+        .isLength( {min : 1})
+        .escape(),
     body('password', 'Password invalid.')
         .trim()
         .isLength( {min : 8})
+        .escape(),
+    body('email', 'Email invalid or already been used.')
+        .trim()
+        .isLength( {min : 1})
         .escape(),
     body('bio', 'Bio must be specfiied.')
         .trim()
@@ -87,7 +97,9 @@ router.post('/', [
 
         const user = new User({
             username: req.body.username,
+            handle: req.body.handle,
             password: hashedPassword,
+            email: req.body.email,
             bio: req.body.bio,
         });
 

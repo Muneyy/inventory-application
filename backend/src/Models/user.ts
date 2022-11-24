@@ -6,6 +6,10 @@ const userSchema = new Schema(
             type: String,
             required: true,
         },
+        handle: {
+            type: String,
+            required: true,
+        },
         password: {
             type: String,
             rqeuired: true,
@@ -16,6 +20,7 @@ const userSchema = new Schema(
         },
         email: {
             type: String,
+            required: true,
         },
         friends: [{
             type: Schema.Types.ObjectId,

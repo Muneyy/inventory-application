@@ -32,7 +32,7 @@ function LogIn () {
                     dispatch(login(res.data.user));
                     dispatch(setToken(res.data.token));
                     setCurrentUser(res.data.user);
-                    navigate("/");
+                    navigate("/profile");
                 })
         }
     })

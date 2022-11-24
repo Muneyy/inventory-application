@@ -18,22 +18,26 @@ function CreateUser () {
     const formik = useFormik({
         initialValues: {
             username: "",
+            handle: "",
             password: "",
+            email: "",
             bio: ""
         },
         onSubmit: (values) => {
 
             const submitUser = {
                 username: values.username,
+                handle: values.handle,
                 password: values.password,
-                bio: values.bio
+                bio: values.bio,
+                email: values.email,
             }
 
             axios.post('http://localhost:3000/users', submitUser)
                 .then(res => {
                     console.log(res);
                     dispatch(logout);
-                    navigate('/');
+                    navigate('/profile');
                 })
         }
     })
@@ -59,6 +63,18 @@ function CreateUser () {
                                     <FormHelperText>Username cannot be empty.</FormHelperText>
                                 </FormControl>
                                 <Divider my="1rem"/>
+                                <FormControl isRequired w="md">
+                                    <FormLabel>Handle:</FormLabel>
+                                    <Input 
+                                        type="text" 
+                                        name="handle" 
+                                        id="handle" 
+                                        onChange={formik.handleChange}
+                                        value={formik.values.handle} 
+                                    />
+                                    <FormHelperText>Handle must be unique.</FormHelperText>
+                                </FormControl>
+                                <Divider my="1rem"/>
                                 <FormControl isRequired>
                                     <FormLabel>Password:</FormLabel>
                                     <Input 
@@ -72,7 +88,7 @@ function CreateUser () {
                                     <FormHelperText>Minimum of 8 characters.</FormHelperText>
                                 </FormControl>
                                 <Divider my="1rem"/>
-                                <FormControl isRequired>
+                                <FormControl isRequired w="md">
                                     <FormLabel>Bio:</FormLabel>
                                     <Input 
                                         type="text" 
@@ -81,7 +97,19 @@ function CreateUser () {
                                         onChange={formik.handleChange}
                                         value={formik.values.bio} 
                                     />
-                                    <FormHelperText>Some text to introduce yourself.</FormHelperText>
+                                    <FormHelperText>Description.</FormHelperText>
+                                </FormControl>
+                                <Divider my="1rem"/>
+                                <FormControl isRequired>
+                                    <FormLabel>Email:</FormLabel>
+                                    <Input 
+                                        type="text" 
+                                        name="email" 
+                                        id="email" 
+                                        onChange={formik.handleChange}
+                                        value={formik.values.email} 
+                                    />
+                                    <FormHelperText>Please enter a valid email.</FormHelperText>
                                 </FormControl>
                                 <Divider my="1rem"/>
                                 <Button type='submit' colorScheme="teal">Create!</Button>

@@ -9,6 +9,7 @@ import CreateCollection from './Components/CreateCollection';
 import LogIn from './Components/LogIn';
 import store from './app/store'
 import { Provider } from 'react-redux'
+import Profile from './Components/Profile';
 // Yes
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
                         <Route path ='/createUser' element={<CreateUser/>} />
                         <Route path ='/createCollection' element={<CreateCollection/>} />
                         <Route path ='/login' element={<LogIn/>} />
+                        <Route path ='/profile' element={<Profile/>} />
                     </Routes>
                 </BrowserRouter>
             </Provider>
