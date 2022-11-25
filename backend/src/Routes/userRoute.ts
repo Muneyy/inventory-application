@@ -30,13 +30,27 @@ router.get('/:userId', (req, res, next) => {
         {
             user(callback) {
                 User.findById(req.params.userId)
+                    .select("-password")
+                    .populate({
+                        path: 'friends',
+                        model: 'Friend',
+                        populate: [{
+                            path: 'recipient',
+                            select: 'username',
+                            model: 'User',
+                        },{
+                            path: 'requester',
+                            select: 'username',
+                            model: 'User',
+                        }],
+                    })
                     .exec(callback);
             },
-            user_groups(callback) {
-                Group
-                    .find({user: req.params.userId})
-                    .exec(callback);
-            },
+            // user_groups(callback) {
+            //     Group
+            //         .find({user: req.params.userId})
+            //         .exec(callback);
+            // },
         },
         (err, results) => {
             if (err) { 
@@ -51,7 +65,7 @@ router.get('/:userId', (req, res, next) => {
             res.send(
                 {
                     user: results.user, 
-                    user_groups: results.user_groups,
+                    // user_groups: results.user_groups,
                 },
             );
         },

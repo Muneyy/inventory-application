@@ -8,8 +8,11 @@ import { useAppSelector, useAppDispatch } from '../app/hooks'
 import { useNavigate } from 'react-router-dom';
 import {Link as RouteLink} from "react-router-dom";
 import { CheckCircleIcon } from '@chakra-ui/icons'
+import FriendAction from './Buttons/FriendAction';
 
 function Profile () {
+    const dispatch = useAppDispatch();
+    // const [currentUser, setCurrentUser] = useState<any>({returned: []});
 
     ////////////////////////////////////////////////
     // Retrieve logged in user state and JWT token from Redux
@@ -50,8 +53,8 @@ function Profile () {
 
     // Accepts a friend request
     async function acceptFriendRequest (recipient: string, e: React.MouseEvent<HTMLElement>) {
-        const target = e.target as HTMLInputElement
-        target.disabled = true;
+        // const target = e.target as HTMLInputElement
+        // target.disabled = true;
         const friendRequest = {
             requester: loggedinUser._id,
             recipient,
@@ -61,6 +64,9 @@ function Profile () {
             .then(res => {
                 console.log(res);
             })
+        
+        // update friends list by updating user state
+        await refreshUserState()    
     }
 
     // Reject friend request
@@ -76,6 +82,9 @@ function Profile () {
             .then(res => {
                 console.log(res);
             })
+
+        // update friends list by updating user state
+        await refreshUserState()    
     }
     ////////////////////////////////////////////////
 
@@ -84,13 +93,23 @@ function Profile () {
         navigate("/");
     }
 
+    async function refreshUserState () {
+        await axios.get(`http://localhost:3000/users/${loggedinUser._id}`)
+            .then(async (res) => {
+                console.log(res);
+                await dispatch(login(res.data.user));
+                const updateUser = useAppSelector(state => state.currentUser);
+                loggedinUser = updateUser.returned[0];
+            })
+    }
+
     return (
         (loggedinUser._id) 
             ?   (
                 <Center backgroundColor={"teal.300"} p={10}>
                     <Box borderColor={"blackAlpha.300"} borderWidth='3px' borderRadius='lg' overflow='hidden' paddingX={15} paddingY={5}>
-                        <Grid templateColumns={"3fr 5fr"} gap={4}>
-                            <GridItem display={"flex"} alignItems="center" p={5}>
+                        <Grid templateColumns={"2fr 5fr"} gap={4}>
+                            <GridItem display={"flex"} alignItems="center" justifyContent={"center"} p={5}>
                                 <Avatar size={"xl"}></Avatar>
                             </GridItem>
                             <GridItem display={"flex"} justifyContent="center" alignItems="start" p={5} flexDir="column">
@@ -123,8 +142,8 @@ function Profile () {
                                                                             <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
                                                                             <Text fontSize="sm" color="gray">@{friend.recipient.handle}</Text>
                                                                             <Flex flexDir="row">
-                                                                                <Button onClick={(e) => acceptFriendRequest(friend.recipient._id, e)} size ="sm" colorScheme="teal"> Accept </Button>
-                                                                                <Button onClick={(e) => rejectFriendRequest(friend.recipient._id, e)} size ="sm" colorScheme="red" ml="2"> Reject </Button>
+                                                                                <FriendAction acceptFriendRequest={acceptFriendRequest} rejectFriendRequest={rejectFriendRequest} id = {friend.recipient._id} />
+                                                                                {/* <RejectButton rejectFriendRequest={rejectFriendRequest} id = {friend.recipient._id} /> */}
                                                                             </Flex>
                                                                         </Flex>
                                                                     </Flex>
