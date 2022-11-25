@@ -49,7 +49,9 @@ function Profile () {
     }
 
     // Accepts a friend request
-    async function acceptFriendRequest (recipient: string) {
+    async function acceptFriendRequest (recipient: string, e: React.MouseEvent<HTMLElement>) {
+        const target = e.target as HTMLInputElement
+        target.disabled = true;
         const friendRequest = {
             requester: loggedinUser._id,
             recipient,
@@ -62,7 +64,9 @@ function Profile () {
     }
 
     // Reject friend request
-    async function rejectFriendRequest (recipient: string) {
+    async function rejectFriendRequest (recipient: string, e: React.MouseEvent<HTMLElement>) {
+        const target = e.target as HTMLInputElement
+        target.disabled = true;
         const friendRequest = {
             requester: loggedinUser._id,
             recipient,
@@ -105,77 +109,82 @@ function Profile () {
                                     <DrawerContent>
                                         <DrawerHeader>Friends</DrawerHeader>
 
-                                        <Container px={8} py={5}>
-                                            <Heading size="sm">Incoming Friend Requests:</Heading>
-                                            {loggedinUser.friends?.map((friend: any) => {
-                                                return (
-                                                    (friend.status === 2)
-                                                        ? (
-                                                            <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
-                                                                <Flex flexDir={"row"} alignItems="center" gap={5}>
-                                                                    <Avatar></Avatar>
-                                                                    <Flex flexDir={"column"}>
-                                                                        <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
-                                                                        <Text fontSize="sm" color="gray">@{friend.recipient.handle}</Text>
-
-                                                                        <Flex flexDir="row">
-                                                                            <Button onClick={() => acceptFriendRequest(friend.recipient._id)} size ="sm" colorScheme="teal"> Accept </Button>
-                                                                            <Button onClick={() => rejectFriendRequest(friend.recipient._id)} size ="sm" colorScheme="red" ml="2"> Reject </Button>
+                                        <DrawerBody>
+                                            <Container px={8} py={5}>
+                                                <Heading size="sm">Incoming Friend Requests:</Heading>
+                                                {loggedinUser.friends?.map((friend: any) => {
+                                                    return (
+                                                        (friend.status === 2)
+                                                            ? (
+                                                                <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
+                                                                    <Flex flexDir={"row"} alignItems="center" gap={5}>
+                                                                        <Avatar></Avatar>
+                                                                        <Flex flexDir={"column"}>
+                                                                            <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
+                                                                            <Text fontSize="sm" color="gray">@{friend.recipient.handle}</Text>
+                                                                            <Flex flexDir="row">
+                                                                                <Button onClick={(e) => acceptFriendRequest(friend.recipient._id, e)} size ="sm" colorScheme="teal"> Accept </Button>
+                                                                                <Button onClick={(e) => rejectFriendRequest(friend.recipient._id, e)} size ="sm" colorScheme="red" ml="2"> Reject </Button>
+                                                                            </Flex>
                                                                         </Flex>
                                                                     </Flex>
-                                                                </Flex>
-                                                            </Container>
-                                                        ) : (
-                                                            <Text key={uuidv4()}></Text>
-                                                        )
-                                                )
-                                            })}
-                                        </Container>
-                                        <Container px={8} py={5}>
-                                            <Heading size="sm">Sent Friend Requests:</Heading>
-                                            {loggedinUser.friends.map((friend: any) => {
-                                                return (
-                                                    (friend.status === 1)
-                                                        ? (
-                                                            <Container key={uuidv4()} display="flex" flexDir="column" borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
-                                                                <Flex flexDir="row" gap={5} alignItems="center">
-                                                                    <Avatar></Avatar>
-                                                                    <Flex flexDir="column">
-                                                                        <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
-                                                                        <Text fontSize="sm" color="gray">@{friend.recipient.handle}</Text>
-                                                                        <Button size="sm" colorScheme="gray" alignSelf="end" disabled> Pending </Button>
+                                                                </Container>
+                                                            ) : (
+                                                                <Text key={uuidv4()}></Text>
+                                                            )
+                                                    )
+                                                })}
+                                            </Container>
+                                        </DrawerBody>
+                                        <DrawerBody>
+                                            <Container px={8} py={5}>
+                                                <Heading size="sm">Sent Friend Requests:</Heading>
+                                                {loggedinUser.friends.map((friend: any) => {
+                                                    return (
+                                                        (friend.status === 1)
+                                                            ? (
+                                                                <Container key={uuidv4()} display="flex" flexDir="column" borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
+                                                                    <Flex flexDir="row" gap={5} alignItems="center">
+                                                                        <Avatar></Avatar>
+                                                                        <Flex flexDir="column">
+                                                                            <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
+                                                                            <Text fontSize="sm" color="gray">@{friend.recipient.handle}</Text>
+                                                                            <Button size="sm" colorScheme="gray" alignSelf="end" disabled> Pending </Button>
+                                                                        </Flex>
                                                                     </Flex>
-                                                                </Flex>
-                                                            </Container>
-                                                        ) : (
-                                                            <Text key={uuidv4()}></Text>
-                                                        )
-                                                )
-                                            })}
-                                        </Container>
+                                                                </Container>
+                                                            ) : (
+                                                                <Text key={uuidv4()}></Text>
+                                                            )
+                                                    )
+                                                })}
+                                            </Container>
+                                        </DrawerBody>
 
-                                        <Container px={8} py={5}>
-                                            <Heading size="sm">Friends:</Heading>
-                                            {loggedinUser.friends?.map((friend: any) => {
-                                                return (
-                                                    (friend.status === 3)
-                                                        ? (
-                                                            <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
-                                                                <Flex flexDir="row" gap={5} alignItems="center">
-                                                                    <Avatar></Avatar>
-                                                                    <Flex flexDir={"column"}>
-                                                                        <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
-                                                                        <Text fontSize="sm" color="gray">@{friend.recipient.handle}</Text>
-                                                                        <Button size ="sm" colorScheme="pink" disabled> Friend </Button>
+                                        <DrawerBody>
+                                            <Container px={8} py={5}>
+                                                <Heading size="sm">Friends:</Heading>
+                                                {loggedinUser.friends?.map((friend: any) => {
+                                                    return (
+                                                        (friend.status === 3)
+                                                            ? (
+                                                                <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
+                                                                    <Flex flexDir="row" gap={5} alignItems="center">
+                                                                        <Avatar></Avatar>
+                                                                        <Flex flexDir={"column"}>
+                                                                            <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
+                                                                            <Text fontSize="sm" color="gray">@{friend.recipient.handle}</Text>
+                                                                            <Button size ="sm" colorScheme="pink" disabled> Friend </Button>
+                                                                        </Flex>
                                                                     </Flex>
-                                                                </Flex>
-                                                            </Container>
-                                                        ) : (
-                                                            <Text key={uuidv4()}></Text>
-                                                        )
-                                                )
-                                            })}
-                                        </Container>
+                                                                </Container>
+                                                            ) : (
+                                                                <Text key={uuidv4()}></Text>
+                                                            )
+                                                    )
+                                                })}
+                                            </Container>
+                                        </DrawerBody>
 
                                         {/* <DrawerFooter>
                                             <Button variant='outline' mr={3} onClick={onClose}>
