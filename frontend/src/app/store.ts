@@ -1,12 +1,27 @@
-import { configureStore } from '@reduxjs/toolkit'
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
+import storage from 'redux-persist/lib/storage'
 import currentUserReducer from '../Features/currentUserSlice'
 import currentTokenReducer from '../Features/currentTokenSlice'
+import { persistReducer } from 'redux-persist'
+import thunk from 'redux-thunk'
+
+const reducers = combineReducers({
+    currentUser: currentUserReducer,
+    currentToken: currentTokenReducer,
+});
+
+const persistConfig = {
+    timeout: 10, //Set the timeout function to 0.5s seconds
+    key: 'root',
+    storage
+};
+
+const persistedReducer = persistReducer(persistConfig, reducers);
 
 const store = configureStore({
-    reducer: {
-        currentUser: currentUserReducer,
-        currentToken: currentTokenReducer,
-    }
+    reducer: persistedReducer,
+    devTools: process.env.NODE_ENV !== 'production',
+    middleware: [thunk]
 })
 
 export default store

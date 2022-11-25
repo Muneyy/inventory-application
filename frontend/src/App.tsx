@@ -10,21 +10,29 @@ import LogIn from './Components/LogIn';
 import store from './app/store'
 import { Provider } from 'react-redux'
 import Profile from './Components/Profile';
+import { PersistGate } from 'redux-persist/integration/react'
+import { persistStore } from 'redux-persist'
+import { constants } from 'fs/promises';
 // Yes
 
 function App() {
+
+    const persistor = persistStore(store);
+
     return (
         <ChakraProvider>
             <Provider store={store}>
-                <BrowserRouter>
-                    <Routes>
-                        <Route path ='/' element={<Home/>}/>
-                        <Route path ='/createUser' element={<CreateUser/>} />
-                        <Route path ='/createCollection' element={<CreateCollection/>} />
-                        <Route path ='/login' element={<LogIn/>} />
-                        <Route path ='/profile' element={<Profile/>} />
-                    </Routes>
-                </BrowserRouter>
+                <PersistGate loading={null} persistor={persistor}>
+                    <BrowserRouter>
+                        <Routes>
+                            <Route path ='/' element={<Home/>}/>
+                            <Route path ='/createUser' element={<CreateUser/>} />
+                            <Route path ='/createCollection' element={<CreateCollection/>} />
+                            <Route path ='/login' element={<LogIn/>} />
+                            <Route path ='/profile' element={<Profile/>} />
+                        </Routes>
+                    </BrowserRouter>
+                </PersistGate>
             </Provider>
         </ChakraProvider>
     );
