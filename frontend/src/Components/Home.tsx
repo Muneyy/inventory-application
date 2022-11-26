@@ -59,11 +59,9 @@ function Home() {
                 )).then(axios.spread((users, collections) => {
                     setReqUserData(users.data);
                     setReqCollectionData(collections.data);
-                    console.log(JSON.parse(JSON.stringify(currentUser)));
-                    console.log("huh?");
+                    // console.log(JSON.parse(JSON.stringify(currentUser)));
+                    // console.log("huh?");
                 }))
-
-                // console.log(JSON.parse(JSON.stringify(reqUserData)));
                 setLoading(1);
             } catch (error) {
                 console.error(error);
@@ -80,13 +78,16 @@ function Home() {
     }
 
     async function testJWT () {
-        console.log(tokenJWT);
+        // console.log(tokenJWT);
         const config = {
             headers: { Authorization: `Bearer ${tokenJWT}` }
         };
         await axios.get('http://localhost:3000/items', config)
             .then(res => {
-                console.log(res);
+                // console.log(res);
+            })
+            .catch(err => {
+                console.log(err);
             })
     }
 
@@ -99,7 +100,10 @@ function Home() {
 
         await axios.post('http://localhost:3000/friends/sendFriendRequest', friendRequest)
             .then(res => {
-                console.log(res);
+                // console.log(res);
+            })
+            .catch(err => {
+                console.log(err);
             })
 
         
@@ -114,7 +118,10 @@ function Home() {
 
         await axios.post('http://localhost:3000/friends/acceptFriendRequest', friendRequest)
             .then(res => {
-                console.log(res);
+                // console.log(res);
+            })
+            .catch(err => {
+                console.log(err);
             })
     }
 
@@ -127,7 +134,10 @@ function Home() {
 
         await axios.post('http://localhost:3000/friends/rejectFriendRequest', friendRequest)
             .then(res => {
-                console.log(res);
+                // console.log(res);
+            })
+            .catch(err => {
+                console.log(err);
             })
     }
 
@@ -238,13 +248,13 @@ function Home() {
                                                 ? (
                                                     // Check if user is the logged in User,
                                                     // if it is, then return an empty Text container
-                                                    <RouteLink  to={`/${user._id}`}  style={{ textDecoration: 'none' }}>
+                                                    <RouteLink key={uuidv4()} to={`/${user._id}`}  style={{ textDecoration: 'none' }}>
                                                         {(loggedinUser.username == user.username)
                                                             ? (
                                                                 <Text key={uuidv4()}></Text>
                                                             ) : (
                                                         // Do not display logged in user in list of current users
-                                                                <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px" w={"xs"}>
+                                                                <Container  borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px" w={"xs"}>
                                                                     <Avatar />
                                                                     <Text fontSize="xl" fontWeight="bold">{user.username}</Text>
                                                                     <Text fontSize="m">{user.bio}</Text>
@@ -253,8 +263,8 @@ function Home() {
                                                             )}
                                                     </RouteLink>
                                                 ) : (
-                                                    <RouteLink to={`/${user._id}`} style={{ textDecoration: 'none' }}>
-                                                        <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px" w={"xs"}>
+                                                    <RouteLink key={uuidv4()} to={`/${user._id}`} style={{ textDecoration: 'none' }}>
+                                                        <Container  borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px" w={"xs"}>
                                                             <Avatar />
                                                             <Text fontSize="xl" fontWeight="bold">{user.username}</Text>
                                                             <Text fontSize="m">{user.bio}</Text>

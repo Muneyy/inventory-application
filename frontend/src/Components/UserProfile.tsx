@@ -16,6 +16,8 @@ function UserProfile () {
     const [fetchedUser, setFetchedUser] = useState<fetchedUserType>();
     const [friendRequestSent, setFriendRequestSent] = useState<boolean>(false);
 
+    const { userId } = useParams();
+
     type fetchedUserType = {
         username: string,
         handle : string,
@@ -46,10 +48,9 @@ function UserProfile () {
         const fetchUserData = async () => {
             try {
                 axios.defaults.headers.common["Authorization"] = `Bearer ${tokenJWT}`;
-                const { userId } = useParams();
+
                 await axios.get(`http://localhost:3000/users/${userId}`)
                     .then(res => {
-                        console.log(res.data);
                         setFetchedUser(res.data.user);
                     })
 
@@ -76,6 +77,8 @@ function UserProfile () {
             .catch(err => {
                 console.log(err);
             })
+
+        await refreshUserState();
     }
 
     const navigate = useNavigate();
@@ -86,7 +89,6 @@ function UserProfile () {
     async function refreshUserState () {
         await axios.get(`http://localhost:3000/users/${loggedinUser._id}`)
             .then(async (res) => {
-                console.log(res);
                 await dispatch(login(res.data.user));
                 const updateUser = useAppSelector(state => state.currentUser);
                 loggedinUser = updateUser.returned[0];
@@ -97,33 +99,44 @@ function UserProfile () {
     }
 
     return (
-        (fetchedUser) 
+        (loading) 
             ?   (
-                <Center backgroundColor={"teal.300"} p={10}>
-                    <Box borderColor={"blackAlpha.300"} borderWidth='3px' borderRadius='lg' overflow='hidden' paddingX={15} paddingY={5}>
-                        <Grid templateColumns={"2fr 5fr"} gap={4}>
-                            <GridItem display={"flex"} alignItems="center" justifyContent={"center"} p={5}>
-                                <Avatar size={"xl"}></Avatar>
-                            </GridItem>
-                            <GridItem display={"flex"} justifyContent="center" alignItems="start" p={5} flexDir="column">
-                                <Text fontSize="5xl" fontWeight={700}>{fetchedUser.username}</Text>
-                                <Text fontSize={"sm"} fontWeight={300}>@{fetchedUser.handle}</Text>
-                                <Text fontSize={"md"} fontWeight={500}>{fetchedUser.bio}</Text>
-                                <Button mt={1}  colorScheme="pink" ref={btnRef} onClick={() => sendFriendRequest(fetchedUser._id)} size="sm" disabled={friendRequestSent}>
-                                    {friendRequestSent ? "Add Friend" : "Sent"}
-                                </Button>
-                                <Button mt={1} size="sm" onClick={()=>navigateHome()}>Home</Button>
-                            </GridItem>
-                        </Grid>
-                    </Box>
-                </Center>
+                (fetchedUser) 
+                    ? (
+                        <Center backgroundColor={"teal.300"} p={10}>
+                            <Box borderColor={"blackAlpha.300"} borderWidth='3px' borderRadius='lg' overflow='hidden' paddingX={15} paddingY={5}>
+                                <Grid templateColumns={"2fr 5fr"} gap={4}>
+                                    <GridItem display={"flex"} alignItems="center" justifyContent={"center"} p={5}>
+                                        <Avatar size={"xl"}></Avatar>
+                                    </GridItem>
+                                    <GridItem display={"flex"} justifyContent="center" alignItems="start" p={5} flexDir="column">
+                                        <Text fontSize="5xl" fontWeight={700}>{fetchedUser.username}</Text>
+                                        <Text fontSize={"sm"} fontWeight={300}>@{fetchedUser.handle}</Text>
+                                        <Text fontSize={"md"} fontWeight={500}>{fetchedUser.bio}</Text>
+                                        <Button mt={1}  colorScheme="pink" ref={btnRef} onClick={() => sendFriendRequest(fetchedUser._id)} size="sm" disabled={friendRequestSent}>
+                                            {friendRequestSent ? "Sent" : "Add Friend"}
+                                        </Button>
+                                        <Button mt={1} size="sm" onClick={()=>navigateHome()}>Home</Button>
+                                    </GridItem>
+                                </Grid>
+                            </Box>
+                        </Center>
+
+                    ) 
+                    : (
+
+                        <Alert status='error'>
+                            <AlertIcon />
+                            <AlertTitle>Error!</AlertTitle>
+                            <AlertDescription>User has not been found!</AlertDescription>
+                        </Alert>
+                    )
             ) 
             : (
-                <Alert status='error'>
-                    <AlertIcon />
-                    <AlertTitle>Please log in first!</AlertTitle>
-                    <AlertDescription>View your profile here after logging in.</AlertDescription>
-                </Alert>
+                <Center mt={"5rem"} display="flex" flexDir={"column"}>
+                    <Spinner />
+                    <Text>Loading...</Text>
+                </Center>
             )
     )
 }

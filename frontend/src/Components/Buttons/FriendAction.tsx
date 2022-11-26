@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button } from "@chakra-ui/react";
+import { Button, Spinner } from "@chakra-ui/react";
 import { isDisabled } from '@testing-library/user-event/dist/utils';
 
 
@@ -13,21 +13,21 @@ function FriendAction (props: {
     const [reject, setReject] = useState<boolean>(false);
 
     async function handleAcceptClick (id: string, e: React.MouseEvent<HTMLElement>) {
-        await props.acceptFriendRequest(id, e);
         setClicked(true);
         setAccept(true);
+        await props.acceptFriendRequest(id, e);
     }
 
     async function handleRejectClick (id: string, e: React.MouseEvent<HTMLElement>) {
-        await props.acceptFriendRequest(id, e);
         setClicked(true);
         setReject(true);
+        await props.acceptFriendRequest(id, e);
     }
 
     return (
         <>
-            <Button onClick={(e) => handleAcceptClick(props.id, e)} size ="sm" colorScheme="teal" disabled={clicked}>  {accept ? "Friends" : "Accept"} </Button>
-            <Button onClick={(e) => handleRejectClick(props.id, e)} size ="sm" colorScheme="red" disabled={clicked}> {reject ? "Rejected" : "Reject"} </Button>
+            <Button onClick={(e) => handleAcceptClick(props.id, e)} size ="sm" colorScheme="teal" disabled={clicked}>  {accept ? <Spinner /> : "Accept"} </Button>
+            <Button onClick={(e) => handleRejectClick(props.id, e)} size ="sm" colorScheme="red" disabled={clicked}> {reject ? <Spinner /> : "Reject"} </Button>
         </>
     )
 }
