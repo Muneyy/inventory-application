@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import storage from 'redux-persist/lib/storage';
 
 interface userState {
     value: Record<string, unknown>[]
@@ -20,6 +21,7 @@ export const currentUserSlice = createSlice({
         logout: (state, action)=> {
             const tempArray: any = [];
             state.returned = tempArray;
+            storage.removeItem('root');
         }
     }
 })

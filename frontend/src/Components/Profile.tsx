@@ -14,7 +14,6 @@ function Profile () {
     const dispatch = useAppDispatch();
     // const [currentUser, setCurrentUser] = useState<any>({returned: []});
 
-    ////////////////////////////////////////////////
     // Retrieve logged in user state and JWT token from Redux
     const currentUser = useAppSelector(state => state.currentUser);
     let loggedinUser: any = {};
@@ -29,15 +28,11 @@ function Profile () {
     if (token.returned.length === 1) {
         tokenJWT = token.returned[0];
     }
-    ////////////////////////////////////////////////
 
-    ////////////////////////////////////////////////
     // Setup Friends Drawer using Chakra UI
     const { isOpen, onOpen, onClose } = useDisclosure()
     const btnRef = React.useRef() as React.MutableRefObject<HTMLInputElement> & React.LegacyRef<HTMLButtonElement>;
-    ////////////////////////////////////////////////
 
-    ////////////////////////////////////////////////
     // Sends a friend request to backend
     async function sendFriendRequest (recipient: string) {
         const friendRequest = {
@@ -48,6 +43,9 @@ function Profile () {
         await axios.post('http://localhost:3000/friends/sendFriendRequest', friendRequest)
             .then(res => {
                 console.log(res);
+            })
+            .catch(err => {
+                console.log(err);
             })
     }
 
@@ -63,6 +61,9 @@ function Profile () {
         await axios.post('http://localhost:3000/friends/acceptFriendRequest', friendRequest)
             .then(res => {
                 console.log(res);
+            })
+            .catch(err => {
+                console.log(err);
             })
         
         // update friends list by updating user state
@@ -82,11 +83,13 @@ function Profile () {
             .then(res => {
                 console.log(res);
             })
+            .catch(err => {
+                console.log(err);
+            })
 
         // update friends list by updating user state
         await refreshUserState()    
     }
-    ////////////////////////////////////////////////
 
     const navigate = useNavigate();
     function navigateHome () {
@@ -100,6 +103,9 @@ function Profile () {
                 await dispatch(login(res.data.user));
                 const updateUser = useAppSelector(state => state.currentUser);
                 loggedinUser = updateUser.returned[0];
+            })
+            .catch(err => {
+                console.log(err);
             })
     }
 

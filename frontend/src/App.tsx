@@ -13,6 +13,7 @@ import Profile from './Components/Profile';
 import { PersistGate } from 'redux-persist/integration/react'
 import { persistStore } from 'redux-persist'
 import { constants } from 'fs/promises';
+import UserProfile from './Components/UserProfile';
 // Yes
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
                             <Route path ='/createCollection' element={<CreateCollection/>} />
                             <Route path ='/login' element={<LogIn/>} />
                             <Route path ='/profile' element={<Profile/>} />
+                            <Route path='/:userId' element={<UserProfile/>} />
                         </Routes>
                     </BrowserRouter>
                 </PersistGate>

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { Spinner, Container, Heading, Center, Text, Button, Stack, Link, Grid, FormLabel, FormControl, useDisclosure, Collapse, Box, Flex } from '@chakra-ui/react'
+import { Spinner, Container, Heading, Center, Text, Button, Stack, Link, Grid, FormLabel, FormControl, useDisclosure, Collapse, Box, Flex, Avatar } from '@chakra-ui/react'
 import {ArrowForwardIcon} from '@chakra-ui/icons'
 import { login, logout } from '../Features/currentUserSlice';
 import { useAppSelector, useAppDispatch } from '../app/hooks'
@@ -13,6 +13,10 @@ import { userInfo } from 'os';
 
 import  IncomingFriendRequests  from "./Friends/incomingFR"
 import SentFriendRequests from './Friends/sentFR';
+import persistStore from 'redux-persist/es/persistStore';
+import store from '../app/store';
+
+
 
 function Home() {
     const [loading, setLoading] = useState(0);
@@ -69,8 +73,9 @@ function Home() {
     }, []);
 
     // Logout user and then reload
+    const persistor = persistStore(store);
     function logoutUser () {
-        dispatch(logout);
+        persistor.purge();
         window.location.reload();
     }
 
@@ -124,6 +129,11 @@ function Home() {
             .then(res => {
                 console.log(res);
             })
+    }
+
+    // helper function to set up links
+    function navigateToUser (userId : string) {
+        navigate(`/${userId}`);
     }
 
     return (
@@ -228,24 +238,29 @@ function Home() {
                                                 ? (
                                                     // Check if user is the logged in User,
                                                     // if it is, then return an empty Text container
-                                                    (loggedinUser.username == user.username)
-                                                        ? (
-                                                            <Text key={uuidv4()}></Text>
-                                                        ) : (
-        
-                                                    // Do not display logged in user in list of current users.
-                                                            <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
-                                                                <Text fontSize="xl" fontWeight="bold">{user.username}</Text>
-                                                                <Text fontSize="m">{user.bio}</Text>
-                                                                <Button colorScheme="teal" onClick={() => sendFriendRequest(user._id)}>Add Friend</Button>
-                                                            </Container>
-                                                        )
+                                                    <RouteLink  to={`/${user._id}`}  style={{ textDecoration: 'none' }}>
+                                                        {(loggedinUser.username == user.username)
+                                                            ? (
+                                                                <Text key={uuidv4()}></Text>
+                                                            ) : (
+                                                        // Do not display logged in user in list of current users
+                                                                <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px" w={"xs"}>
+                                                                    <Avatar />
+                                                                    <Text fontSize="xl" fontWeight="bold">{user.username}</Text>
+                                                                    <Text fontSize="m">{user.bio}</Text>
+                                                                    {/* <Button colorScheme="teal" onClick={() => sendFriendRequest(user._id)}>Add Friend</Button> */}
+                                                                </Container>
+                                                            )}
+                                                    </RouteLink>
                                                 ) : (
-                                                    <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
-                                                        <Text fontSize="xl" fontWeight="bold">{user.username}</Text>
-                                                        <Text fontSize="m">{user.bio}</Text>
-                                                        <Button size="m" colorScheme="teal" disabled> Please login to add them as a friend.</Button>
-                                                    </Container>
+                                                    <RouteLink to={`/${user._id}`} style={{ textDecoration: 'none' }}>
+                                                        <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px" w={"xs"}>
+                                                            <Avatar />
+                                                            <Text fontSize="xl" fontWeight="bold">{user.username}</Text>
+                                                            <Text fontSize="m">{user.bio}</Text>
+                                                            {/* <Button size="m" colorScheme="teal" disabled> Please login to add them as a friend.</Button> */}
+                                                        </Container>
+                                                    </RouteLink>
                                                 )
                                         )
                                     })}
