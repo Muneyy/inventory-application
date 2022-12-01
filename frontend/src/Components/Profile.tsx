@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { Spinner, Container, Heading, Center, Text, Button, Stack, Link, Grid, FormLabel, FormControl, useDisclosure, Collapse, Box, Flex, GridItem, Circle, Avatar, AvatarBadge, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, Input, Alert, AlertDescription, AlertIcon, AlertTitle } from '@chakra-ui/react'
+import { Spinner, Image, Container, Heading, Center, Text, Button, Stack, Link, Grid, FormLabel, FormControl, useDisclosure, Collapse, Box, Flex, GridItem, Circle, Avatar, AvatarBadge, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, Input, Alert, AlertDescription, AlertIcon, AlertTitle } from '@chakra-ui/react'
 import {ArrowForwardIcon} from '@chakra-ui/icons'
 import { login, logout } from '../Features/currentUserSlice';
 import { useAppSelector, useAppDispatch } from '../app/hooks'
@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import {Link as RouteLink} from "react-router-dom";
 import { CheckCircleIcon } from '@chakra-ui/icons'
 import FriendAction from './Buttons/FriendAction';
+import { useFormik } from 'formik';
 
 function Profile () {
     const dispatch = useAppDispatch();
@@ -96,6 +97,7 @@ function Profile () {
         navigate("/");
     }
 
+    // GET request to get updated attributes of updated logged in user
     async function refreshUserState () {
         await axios.get(`http://localhost:3000/users/${loggedinUser._id}`)
             .then(async (res) => {
@@ -109,6 +111,36 @@ function Profile () {
             })
     }
 
+    // Formik to handle form submit for changing profile picture
+    // Set submitting for button in change profile picture
+    const [avatarLoading, setAvatarLoading] = useState<boolean>(false);
+    const formik = useFormik({
+        initialValues: {
+            image: '',
+            userID: loggedinUser._id,
+        },
+        onSubmit: async (values) => {
+            setAvatarLoading(true);
+            const submitImage = {
+                image: values.image,
+                userID: loggedinUser._id,
+            }
+
+            const formData = new FormData();
+            formData.append("image", values.image);
+            formData.append("userID", loggedinUser._id)
+
+            console.log(formData);
+            await axios.post('http://localhost:3000/uploadAvatar', formData)
+                .then(res => {
+                    console.log(res);
+                })
+
+            await refreshUserState();
+            setAvatarLoading(false);
+        }
+    })
+
     return (
         (loggedinUser._id) 
             ?   (
@@ -116,7 +148,17 @@ function Profile () {
                     <Box borderColor={"blackAlpha.300"} borderWidth='3px' borderRadius='lg' overflow='hidden' paddingX={15} paddingY={5}>
                         <Grid templateColumns={"2fr 5fr"} gap={4}>
                             <GridItem display={"flex"} alignItems="center" justifyContent={"center"} p={5}>
-                                <Avatar size={"xl"}></Avatar>
+                                {(loggedinUser.avatarURL) 
+                                    ? (
+                                        <Image
+                                            borderRadius='full'
+                                            boxSize='200px'
+                                            src={`${loggedinUser.avatarURL}`}
+                                            alt='Avatar'/>
+                                    ) 
+                                    : (
+                                        <Avatar size={"xl"}></Avatar>
+                                    )}
                             </GridItem>
                             <GridItem display={"flex"} justifyContent="center" alignItems="start" p={5} flexDir="column">
                                 <Text fontSize="5xl" fontWeight={700}>{loggedinUser.username}</Text>
@@ -124,6 +166,22 @@ function Profile () {
                                 <Text fontSize={"md"} fontWeight={500}>{loggedinUser.bio}</Text>
                                 <Button mt={1}  colorScheme="pink" ref={btnRef} onClick={onOpen} size="sm">Show Friends</Button>
                                 <Button mt={1} size="sm" onClick={()=>navigateHome()}>Home</Button>
+                                <form onSubmit={formik.handleSubmit}>
+                                    <FormControl isRequired w="md">
+                                        <FormLabel>Image:</FormLabel>
+                                        <Input 
+                                            type="file" 
+                                            name="image" 
+                                            id="image" 
+                                            onChange={(event: any) => {
+                                                if (event) {
+                                                    formik.setFieldValue('image', event.currentTarget.files[0]);
+                                                }
+                                            }}
+                                        />
+                                    </FormControl>
+                                    <Button size="sm" type='submit' colorScheme="teal" disabled={avatarLoading}>{avatarLoading ? <Spinner></Spinner> : "Change Profile Picture"}</Button>
+                                </form>
                                 <Drawer
                                     isOpen={isOpen}
                                     placement='right'
@@ -133,6 +191,8 @@ function Profile () {
                                     <DrawerOverlay />
                                     <DrawerContent>
                                         <DrawerHeader>Friends</DrawerHeader>
+
+                                        
 
                                         <DrawerBody>
                                             <Container px={8} py={5}>

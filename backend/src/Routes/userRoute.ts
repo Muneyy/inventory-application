@@ -14,6 +14,7 @@ const router = express.Router();
 
 router.get('/', (req, res, next) => {
     User.find()
+        .select("-password")
         .sort([['name', 'ascending']])
         // Do not need to populate friends of other users
         // .populate('friends')

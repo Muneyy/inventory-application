@@ -109,11 +109,59 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Config for Cloudinary
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const cloudinary = require('cloudinary').v2;
+cloudinary.config({ 
+    cloud_name: `${process.env.CLOUDINARY_CLOUD_NAME}`, 
+    api_key: `${process.env.CLOUDINARY_API_KEY}`, 
+    api_secret: `${process.env.CLOUDINARY_API_SECRET}`, 
+});
+
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+import multer from 'multer';
+import { randomUUID } from 'crypto';
+import { uuid } from 'uuidv4';
+import { nextTick } from 'process';
+const cloudStorage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'user-avatars',
+        format: async (req: any, file: any) => 'png', // supports promises as well
+        public_id: (req: any, file: any) => `${uuid()}`,
+    },
+});
+   
+const parser = multer({ storage: cloudStorage });
+   
+app.post('/uploadAvatar', parser.single('image'), function (req: any, res, next) {
+    console.log(req.body.userID);
+    if (req.file) {
+        console.log(req.body.userID);
+        User.findByIdAndUpdate(req.body.userID,
+            { $set: {avatarURL: `${req.file.path}`}},
+            {},
+            (err, user) => {
+                if (err) {
+                    return next(err);
+                }
+                if (user === null) {
+                    return res.send("Error. User not found.");
+                }
+                return res.send({msg: "Avatar successfully updated", user: user});
+            });
+    }
+});
+// Cloudinary Config END
+
 // Setup Routes
 app.use("/users", (userRouter as any));
 app.use("/collections", (collectionRouter as any));
 app.use("/items", passport.authenticate('jwt', { session: false }), (itemRouter as any));
 app.use("/friends", (friendRouter as any));
+
 
 app.get('/', (req, res) => {
     res.send('Hello');
