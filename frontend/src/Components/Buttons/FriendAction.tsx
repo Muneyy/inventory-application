@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Spinner } from "@chakra-ui/react";
+import { Button, Flex, Spinner } from "@chakra-ui/react";
 import { isDisabled } from '@testing-library/user-event/dist/utils';
 
 
@@ -21,14 +21,14 @@ function FriendAction (props: {
     async function handleRejectClick (id: string, e: React.MouseEvent<HTMLElement>) {
         setClicked(true);
         setReject(true);
-        await props.acceptFriendRequest(id, e);
+        await props.rejectFriendRequest(id, e);
     }
 
     return (
-        <>
-            <Button onClick={(e) => handleAcceptClick(props.id, e)} size ="sm" colorScheme="teal" disabled={clicked}>  {accept ? <Spinner /> : "Accept"} </Button>
+        <Flex flexDir="row" justifyContent={"flex-end"}>
+            <Button mr={2} onClick={(e) => handleAcceptClick(props.id, e)} size ="sm" colorScheme="teal" disabled={clicked}>  {accept ? <Spinner /> : "Accept"} </Button>
             <Button onClick={(e) => handleRejectClick(props.id, e)} size ="sm" colorScheme="red" disabled={clicked}> {reject ? <Spinner /> : "Reject"} </Button>
-        </>
+        </Flex>
     )
 }
 

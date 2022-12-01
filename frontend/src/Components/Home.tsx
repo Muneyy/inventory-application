@@ -11,8 +11,6 @@ import { useFormik } from 'formik';
 import { current } from '@reduxjs/toolkit';
 import { userInfo } from 'os';
 
-import  IncomingFriendRequests  from "./Friends/incomingFR"
-import SentFriendRequests from './Friends/sentFR';
 import persistStore from 'redux-persist/es/persistStore';
 import store from '../app/store';
 
@@ -156,7 +154,7 @@ function Home() {
                             ? (
                                 <>
                                     <Heading> Welcome back {loggedinUser.username}. </Heading>
-                                    <Button onClick={logoutUser}> Logout </Button>
+                                    {/* <Button onClick={logoutUser}> Logout </Button> */}
                                     <Button mt="1rem" onClick={onToggle} size="md" colorScheme={"telegram"}>Show Friends</Button>
                                     <Center mt="2rem" flexDirection="column">
                                         {/* Code to display sent friend requests */}
