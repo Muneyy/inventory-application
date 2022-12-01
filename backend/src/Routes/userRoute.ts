@@ -37,11 +37,11 @@ router.get('/:userId', (req, res, next) => {
                         model: 'Friend',
                         populate: [{
                             path: 'recipient',
-                            select: 'username',
+                            select: ['username', 'avatarURL'],
                             model: 'User',
-                        },{
+                        }, {
                             path: 'requester',
-                            select: 'username',
+                            select: ['username', 'avatarURL'],
                             model: 'User',
                         }],
                     })

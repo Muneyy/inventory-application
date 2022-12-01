@@ -5,6 +5,8 @@ import {useNavigate} from 'react-router-dom';
 import { FormControl, FormLabel, FormErrorMessage, FormHelperText, Input } from '@chakra-ui/react';
 import { useFormik } from "formik";
 import { useDispatch } from 'react-redux';
+import persistStore from 'redux-persist/es/persistStore';
+import store from '../app/store';
 
 // import dispatch actions for logging out user in Redux
 import { login, logout } from '../Features/currentUserSlice';
@@ -36,8 +38,9 @@ function CreateUser () {
             axios.post('http://localhost:3000/users', submitUser)
                 .then(res => {
                     console.log(res);
-                    dispatch(logout);
-                    navigate('/profile');
+                    const persistor = persistStore(store);
+                    persistor.purge();
+                    navigate('/');
                 })
         }
     })

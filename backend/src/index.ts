@@ -54,11 +54,11 @@ passport.use(
             model: 'Friend',
             populate: [{
                 path: 'recipient',
-                select: 'username',
+                select: ['username', 'avatarURL'],
                 model: 'User',
-            },{
+            }, {
                 path: 'requester',
-                select: 'username',
+                select: ['username', 'avatarURL'],
                 model: 'User',
             }],
         });
@@ -137,7 +137,6 @@ const cloudStorage = new CloudinaryStorage({
 const parser = multer({ storage: cloudStorage });
    
 app.post('/uploadAvatar', parser.single('image'), function (req: any, res, next) {
-    console.log(req.body.userID);
     if (req.file) {
         console.log(req.body.userID);
         User.findByIdAndUpdate(req.body.userID,
