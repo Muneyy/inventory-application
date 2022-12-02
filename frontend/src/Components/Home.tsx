@@ -18,7 +18,6 @@ import store from '../app/store';
 
 function Home() {
     const [loading, setLoading] = useState(0);
-    const [reqUserData, setReqUserData] = useState<any>([]);
     const [reqCollectionData, setReqCollectionData] = useState<any>([]);
 
     // Retrieve logged in user state and JWT token from Redux
@@ -43,23 +42,14 @@ function Home() {
     // navigate to other routers in react-router
     const navigate = useNavigate();
 
-    // import needed chakra ui components for pop up boxes
-    const { isOpen, onToggle } = useDisclosure()
-
     useEffect(() => {
         // At page mount, get users and collections to display them
         const fetchData = async () => {
             try {
-                axios.defaults.headers.common["Authorization"] = `Bearer ${tokenJWT}`;
-                const endpoints = ['http://localhost:3000/users', 'http://localhost:3000/collections'];
-                await axios.all(endpoints.map((endpoint) => 
-                    axios.get(endpoint)
-                )).then(axios.spread((users, collections) => {
-                    setReqUserData(users.data);
-                    setReqCollectionData(collections.data);
-                    // console.log(JSON.parse(JSON.stringify(currentUser)));
-                    // console.log("huh?");
-                }))
+                axios.get('http://localhost:3000/collections')
+                    .then(res => {
+                        setReqCollectionData(res.data);
+                    });
                 setLoading(1);
             } catch (error) {
                 console.error(error);
@@ -70,10 +60,6 @@ function Home() {
 
     // Logout user and then reload
     const persistor = persistStore(store);
-    function logoutUser () {
-        persistor.purge();
-        window.location.reload();
-    }
 
     async function testJWT () {
         // console.log(tokenJWT);
@@ -89,192 +75,26 @@ function Home() {
             })
     }
 
-    // Sends a friend request to backend
-    async function sendFriendRequest (recipient: string) {
-        const friendRequest = {
-            requester: loggedinUser._id,
-            recipient,
-        }
-
-        await axios.post('http://localhost:3000/friends/sendFriendRequest', friendRequest)
-            .then(res => {
-                // console.log(res);
-            })
-            .catch(err => {
-                console.log(err);
-            })
-
-        
-    }
-
-    // Accepts a friend request
-    async function acceptFriendRequest (recipient: string) {
-        const friendRequest = {
-            requester: loggedinUser._id,
-            recipient,
-        }
-
-        await axios.post('http://localhost:3000/friends/acceptFriendRequest', friendRequest)
-            .then(res => {
-                // console.log(res);
-            })
-            .catch(err => {
-                console.log(err);
-            })
-    }
-
-    // Reject friend request
-    async function rejectFriendRequest (recipient: string) {
-        const friendRequest = {
-            requester: loggedinUser._id,
-            recipient,
-        }
-
-        await axios.post('http://localhost:3000/friends/rejectFriendRequest', friendRequest)
-            .then(res => {
-                // console.log(res);
-            })
-            .catch(err => {
-                console.log(err);
-            })
-    }
-
-    // helper function to set up links
-    function navigateToUser (userId : string) {
-        navigate(`/${userId}`);
-    }
-
     return (
         (loading)
             ? (
                 <>
-                    <Center mt="5rem" flexDirection="column">
-                        {/* If there is a current user logged in, display welcome message and current friends */}
-                        {(currentUser.returned.length === 1)
-                            ? (
-                                <>
-                                    <Heading> Welcome back {loggedinUser.username}. </Heading>
-                                    {/* <Button onClick={logoutUser}> Logout </Button> */}
-                                    <Button mt="1rem" onClick={onToggle} size="md" colorScheme={"telegram"}>Show Friends</Button>
-                                    <Center mt="2rem" flexDirection="column">
-                                        {/* Code to display sent friend requests */}
-                                        {(loggedinUser.friends.length != 0)
-                                            ? ( 
-                                                <Flex flexDirection="row" gap="100">
-                                                    <Box>
-                                                        <Collapse in={isOpen} animateOpacity>
-                                                            <Button onClick={onToggle} size="md">Incoming Friend Requests:</Button>
-                                                            {loggedinUser.friends?.map((friend: any) => {
-                                                                return (
-                                                                    (friend.status === 2)
-                                                                        ? (
-                                                                            <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
-                                                                                <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
-                                                                                <Button onClick={() => acceptFriendRequest(friend.recipient._id)} size ="sm" colorScheme="teal"> Accept </Button>
-                                                                                <Button onClick={() => rejectFriendRequest(friend.recipient._id)} size ="sm" colorScheme="red"> Reject </Button>
-                                                                            </Container>
-                                                                        ) : (
-                                                                            <Text key={uuidv4()}></Text>
-                                                                        )
-                                                                )
-                                                            })}
-                                                        </Collapse>
-                                                    </Box>
-                                                    <Box>
-                                                        <Collapse in={isOpen} animateOpacity>
-                                                            <Button onClick={onToggle} size="md">Sent Friend Requests:</Button>
-                                                            {loggedinUser.friends.map((friend: any) => {
-                                                                return (
-                                                                    (friend.status === 1)
-                                                                        ? (
-                                                                            <Container key={uuidv4()} display="flex" flexDir="column" borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
-                                                                                <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
-                                                                                <Text fontSize="lg" color="gray">{friend.recipient.bio}</Text>
-                                                                                <Button size="sm" colorScheme="gray" alignSelf="end" disabled> Pending </Button>
-                                                                            </Container>
-                                                                        ) : (
-                                                                            <Text key={uuidv4()}></Text>
-                                                                        )
-                                                                )
-                                                            })}
-                                                        </Collapse>
-                                                    </Box>
-                                                    <Box>
-                                                        <Collapse in={isOpen} animateOpacity>
-                                                            <Button onClick={onToggle} size="md">Friends:</Button>
-                                                            {loggedinUser.friends?.map((friend: any) => {
-                                                                return (
-                                                                    (friend.status === 3)
-                                                                        ? (
-                                                                            <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
-                                                                                <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
-                                                                                <Button size ="sm" colorScheme="pink" disabled> Friend </Button>
-                                                                            </Container>
-                                                                        ) : (
-                                                                            <Text key={uuidv4()}></Text>
-                                                                        )
-                                                                )
-                                                            })}
-                                                        </Collapse>
-                                                    </Box>
-                                                </Flex>
-                                            ): (
-                                                <Text> No friends </Text>
-                                            )}
-                                    </Center>
-                                </>
-                            ) : (
-                                <Heading> Log in below. </Heading>
-                            )}
-                    </Center>
+                    <Stack direction="row" spacing={4} mt={3} ml={4}>
+                        <RouteLink to="/createCollection">
+                            <Button size="sm" rightIcon={<ArrowForwardIcon />} variant="outline" colorScheme="teal">
+                                        Collection
+                            </Button>
+                        </RouteLink>
 
-
-
+                        {/* <RouteLink to='/createItem' style={{ textDecoration: 'none' }}> */}
+                        <Button size="sm" onClick = {() => testJWT()} rightIcon={<ArrowForwardIcon />} variant="outline" colorScheme="teal">
+                                    Item
+                        </Button>
+                        {/* </RouteLink> */}
+                    </Stack>
                     <Center mt={"1rem"}>
-                        <Container borderWidth='1px' borderRadius='lg' py={"5"} px={"10"} minW="3xl" centerContent>
-                            <Heading fontSize="5xl" fontWeight="extrabold">
-                            Create Here!
-                            </Heading>
+                        <Container borderWidth='1px' borderRadius='lg' py={"5"} minW="3xl" centerContent>
                             <Grid templateColumns='repeat(2, 50%)' gap='10' alignItems="start" mt="2">
-
-                                {/* Displays current users */}
-                                <Center flexDirection="column">
-                                    <Heading size="m">Current Users:</Heading>
-                                    {reqUserData.map((user:any) => {
-                                        return (
-                                            (currentUser.returned.length === 1)
-                                                ? (
-                                                    // Check if user is the logged in User,
-                                                    // if it is, then return an empty Text container
-                                                    <RouteLink key={uuidv4()} to={`/${user._id}`}  style={{ textDecoration: 'none' }}>
-                                                        {(loggedinUser.username == user.username)
-                                                            ? (
-                                                                <Text key={uuidv4()}></Text>
-                                                            ) : (
-                                                        // Do not display logged in user in list of current users
-                                                                <Container  borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px" w={"xs"}>
-                                                                    <Avatar />
-                                                                    <Text fontSize="xl" fontWeight="bold">{user.username}</Text>
-                                                                    <Text fontSize="m">{user.bio}</Text>
-                                                                    {/* <Button colorScheme="teal" onClick={() => sendFriendRequest(user._id)}>Add Friend</Button> */}
-                                                                </Container>
-                                                            )}
-                                                    </RouteLink>
-                                                ) : (
-                                                    <RouteLink key={uuidv4()} to={`/${user._id}`} style={{ textDecoration: 'none' }}>
-                                                        <Container  borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px" w={"xs"}>
-                                                            <Avatar />
-                                                            <Text fontSize="xl" fontWeight="bold">{user.username}</Text>
-                                                            <Text fontSize="m">{user.bio}</Text>
-                                                            {/* <Button size="m" colorScheme="teal" disabled> Please login to add them as a friend.</Button> */}
-                                                        </Container>
-                                                    </RouteLink>
-                                                )
-                                        )
-                                    })}
-                                </Center>
-
-
                                 <Center flexDirection="column">
                                     <Heading size="m">Current Collections:</Heading>
                                     {reqCollectionData.map((collection:any) => {
@@ -291,30 +111,7 @@ function Home() {
                             <Text mt="1rem">
                             Select which category you would like to create:
                             </Text>
-                            <Stack direction="row" spacing={4} mt={3}>
-                                <RouteLink to='/createUser' style={{ textDecoration: 'none' }}>
-                                    <Button rightIcon={<ArrowForwardIcon />} variant="solid" colorScheme="teal">
-                                    Sign up
-                                    </Button>
-                                </RouteLink>
-                                <RouteLink to='/login' style={{ textDecoration: 'none' }}>
-                                    <Button rightIcon={<ArrowForwardIcon />} variant="solid" colorScheme="teal">
-                                    Log in
-                                    </Button>
-                                </RouteLink>
-
-                                <RouteLink to="/createCollection">
-                                    <Button rightIcon={<ArrowForwardIcon />} variant="outline" colorScheme="teal">
-                                        Collection
-                                    </Button>
-                                </RouteLink>
-
-                                {/* <RouteLink to='/createItem' style={{ textDecoration: 'none' }}> */}
-                                <Button onClick = {() => testJWT()} rightIcon={<ArrowForwardIcon />} variant="outline" colorScheme="teal">
-                                    Item
-                                </Button>
-                                {/* </RouteLink> */}
-                            </Stack>
+                            
                         </Container>
                     </Center>
                 </>

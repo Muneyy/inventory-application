@@ -147,7 +147,7 @@ function Profile () {
             ?   (
                 <Center backgroundColor={"teal.300"} p={10}>
                     <Box borderColor={"blackAlpha.300"} borderWidth='3px' borderRadius='lg' overflow='hidden' paddingX={15} paddingY={5}>
-                        <Grid templateColumns={"2fr 5fr"} gap={4}>
+                        <Grid templateColumns={"230px 1fr"} gap={4}>
                             <GridItem display={"flex"} alignItems="center" justifyContent={"center"} p={5}>
                                 {(loggedinUser.avatarURL) 
                                     ? (
@@ -194,84 +194,8 @@ function Profile () {
                                     <DrawerOverlay />
                                     <DrawerContent>
                                         <DrawerHeader>Friends</DrawerHeader>
-
-                                        <Heading px={16} size="sm">Incoming Friend Requests:</Heading>
                                         <DrawerBody>
-                                            <Container px={8} py={5}>
-                                                {loggedinUser.friends?.map((friend: any) => {
-                                                    return (
-                                                        (friend.status === 2)
-                                                            ? (
-                                                                <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
-                                                                    <Flex flexDir={"row"} alignItems="center" gap={5}>
-                                                                        {(friend.recipient.avatarURL) 
-                                                                            ? (
-                                                                                <Image
-                                                                                    borderRadius='full'
-                                                                                    boxSize='50px'
-                                                                                    src={friend.recipient.avatarURL}
-                                                                                    objectFit="cover"
-                                                                                    alt='Avatar'/>
-                                                                            ) 
-                                                                            : (
-                                                                                <Avatar size={"md"}></Avatar>
-                                                                            )}
-                                                                        <Flex flexDir={"column"}>
-                                                                            <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
-                                                                            <Text fontSize="sm" color="gray">@{friend.recipient.handle}</Text>
-                                                                            <Flex flexDir="row">
-                                                                                <FriendAction acceptFriendRequest={acceptFriendRequest} rejectFriendRequest={rejectFriendRequest} id = {friend.recipient._id} />
-                                                                                {/* <RejectButton rejectFriendRequest={rejectFriendRequest} id = {friend.recipient._id} /> */}
-                                                                            </Flex>
-                                                                        </Flex>
-                                                                    </Flex>
-                                                                </Container>
-                                                            ) : (
-                                                                <Text key={uuidv4()}></Text>
-                                                            )
-                                                    )
-                                                })}
-                                            </Container>
-                                        </DrawerBody>
-                                        <Heading px={16} size="sm">Sent Friend Requests:</Heading>
-                                        <DrawerBody>
-                                            <Container px={8} py={5}>
-                                                {loggedinUser.friends.map((friend: any) => {
-                                                    return (
-                                                        (friend.status === 1)
-                                                            ? (
-                                                                <Container key={uuidv4()} display="flex" flexDir="column" borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
-                                                                    <Flex flexDir="row" gap={5} alignItems="center">
-                                                                        {(friend.recipient.avatarURL) 
-                                                                            ? (
-                                                                                <Image
-                                                                                    borderRadius='full'
-                                                                                    boxSize='50px'
-                                                                                    src={friend.recipient.avatarURL}
-                                                                                    objectFit="cover"
-                                                                                    alt='Avatar'/>
-                                                                            ) 
-                                                                            : (
-                                                                                <Avatar size={"md"}></Avatar>
-                                                                            )}
-                                                                        <Flex flexDir="column">
-                                                                            <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
-                                                                            <Text fontSize="sm" color="gray">@{friend.recipient.handle}</Text>
-                                                                            <Button size="sm" colorScheme="gray" alignSelf="end" disabled> Pending </Button>
-                                                                        </Flex>
-                                                                    </Flex>
-                                                                </Container>
-                                                            ) : (
-                                                                <Text key={uuidv4()}></Text>
-                                                            )
-                                                    )
-                                                })}
-                                            </Container>
-                                        </DrawerBody>
-
-                                        <Heading px={16} size="sm">Friends:</Heading>
-                                        <DrawerBody>
-                                            <Container px={8} py={5}>
+                                            <Container px={8}>
                                                 {loggedinUser.friends?.map((friend: any) => {
                                                     return (
                                                         (friend.status === 3)
@@ -290,7 +214,7 @@ function Profile () {
                                                                             : (
                                                                                 <Avatar size={"md"}></Avatar>
                                                                             )}
-                                                                        <Flex flexDir={"column"}>
+                                                                        <Flex overflow="hidden" flexDir={"column"}>
                                                                             <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
                                                                             <Text fontSize="sm" color="gray">@{friend.recipient.handle}</Text>
                                                                             <Button size ="sm" colorScheme="pink" disabled> Friend </Button>
