@@ -145,8 +145,8 @@ function Profile () {
     return (
         (loggedinUser._id) 
             ?   (
-                <Center backgroundColor={"teal.300"} p={10}>
-                    <Box borderColor={"blackAlpha.300"} borderWidth='3px' borderRadius='lg' overflow='hidden' paddingX={15} paddingY={5}>
+                <Center p={10}>
+                    <Box borderWidth='2px' borderRadius='lg' overflow='hidden' paddingX={15} paddingY={5}>
                         <Grid templateColumns={"230px 1fr"} gap={4}>
                             <GridItem display={"flex"} alignItems="center" justifyContent={"center"} p={5}>
                                 {(loggedinUser.avatarURL) 
@@ -167,29 +167,33 @@ function Profile () {
                                 <Text fontSize={"sm"} fontWeight={300}>@{loggedinUser.handle}</Text>
                                 <Text fontSize={"md"} fontWeight={500}>{loggedinUser.bio}</Text>
                                 <Button mt={1}  colorScheme="pink" ref={btnRef} onClick={onOpen} size="sm">Show Friends</Button>
-                                <Button mt={1} size="sm" onClick={()=>navigateHome()}>Home</Button>
                                 <form onSubmit={formik.handleSubmit}>
                                     <FormControl isRequired w="md">
                                         <FormLabel>Image:</FormLabel>
-                                        <Input 
-                                            type="file" 
-                                            name="image" 
-                                            id="image" 
-                                            onChange={(event: any) => {
-                                                if (event) {
-                                                    formik.setFieldValue('image', event.currentTarget.files[0]);
-                                                }
-                                            }}
-                                            accept="image/*"
-                                        />
+                                        <Button>
+                                            <Input
+                                                size="xs"
+                                                type="file"
+                                                name="image"
+                                                id="image"
+                                                onChange={(event: any) => {
+                                                    if (event) {
+                                                        formik.setFieldValue('image', event.currentTarget.files[0]);
+                                                    }
+                                                }}
+                                                accept="image/*"
+                                            />
+                                        </Button>
                                     </FormControl>
-                                    <Button size="sm" type='submit' colorScheme="teal" disabled={avatarLoading}>{avatarLoading ? <Spinner></Spinner> : "Change Profile Picture"}</Button>
+                                    <Button mt={3} size="sm" type='submit' colorScheme="teal" disabled={avatarLoading}>{avatarLoading ? <Spinner></Spinner> : "Change Profile Picture"}</Button>
                                 </form>
+                                {/* TODO: put Drawer in separate component */}
                                 <Drawer
                                     isOpen={isOpen}
                                     placement='right'
                                     onClose={onClose}
                                     finalFocusRef={btnRef}
+                                    size="sm"
                                 >
                                     <DrawerOverlay />
                                     <DrawerContent>
@@ -214,10 +218,10 @@ function Profile () {
                                                                             : (
                                                                                 <Avatar size={"md"}></Avatar>
                                                                             )}
-                                                                        <Flex overflow="hidden" flexDir={"column"}>
+                                                                        <Flex flex="1" overflow="hidden" flexDir={"column"}>
                                                                             <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
                                                                             <Text fontSize="sm" color="gray">@{friend.recipient.handle}</Text>
-                                                                            <Button size ="sm" colorScheme="pink" disabled> Friend </Button>
+                                                                            <Button maxWidth={"80px"} size ="sm" colorScheme="pink" disabled> Friend </Button>
                                                                         </Flex>
                                                                     </Flex>
                                                                 </Container>

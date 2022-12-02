@@ -99,13 +99,27 @@ function UserProfile () {
             })
     }
 
+    // Make array of loggedinUser's friends to check
+    // Also check if loggedinUser has already added viewed user
+    const userFriends: string[] = []
+    const addedFriends: string[] = []
+    if (loggedinUser) {
+        loggedinUser.friends.map((friend: {status: number,recipient: {_id: string}}) => {
+            if (friend.status === 3) {
+                userFriends.push(friend.recipient._id);
+            } else if (friend.status === 2 || friend.status === 1) {
+                addedFriends.push(friend.recipient._id)
+            }
+        })
+    }
+
     return (
         (loading) 
             ?   (
                 (fetchedUser) 
                     ? (
-                        <Center backgroundColor={"teal.300"} p={10}>
-                            <Box borderColor={"blackAlpha.300"} borderWidth='3px' borderRadius='lg' overflow='hidden' paddingX={15} paddingY={5}>
+                        <Center p={10}>
+                            <Box borderWidth='2px' borderRadius='lg' overflow='hidden' paddingX={15} paddingY={5}>
                                 <Grid templateColumns={"230px 1fr"} gap={4}>
                                     <GridItem display={"flex"} alignItems="center" justifyContent={"center"} p={5}>
                                         {(fetchedUser.avatarURL) 
@@ -126,10 +140,27 @@ function UserProfile () {
                                         <Text fontSize={"sm"} fontWeight={300}>@{fetchedUser.handle}</Text>
                                         <Text fontSize={"md"} fontWeight={500}>{fetchedUser.bio}</Text>
                                         {/* TODO: remove add friend option if user is already a friend */}
-                                        <Button mt={1}  colorScheme="pink" ref={btnRef} onClick={() => sendFriendRequest(fetchedUser._id)} size="sm" disabled={friendRequestSent}>
-                                            {friendRequestSent ? "Sent" : "Add Friend"}
-                                        </Button>
-                                        <Button mt={1} size="sm" onClick={()=>navigateHome()}>Home</Button>
+
+                                        {(loggedinUser && userFriends.includes(fetchedUser._id))
+                                            ? (
+                                                <Button mt={1} disabled colorScheme="pink" ref={btnRef} onClick={() => sendFriendRequest(fetchedUser._id)} size="sm">
+                                                    <CheckCircleIcon/>{"Friend"}
+                                                </Button> 
+                                            ) 
+                                            : (
+                                                (addedFriends.includes(fetchedUser._id)
+                                                    ? (
+                                                        <Button mt={1}  colorScheme="pink" ref={btnRef} onClick={() => sendFriendRequest(fetchedUser._id)} size="sm" disabled>
+                                                            <CheckCircleIcon/>{"Friend Request sent"}
+                                                        </Button>
+                                                    )
+                                                    : (
+                                                        <Button mt={1}  colorScheme="pink" ref={btnRef} onClick={() => sendFriendRequest(fetchedUser._id)} size="sm" disabled={friendRequestSent}>
+                                                            {"Add Friend"}
+                                                        </Button>
+                                                    ))
+                                            )}
+
                                     </GridItem>
                                 </Grid>
                             </Box>

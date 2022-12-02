@@ -46,7 +46,7 @@ function LogIn () {
             )
             : (
                 <Center>
-                    <Center flexDirection="column" mt="5rem">
+                    <Center flexDirection="column">
                         <Heading size='2xl' fontWeight="extrabold">Log In</Heading>
                         <Heading size='l'> Enter your credentials</Heading>
                         <Container borderWidth='3px' borderRadius='lg' py={"30px"} px={"50px"} mt="1rem" centerContent>
