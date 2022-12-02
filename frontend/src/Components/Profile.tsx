@@ -25,7 +25,6 @@ function Profile () {
     // Refactor REDUX states
     if (currentUser.returned.length === 1) {
         loggedinUser = currentUser.returned[0];
-        console.log(loggedinUser);
     }
     if (token.returned.length === 1) {
         tokenJWT = token.returned[0];
@@ -170,7 +169,7 @@ function Profile () {
                                 <form onSubmit={formik.handleSubmit}>
                                     <FormControl isRequired w="md">
                                         <FormLabel>Image:</FormLabel>
-                                        <Button>
+                                        <Box w="200px" p="0">
                                             <Input
                                                 size="xs"
                                                 type="file"
@@ -183,7 +182,7 @@ function Profile () {
                                                 }}
                                                 accept="image/*"
                                             />
-                                        </Button>
+                                        </Box>
                                     </FormControl>
                                     <Button mt={3} size="sm" type='submit' colorScheme="teal" disabled={avatarLoading}>{avatarLoading ? <Spinner></Spinner> : "Change Profile Picture"}</Button>
                                 </form>

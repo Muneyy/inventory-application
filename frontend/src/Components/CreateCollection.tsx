@@ -64,7 +64,7 @@ function CreateCollection () {
                 (currentUser.returned.length === 1)
                     ? (
                         <Center>
-                            <Center flexDirection="column" mt="5rem" w="600px">
+                            <Center flexDirection="column" w="600px">
                                 <Heading size='2xl' fontWeight="extrabold">Create a Collection</Heading>
                                 <Heading size='l'> Please fill out the fields below.</Heading>
                                 <Container borderWidth='1px' borderRadius='lg' py={"5"} px={"10"} mt="1rem" centerContent>
