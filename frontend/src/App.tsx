@@ -24,31 +24,20 @@ import {ImProfile} from "react-icons/im"
 import {FaUserFriends} from "react-icons/fa"
 import { ArrowForwardIcon } from '@chakra-ui/icons';
 import UsersList from './Components/UsersList';
+import theme from "./theme"
+import NavBar from './Components/Navbar';
 // Yes 
 
 function App() {
-    const { colorMode, toggleColorMode } = useColorMode()
 
     const persistor = persistStore(store);
 
     return (
-        <ChakraProvider>
+        <ChakraProvider theme={theme}>
             <Provider store={store}>
                 <PersistGate loading={null} persistor={persistor}>
                     <BrowserRouter>
-                        <Box borderWidth={"2px"} borderColor="blackAlpha.200" backgroundColor={"teal.200"} py={3}>
-                            <Flex justifyContent={"space-evenly"} alignItems="center">
-                                <Heading fontSize={"xl"}>POP IT</Heading>
-                                <Flex gap={"10px"} alignItems="center" justifyContent={"space-evenly"}>
-                                    <MessagesModal />
-                                    <FriendRequestsModal/>
-                                    <SettingsModal />
-                                    {/* <Button onClick={toggleColorMode}>
-                                        Toggle {colorMode === 'light' ? 'Dark' : 'Light'}
-                                    </Button> */}
-                                </Flex>
-                            </Flex>
-                        </Box>
+                        <NavBar />
                         <Center>
                             <Flex>
                                 <Flex flexDirection="column" alignItems={"flex-end"} mt={8} gap="20px" position={"sticky"}>

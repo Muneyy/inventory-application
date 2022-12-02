@@ -49,7 +49,7 @@ function CreateUser () {
         (loading)
             ? (
                 <Center>
-                    <Center flexDirection="column" mt="5rem">
+                    <Center flexDirection="column">
                         <Heading size='2xl' fontWeight="extrabold">Sign Up!</Heading>
                         <Heading size='l'> Please fill out the fields below.</Heading>
                         <Container borderWidth='3px' borderRadius='lg' py={"30px"} px={"50px"} mt="1rem" centerContent>
