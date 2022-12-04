@@ -147,7 +147,7 @@ function Profile () {
         (loggedinUser._id) 
             ?   (
                 <Center minW="3xl">
-                    <Box borderWidth='2px' borderRadius='lg' overflow='hidden' paddingY={5}>
+                    <Box borderWidth='2px' borderRadius='lg' overflow='hidden' paddingX={15} paddingY={5}>
                         <Grid templateColumns={"230px 1fr"} gap={4}>
                             <GridItem display={"flex"} alignItems="center" justifyContent={"center"} p={5}>
                                 {(loggedinUser.avatarURL) 
@@ -268,11 +268,13 @@ function Profile () {
                 </Center>
             ) 
             : (
-                <Alert status='error'>
-                    <AlertIcon />
-                    <AlertTitle>Please log in first!</AlertTitle>
-                    <AlertDescription>View your profile here after logging in.</AlertDescription>
-                </Alert>
+                <Center minW={"3xl"}>
+                    <Alert status='error' borderRadius={"3xl"}>
+                        <AlertIcon />
+                        <AlertTitle>Please log in first!</AlertTitle>
+                        <AlertDescription>View your profile here after logging in.</AlertDescription>
+                    </Alert>
+                </Center>
             )
     )
 }
