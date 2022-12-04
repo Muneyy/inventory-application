@@ -118,8 +118,8 @@ function UserProfile () {
             ?   (
                 (fetchedUser) 
                     ? (
-                        <Center p={10}>
-                            <Box borderWidth='2px' borderRadius='lg' overflow='hidden' paddingX={15} paddingY={5}>
+                        <Center minW="3xl">
+                            <Box  minW="3xl" borderWidth='2px' borderRadius='lg' overflow='hidden' paddingX={15} paddingY={5}>
                                 <Grid templateColumns={"230px 1fr"} gap={4}>
                                     <GridItem display={"flex"} alignItems="center" justifyContent={"center"} p={5}>
                                         {(fetchedUser.avatarURL) 
@@ -177,7 +177,7 @@ function UserProfile () {
                     )
             ) 
             : (
-                <Center mt={"5rem"} display="flex" flexDir={"column"}>
+                <Center minW="3xl" mt={"5rem"} display="flex" flexDir={"column"}>
                     <Spinner />
                     <Text>Loading...</Text>
                 </Center>

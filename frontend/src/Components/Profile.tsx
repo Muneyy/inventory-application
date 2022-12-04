@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Spinner, Image, Container, Heading, Center, Text, Button, Stack, Link, Grid, FormLabel, FormControl, useDisclosure, Collapse, Box, Flex, GridItem, Circle, Avatar, AvatarBadge, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, Input, Alert, AlertDescription, AlertIcon, AlertTitle } from '@chakra-ui/react'
-import {ArrowForwardIcon} from '@chakra-ui/icons'
+import {ArrowForwardIcon, AttachmentIcon} from '@chakra-ui/icons'
 import { login, logout } from '../Features/currentUserSlice';
 import { useAppSelector, useAppDispatch } from '../app/hooks'
 import { useNavigate } from 'react-router-dom';
@@ -10,6 +10,8 @@ import {Link as RouteLink} from "react-router-dom";
 import { CheckCircleIcon } from '@chakra-ui/icons'
 import FriendAction from './Buttons/FriendAction';
 import { useFormik } from 'formik';
+
+import Dropzone from "react-dropzone";
 
 function Profile () {
     const dispatch = useAppDispatch();
@@ -144,8 +146,8 @@ function Profile () {
     return (
         (loggedinUser._id) 
             ?   (
-                <Center p={10}>
-                    <Box borderWidth='2px' borderRadius='lg' overflow='hidden' paddingX={15} paddingY={5}>
+                <Center minW="3xl">
+                    <Box borderWidth='2px' borderRadius='lg' overflow='hidden' paddingY={5}>
                         <Grid templateColumns={"230px 1fr"} gap={4}>
                             <GridItem display={"flex"} alignItems="center" justifyContent={"center"} p={5}>
                                 {(loggedinUser.avatarURL) 
@@ -168,7 +170,27 @@ function Profile () {
                                 <Button mt={1}  colorScheme="pink" ref={btnRef} onClick={onOpen} size="sm">Show Friends</Button>
                                 <form onSubmit={formik.handleSubmit}>
                                     <FormControl isRequired w="md">
-                                        <FormLabel>Image:</FormLabel>
+                                        <FormLabel>Upload image for your profile picture here</FormLabel>
+                                        <Dropzone
+                                            onDrop={(acceptedFiles) => {
+                                                formik.setFieldValue('image', acceptedFiles[0]);
+                                            }}
+                                            accept={{
+                                                image: ['image/png', 'image/jpeg', 'image/gif', 'image/jpg'],
+                                            }}
+                                        >
+                                            {({ getRootProps, getInputProps, isDragActive }) => (
+                                                <Box w="200px" p="0" borderWidth="1px" {...getRootProps()}>
+                                                    <input {...getInputProps()} />
+                                                    {isDragActive ? (
+                                                        <p>Drop the files here ...</p>
+                                                    ) : (
+                                                        <p>Drag n drop some files here, or click to select files</p>
+                                                    )}
+                                                </Box>
+                                            )}
+                                        </Dropzone>
+                                        {/* <FormLabel>Change Profile Picture</FormLabel>
                                         <Box w="200px" p="0">
                                             <Input
                                                 size="xs"
@@ -182,7 +204,7 @@ function Profile () {
                                                 }}
                                                 accept="image/*"
                                             />
-                                        </Box>
+                                        </Box> */}
                                     </FormControl>
                                     <Button mt={3} size="sm" type='submit' colorScheme="teal" disabled={avatarLoading}>{avatarLoading ? <Spinner></Spinner> : "Change Profile Picture"}</Button>
                                 </form>

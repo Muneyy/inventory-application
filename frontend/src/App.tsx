@@ -39,8 +39,8 @@ function App() {
                     <BrowserRouter>
                         <NavBar />
                         <Center>
-                            <Flex>
-                                <Flex flexDirection="column" alignItems={"flex-end"} mt={8} gap="20px" position={"sticky"}>
+                            <Flex position={"static"}>
+                                <Flex flexDirection="column" alignItems={"flex-end"} mt={8} gap="20px" position={"sticky"} top={"80px"} w={"100%"} h={"100%"}>
                                     <RouteLink to="/">
                                         <Button variant="ghost" display="flex" gap={5} w="180px" alignItems={"center"} justifyContent="center">
                                             <Icon as={AiOutlineHome}/>
@@ -71,14 +71,14 @@ function App() {
                                         <Route path="/users" element={<UsersList/>}/>
                                     </Routes>
                                 </Flex>
-                                <Flex flexDirection="column" alignItems={"flex-start"} mt={8} gap="5px" position={"sticky"}>
+                                <Flex flexDirection="column" alignItems={"flex-start"} mt={8} gap="5px" position={"sticky"} top={"80px"} w={"100%"} h={"100%"}>
                                     <RouteLink to='/createUser' style={{ textDecoration: 'none' }}>
-                                        <Button size="sm" rightIcon={<ArrowForwardIcon />} variant="ghost" colorScheme="teal">
+                                        <Button size="sm" rightIcon={<ArrowForwardIcon />} variant="outline" borderRadius={"3xl"} colorScheme="teal">
                                             Sign up
                                         </Button>
                                     </RouteLink>
                                     <RouteLink to='/login' style={{ textDecoration: 'none' }}>
-                                        <Button size="sm" rightIcon={<ArrowForwardIcon />} variant="ghost" colorScheme="teal">
+                                        <Button size="sm" rightIcon={<ArrowForwardIcon />} variant="outline" borderRadius={"3xl"} colorScheme="teal">
                                             Log in
                                         </Button>
                                     </RouteLink>
