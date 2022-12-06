@@ -48,78 +48,74 @@ function CreateUser () {
     return(
         (loading)
             ? (
-                <Center>
-                    <Center flexDirection="column">
-                        <Heading size='2xl' fontWeight="extrabold">Sign Up!</Heading>
-                        <Heading size='l'> Please fill out the fields below.</Heading>
-                        <Container borderWidth='3px' borderRadius='lg' py={"30px"} px={"50px"} mt="1rem" centerContent>
-                            <form onSubmit={formik.handleSubmit}>
-                                <FormControl isRequired w="md">
-                                    <FormLabel>Username:</FormLabel>
-                                    <Input 
-                                        type="text" 
-                                        name="username" 
-                                        id="username" 
-                                        onChange={formik.handleChange}
-                                        value={formik.values.username} 
-                                    />
-                                    <FormHelperText>Username cannot be empty.</FormHelperText>
-                                </FormControl>
-                                <Divider my="1rem"/>
-                                <FormControl isRequired w="md">
-                                    <FormLabel>Handle:</FormLabel>
-                                    <Input 
-                                        type="text" 
-                                        name="handle" 
-                                        id="handle" 
-                                        onChange={formik.handleChange}
-                                        value={formik.values.handle} 
-                                    />
-                                    <FormHelperText>Handle must be unique.</FormHelperText>
-                                </FormControl>
-                                <Divider my="1rem"/>
-                                <FormControl isRequired>
-                                    <FormLabel>Password:</FormLabel>
-                                    <Input 
-                                        type="password" 
-                                        name="password" 
-                                        id="password" 
-                                        onChange={formik.handleChange}
-                                        value={formik.values.password}
-                                        minLength={8}
-                                    />
-                                    <FormHelperText>Minimum of 8 characters.</FormHelperText>
-                                </FormControl>
-                                <Divider my="1rem"/>
-                                <FormControl isRequired w="md">
-                                    <FormLabel>Bio:</FormLabel>
-                                    <Input 
-                                        type="text" 
-                                        name="bio" 
-                                        id="bio" 
-                                        onChange={formik.handleChange}
-                                        value={formik.values.bio} 
-                                    />
-                                    <FormHelperText>Description.</FormHelperText>
-                                </FormControl>
-                                <Divider my="1rem"/>
-                                <FormControl isRequired>
-                                    <FormLabel>Email:</FormLabel>
-                                    <Input 
-                                        type="text" 
-                                        name="email" 
-                                        id="email" 
-                                        onChange={formik.handleChange}
-                                        value={formik.values.email} 
-                                    />
-                                    <FormHelperText>Please enter a valid email.</FormHelperText>
-                                </FormControl>
-                                <Divider my="1rem"/>
-                                <Button type='submit' colorScheme="teal">Create!</Button>
-                            </form>
-                        </Container>
-                    </Center>
-                </Center>
+                <>
+                    <Heading size='2xl' fontWeight="extrabold">Sign Up!</Heading>
+                    <Heading size='l'> Please fill out the fields below.</Heading>
+                    <form onSubmit={formik.handleSubmit}>
+                        <FormControl isRequired w="md">
+                            <FormLabel>Username:</FormLabel>
+                            <Input
+                                type="text"
+                                name="username"
+                                id="username"
+                                onChange={formik.handleChange}
+                                value={formik.values.username}
+                            />
+                            <FormHelperText>Username cannot be empty.</FormHelperText>
+                        </FormControl>
+                        <Divider my="1rem"/>
+                        <FormControl isRequired w="md">
+                            <FormLabel>Handle:</FormLabel>
+                            <Input
+                                type="text"
+                                name="handle"
+                                id="handle"
+                                onChange={formik.handleChange}
+                                value={formik.values.handle}
+                            />
+                            <FormHelperText>Handle must be unique.</FormHelperText>
+                        </FormControl>
+                        <Divider my="1rem"/>
+                        <FormControl isRequired>
+                            <FormLabel>Password:</FormLabel>
+                            <Input
+                                type="password"
+                                name="password"
+                                id="password"
+                                onChange={formik.handleChange}
+                                value={formik.values.password}
+                                minLength={8}
+                            />
+                            <FormHelperText>Minimum of 8 characters.</FormHelperText>
+                        </FormControl>
+                        <Divider my="1rem"/>
+                        <FormControl isRequired w="md">
+                            <FormLabel>Bio:</FormLabel>
+                            <Input
+                                type="text"
+                                name="bio"
+                                id="bio"
+                                onChange={formik.handleChange}
+                                value={formik.values.bio}
+                            />
+                            <FormHelperText>Description.</FormHelperText>
+                        </FormControl>
+                        <Divider my="1rem"/>
+                        <FormControl isRequired>
+                            <FormLabel>Email:</FormLabel>
+                            <Input
+                                type="text"
+                                name="email"
+                                id="email"
+                                onChange={formik.handleChange}
+                                value={formik.values.email}
+                            />
+                            <FormHelperText>Please enter a valid email.</FormHelperText>
+                        </FormControl>
+                        <Divider my="1rem"/>
+                        <Button type='submit' colorScheme="teal">Create!</Button>
+                    </form>
+                </>
             )
             : (
                 <div>

@@ -143,132 +143,138 @@ function Profile () {
         }
     })
 
+    // state for profile picutre
+    const [uploadedPicture, setUploadedPicture] = useState<boolean>(false);
+    const [fileName, setFileName] = useState<string>("");
+
     return (
         (loggedinUser._id) 
             ?   (
-                <Center minW="3xl">
-                    <Box borderWidth='2px' borderRadius='lg' overflow='hidden' paddingX={15} paddingY={5}>
-                        <Grid templateColumns={"230px 1fr"} gap={4}>
-                            <GridItem display={"flex"} alignItems="center" justifyContent={"center"} p={5}>
-                                {(loggedinUser.avatarURL) 
-                                    ? (
-                                        <Image
-                                            borderRadius='full'
-                                            boxSize='200px'
-                                            src={`${loggedinUser.avatarURL}`}
-                                            objectFit="cover"
-                                            alt='Avatar'/>
-                                    ) 
-                                    : (
-                                        <Avatar size={"xl"}></Avatar>
-                                    )}
-                            </GridItem>
-                            <GridItem display={"flex"} justifyContent="center" alignItems="start" p={5} flexDir="column">
-                                <Text fontSize="5xl" fontWeight={700}>{loggedinUser.username}</Text>
-                                <Text fontSize={"sm"} fontWeight={300}>@{loggedinUser.handle}</Text>
-                                <Text fontSize={"md"} fontWeight={500}>{loggedinUser.bio}</Text>
-                                <Button mt={1}  colorScheme="pink" ref={btnRef} onClick={onOpen} size="sm">Show Friends</Button>
-                                <form onSubmit={formik.handleSubmit}>
+                <>
+                    <Grid templateColumns={"230px 1fr"} gap={4}>
+                        <GridItem display={"flex"} alignItems="center" justifyContent={"center"} p={5}>
+                            {(loggedinUser.avatarURL) 
+                                ? (
+                                    <Image
+                                        borderRadius='full'
+                                        boxSize='200px'
+                                        src={`${loggedinUser.avatarURL}`}
+                                        objectFit="cover"
+                                        alt='Avatar'/>
+                                ) 
+                                : (
+                                    <Avatar size={"xl"}></Avatar>
+                                )}
+                        </GridItem>
+                        <GridItem display={"flex"} justifyContent="center" alignItems="start" p={5} flexDir="column">
+                            <Text fontSize="5xl" fontWeight={700}>{loggedinUser.username}</Text>
+                            <Text fontSize={"sm"} fontWeight={300}>@{loggedinUser.handle}</Text>
+                            <Text fontSize={"md"} fontWeight={500}>{loggedinUser.bio}</Text>
+                            <Button mt={1} colorScheme="pink" ref={btnRef} onClick={onOpen} size="sm">Show Friends</Button>
+                            {/* TODO: Put form in separate Modal for cleaner UI, put button to change picture in settings.
+                                      Or can also make clicking profile picture as button to open modal to change profile picture. */}
+                            <form onSubmit={formik.handleSubmit}>
+                                <Flex mt={3} flexDir="column">
                                     <FormControl isRequired w="md">
                                         <FormLabel>Upload image for your profile picture here</FormLabel>
                                         <Dropzone
                                             onDrop={(acceptedFiles) => {
                                                 formik.setFieldValue('image', acceptedFiles[0]);
+                                                console.log(acceptedFiles[0]);
+                                                setUploadedPicture(true);
+                                                setFileName(acceptedFiles[0].name)
                                             }}
                                             accept={{
                                                 image: ['image/png', 'image/jpeg', 'image/gif', 'image/jpg'],
                                             }}
                                         >
                                             {({ getRootProps, getInputProps, isDragActive }) => (
-                                                <Box w="200px" p="0" borderWidth="1px" {...getRootProps()}>
+                                                <Box p={3} w="md" h="10rem" borderStyle={"dashed"} borderWidth="1px" {...getRootProps()}>
                                                     <input {...getInputProps()} />
                                                     {isDragActive ? (
                                                         <p>Drop the files here ...</p>
                                                     ) : (
-                                                        <p>Drag n drop some files here, or click to select files</p>
+                                                        ((uploadedPicture)
+                                                            ? (
+                                                                <Text opacity={"80%"}>{fileName}</Text>
+                                                            )
+                                                            : (
+                                                                <Text opacity={"80%"}>Drag n drop some files here, or click to select files</Text>
+                                                            ))
                                                     )}
                                                 </Box>
                                             )}
                                         </Dropzone>
-                                        {/* <FormLabel>Change Profile Picture</FormLabel>
-                                        <Box w="200px" p="0">
-                                            <Input
-                                                size="xs"
-                                                type="file"
-                                                name="image"
-                                                id="image"
-                                                onChange={(event: any) => {
-                                                    if (event) {
-                                                        formik.setFieldValue('image', event.currentTarget.files[0]);
-                                                    }
-                                                }}
-                                                accept="image/*"
-                                            />
-                                        </Box> */}
                                     </FormControl>
-                                    <Button mt={3} size="sm" type='submit' colorScheme="teal" disabled={avatarLoading}>{avatarLoading ? <Spinner></Spinner> : "Change Profile Picture"}</Button>
-                                </form>
-                                {/* TODO: put Drawer in separate component */}
-                                <Drawer
-                                    isOpen={isOpen}
-                                    placement='right'
-                                    onClose={onClose}
-                                    finalFocusRef={btnRef}
-                                    size="sm"
-                                >
-                                    <DrawerOverlay />
-                                    <DrawerContent>
-                                        <DrawerHeader>Friends</DrawerHeader>
-                                        <DrawerBody>
-                                            <Container px={8}>
-                                                {loggedinUser.friends?.map((friend: any) => {
-                                                    return (
-                                                        (friend.status === 3)
-                                                            ? (
-                                                                <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
-                                                                    <Flex flexDir="row" gap={5} alignItems="center">
-                                                                        {(friend.recipient.avatarURL) 
-                                                                            ? (
-                                                                                <Image
-                                                                                    borderRadius='full'
-                                                                                    boxSize='50px'
-                                                                                    src={friend.recipient.avatarURL}
-                                                                                    objectFit="cover"
-                                                                                    alt='Avatar'/>
-                                                                            ) 
-                                                                            : (
-                                                                                <Avatar size={"md"}></Avatar>
-                                                                            )}
-                                                                        <Flex flex="1" overflow="hidden" flexDir={"column"}>
-                                                                            <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
-                                                                            <Text fontSize="sm" color="gray">@{friend.recipient.handle}</Text>
-                                                                            <Button maxWidth={"80px"} size ="sm" colorScheme="pink" disabled> Friend </Button>
-                                                                        </Flex>
+                                    {(uploadedPicture) 
+                                        ? (
+                                            <Button mt={3} size="sm" type='submit' colorScheme="teal" disabled={avatarLoading}>{avatarLoading ? <Spinner></Spinner> : "Change Profile Picture"}</Button>
+                                        ) 
+                                        : (
+                                            <></>
+                                        )}
+                                </Flex>
+                            </form>
+                            {/* TODO: put Drawer in separate component */}
+                            <Drawer
+                                isOpen={isOpen}
+                                placement='right'
+                                onClose={onClose}
+                                finalFocusRef={btnRef}
+                                size="sm"
+                            >
+                                <DrawerOverlay />
+                                <DrawerContent>
+                                    <DrawerHeader>Friends</DrawerHeader>
+                                    <DrawerBody>
+                                        <Container px={8}>
+                                            {loggedinUser.friends?.map((friend: any) => {
+                                                return (
+                                                    (friend.status === 3)
+                                                        ? (
+                                                            <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
+                                                                <Flex flexDir="row" gap={5} alignItems="center">
+                                                                    {(friend.recipient.avatarURL) 
+                                                                        ? (
+                                                                            <Image
+                                                                                borderRadius='full'
+                                                                                boxSize='50px'
+                                                                                src={friend.recipient.avatarURL}
+                                                                                objectFit="cover"
+                                                                                alt='Avatar'/>
+                                                                        ) 
+                                                                        : (
+                                                                            <Avatar size={"md"}></Avatar>
+                                                                        )}
+                                                                    <Flex flex="1" overflow="hidden" flexDir={"column"}>
+                                                                        <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
+                                                                        <Text fontSize="sm" color="gray">@{friend.recipient.handle}</Text>
+                                                                        <Button maxWidth={"80px"} size ="sm" colorScheme="pink" disabled> Friend </Button>
                                                                     </Flex>
-                                                                </Container>
-                                                            ) : (
-                                                                <Text key={uuidv4()}></Text>
-                                                            )
-                                                    )
-                                                })}
-                                            </Container>
-                                        </DrawerBody>
+                                                                </Flex>
+                                                            </Container>
+                                                        ) : (
+                                                            <Text key={uuidv4()}></Text>
+                                                        )
+                                                )
+                                            })}
+                                        </Container>
+                                    </DrawerBody>
 
-                                        {/* <DrawerFooter>
+                                    {/* <DrawerFooter>
                                             <Button variant='outline' mr={3} onClick={onClose}>
               Cancel
                                             </Button>
                                             <Button colorScheme='teal'>Save</Button>
                                         </DrawerFooter> */}
-                                    </DrawerContent>
-                                </Drawer>
-                            </GridItem>
-                        </Grid>
-                    </Box>
-                </Center>
+                                </DrawerContent>
+                            </Drawer>
+                        </GridItem>
+                    </Grid>
+                </>
             ) 
             : (
-                <Center minW={"3xl"}>
+                <Center>
                     <Alert status='error' borderRadius={"3xl"}>
                         <AlertIcon />
                         <AlertTitle>Please log in first!</AlertTitle>

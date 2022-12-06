@@ -103,7 +103,7 @@ function UserProfile () {
     // Also check if loggedinUser has already added viewed user
     const userFriends: string[] = []
     const addedFriends: string[] = []
-    if (loggedinUser) {
+    if (loggedinUser.length === 1) {
         loggedinUser.friends.map((friend: {status: number,recipient: {_id: string}}) => {
             if (friend.status === 3) {
                 userFriends.push(friend.recipient._id);
@@ -118,53 +118,58 @@ function UserProfile () {
             ?   (
                 (fetchedUser) 
                     ? (
-                        <Center minW="3xl">
-                            <Box  minW="3xl" borderWidth='2px' borderRadius='lg' overflow='hidden' paddingX={15} paddingY={5}>
-                                <Grid templateColumns={"230px 1fr"} gap={4}>
-                                    <GridItem display={"flex"} alignItems="center" justifyContent={"center"} p={5}>
-                                        {(fetchedUser.avatarURL) 
-                                            ? (
-                                                <Image
-                                                    borderRadius='full'
-                                                    boxSize='200px'
-                                                    src={fetchedUser.avatarURL}
-                                                    objectFit="cover"
-                                                    alt='Avatar'/>
-                                            ) 
-                                            : (
-                                                <Avatar size={"md"}></Avatar>
-                                            )}
-                                    </GridItem>
-                                    <GridItem display={"flex"} justifyContent="center" alignItems="start" p={5} flexDir="column">
-                                        <Text fontSize="5xl" fontWeight={700}>{fetchedUser.username}</Text>
-                                        <Text fontSize={"sm"} fontWeight={300}>@{fetchedUser.handle}</Text>
-                                        <Text fontSize={"md"} fontWeight={500}>{fetchedUser.bio}</Text>
-                                        {/* TODO: remove add friend option if user is already a friend */}
+                        <>
+                            <Grid templateColumns={"230px 1fr"} gap={4}>
+                                <GridItem display={"flex"} alignItems="center" justifyContent={"center"}>
+                                    {(fetchedUser.avatarURL) 
+                                        ? (
+                                            <Image
+                                                borderRadius='full'
+                                                boxSize='200px'
+                                                src={fetchedUser.avatarURL}
+                                                objectFit="cover"
+                                                alt='Avatar'/>
+                                        ) 
+                                        : (
+                                            <Avatar size={"md"}></Avatar>
+                                        )}
+                                </GridItem>
+                                <GridItem display={"flex"} justifyContent="center" alignItems="start" p={5} flexDir="column">
+                                    <Text fontSize="5xl" fontWeight={700}>{fetchedUser.username}</Text>
+                                    <Text fontSize={"sm"} fontWeight={300}>@{fetchedUser.handle}</Text>
+                                    <Text fontSize={"md"} fontWeight={500}>{fetchedUser.bio}</Text>
+                                    {/* TODO: remove add friend button if user is not logged in. */}
 
-                                        {(loggedinUser && userFriends.includes(fetchedUser._id))
-                                            ? (
-                                                <Button mt={1} disabled colorScheme="pink" ref={btnRef} onClick={() => sendFriendRequest(fetchedUser._id)} size="sm">
-                                                    <CheckCircleIcon/>{"Friend"}
-                                                </Button> 
-                                            ) 
-                                            : (
-                                                (addedFriends.includes(fetchedUser._id)
-                                                    ? (
-                                                        <Button mt={1}  colorScheme="pink" ref={btnRef} onClick={() => sendFriendRequest(fetchedUser._id)} size="sm" disabled>
-                                                            <CheckCircleIcon/>{"Friend Request sent"}
-                                                        </Button>
-                                                    )
-                                                    : (
-                                                        <Button mt={1}  colorScheme="pink" ref={btnRef} onClick={() => sendFriendRequest(fetchedUser._id)} size="sm" disabled={friendRequestSent}>
-                                                            {"Add Friend"}
-                                                        </Button>
-                                                    ))
-                                            )}
+                                    {(loggedinUser.length === 1)
+                                        ? (
+                                            (userFriends.includes(fetchedUser._id))
+                                                ? (
+                                                    <Button mt={1} disabled colorScheme="pink" ref={btnRef} onClick={() => sendFriendRequest(fetchedUser._id)} size="sm">
+                                                        <CheckCircleIcon/>{"Friend"}
+                                                    </Button> 
+                                                ) 
+                                                : (
+                                                    (addedFriends.includes(fetchedUser._id)
+                                                        ? (
+                                                            <Button mt={1}  colorScheme="pink" ref={btnRef} onClick={() => sendFriendRequest(fetchedUser._id)} size="sm" disabled>
+                                                                <CheckCircleIcon/>{"Friend Request sent"}
+                                                            </Button>
+                                                        )
+                                                        : (
+                                                            <Button mt={1}  colorScheme="pink" ref={btnRef} onClick={() => sendFriendRequest(fetchedUser._id)} size="sm" disabled={friendRequestSent}>
+                                                                {"Add Friend"}
+                                                            </Button>
+                                                        ))
+                                                )
+                                        )
+                                        : (
+                                            <></>
+                                        )}
 
-                                    </GridItem>
-                                </Grid>
-                            </Box>
-                        </Center>
+
+                                </GridItem>
+                            </Grid>
+                        </>
 
                     ) 
                     : (
@@ -177,7 +182,7 @@ function UserProfile () {
                     )
             ) 
             : (
-                <Center minW="3xl" mt={"5rem"} display="flex" flexDir={"column"}>
+                <Center mt={"5rem"} display="flex" flexDir={"column"}>
                     <Spinner />
                     <Text>Loading...</Text>
                 </Center>

@@ -93,28 +93,23 @@ function Home() {
                         </Button>
                         {/* </RouteLink> */}
                     </Stack>
-                    <Center mt={"1rem"}>
-                        <Container borderWidth='1px' borderRadius='lg' py={"5"} minW="3xl" centerContent>
-                            <Grid templateColumns='repeat(2, 50%)' gap='10' alignItems="start" mt="2">
-                                <Center flexDirection="column">
-                                    <Heading size="m">Current Collections:</Heading>
-                                    {reqCollectionData.map((collection:any) => {
-                                        return (
-                                            <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
-                                                <Text fontSize="xl" fontWeight="bold">{collection.name}</Text>
-                                                <Text fontSize="m">{collection.summary}</Text>
-                                                <Text fontSize="m">Owned by: {collection.user.username}</Text>
-                                            </Container>
-                                        )
-                                    })}
-                                </Center>
-                            </Grid>
-                            <Text mt="1rem">
+                    <Grid templateColumns='repeat(2, 50%)' gap='10' alignItems="start" mt="2">
+                        <Center flexDirection="column">
+                            <Heading size="m">Current Collections:</Heading>
+                            {reqCollectionData.map((collection:any) => {
+                                return (
+                                    <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
+                                        <Text fontSize="xl" fontWeight="bold">{collection.name}</Text>
+                                        <Text fontSize="m">{collection.summary}</Text>
+                                        <Text fontSize="m">Owned by: {collection.user.username}</Text>
+                                    </Container>
+                                )
+                            })}
+                        </Center>
+                    </Grid>
+                    <Text mt="1rem">
                             Select which category you would like to create:
-                            </Text>
-                            
-                        </Container>
-                    </Center>
+                    </Text>
                 </>
 
                     

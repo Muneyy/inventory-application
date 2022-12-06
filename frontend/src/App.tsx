@@ -37,54 +37,58 @@ function App() {
             <Provider store={store}>
                 <PersistGate loading={null} persistor={persistor}>
                     <BrowserRouter>
-                        <NavBar />
-                        <Center>
-                            <Flex position={"static"}>
-                                <Flex flexDirection="column" alignItems={"flex-end"} mt={8} gap="20px" position={"sticky"} top={"80px"} w={"100%"} h={"100%"}>
-                                    <RouteLink to="/">
-                                        <Button variant="ghost" display="flex" gap={5} w="180px" alignItems={"center"} justifyContent="center">
-                                            <Icon as={AiOutlineHome}/>
-                                            <Heading flex="1" justifySelf={"flex-start"} size="lg">Home</Heading>
-                                        </Button>
-                                    </RouteLink>
-                                    <RouteLink to="/profile">
-                                        <Button variant="ghost" display="flex" gap={5} w="180px" alignItems={"center"} justifyContent="center">
-                                            <Icon as={ImProfile} />
-                                            <Heading flex="1" justifySelf={"flex-start"} size="lg">Profile</Heading>
-                                        </Button>
-                                    </RouteLink>
-                                    <RouteLink to="/users">
-                                        <Button variant="ghost" display="flex" gap={5} w="180px" alignItems={"center"} justifyContent="center">
-                                            <Icon as={FaUserFriends} />
-                                            <Heading flex="1" justifySelf={"flex-start"} size="lg">Users</Heading>
-                                        </Button>
-                                    </RouteLink>
+                        <Box position={"relative"}>
+                            <NavBar />
+                            <Center>
+                                <Flex>
+                                    <Flex flexDirection="column" alignItems={"flex-end"} mt={8} gap={2} position={"sticky"} top={"80px"} w={"100%"} h={"100%"}>
+                                        <RouteLink to="/">
+                                            <Button py={7} borderRadius={"3xl"} variant="ghost" display="flex" gap={3} w="180px" alignItems={"center"} justifyContent="center">
+                                                <Icon as={AiOutlineHome}/>
+                                                <Heading flex="1" justifySelf={"flex-start"} size="lg">Home</Heading>
+                                            </Button>
+                                        </RouteLink>
+                                        <RouteLink to="/profile">
+                                            <Button py={7} borderRadius={"3xl"} variant="ghost" display="flex" gap={3} w="180px" alignItems={"center"} justifyContent="center">
+                                                <Icon as={ImProfile} />
+                                                <Heading flex="1" justifySelf={"flex-start"} size="lg">Profile</Heading>
+                                            </Button>
+                                        </RouteLink>
+                                        <RouteLink to="/users">
+                                            <Button py={7} borderRadius={"3xl"} variant="ghost" display="flex" gap={3} w="180px" alignItems={"center"} justifyContent="center">
+                                                <Icon as={FaUserFriends} />
+                                                <Heading flex="1" justifySelf={"flex-start"} size="lg">Users</Heading>
+                                            </Button>
+                                        </RouteLink>
+                                    </Flex>
+                                    <Flex flexDir={"column"} mx={3} w="800px">
+                                        <Center py={8} px={4} display="flex" justifyContent={"flex-start"} flexDirection="column" borderWidth='1px' borderY={"none"} minW="3xl" minHeight={"94vh"}>
+                                            <Routes>
+                                                <Route path ='/' element={<Home/>}/>
+                                                <Route path ='/createUser' element={<CreateUser/>} />
+                                                <Route path ='/createCollection' element={<CreateCollection/>} />
+                                                <Route path ='/login' element={<LogIn/>} />
+                                                <Route path ='/profile' element={<Profile/>} />
+                                                <Route path='/:userId' element={<UserProfile/>} />
+                                                <Route path="/users" element={<UsersList/>}/>
+                                            </Routes>
+                                        </Center>
+                                    </Flex>
+                                    <Flex flexDirection="column" alignItems={"flex-start"} mt={8} gap="5px" position={"sticky"} top={"80px"} w={"100%"} h={"100%"}>
+                                        <RouteLink to='/createUser' style={{ textDecoration: 'none' }}>
+                                            <Button size="sm" rightIcon={<ArrowForwardIcon />} variant="outline" borderRadius={"3xl"} colorScheme="teal">
+                                                Sign up
+                                            </Button>
+                                        </RouteLink>
+                                        <RouteLink to='/login' style={{ textDecoration: 'none' }}>
+                                            <Button size="sm" rightIcon={<ArrowForwardIcon />} variant="outline" borderRadius={"3xl"} colorScheme="teal">
+                                                Log in
+                                            </Button>
+                                        </RouteLink>
+                                    </Flex>
                                 </Flex>
-                                <Flex flexDir={"column"} mx={3} w="800px">
-                                    <Routes>
-                                        <Route path ='/' element={<Home/>}/>
-                                        <Route path ='/createUser' element={<CreateUser/>} />
-                                        <Route path ='/createCollection' element={<CreateCollection/>} />
-                                        <Route path ='/login' element={<LogIn/>} />
-                                        <Route path ='/profile' element={<Profile/>} />
-                                        <Route path='/:userId' element={<UserProfile/>} />
-                                        <Route path="/users" element={<UsersList/>}/>
-                                    </Routes>
-                                </Flex>
-                                <Flex flexDirection="column" alignItems={"flex-start"} mt={8} gap="5px" position={"sticky"} top={"80px"} w={"100%"} h={"100%"}>
-                                    <RouteLink to='/createUser' style={{ textDecoration: 'none' }}>
-                                        <Button size="sm" rightIcon={<ArrowForwardIcon />} variant="outline" borderRadius={"3xl"} colorScheme="teal">
-                                            Sign up
-                                        </Button>
-                                    </RouteLink>
-                                    <RouteLink to='/login' style={{ textDecoration: 'none' }}>
-                                        <Button size="sm" rightIcon={<ArrowForwardIcon />} variant="outline" borderRadius={"3xl"} colorScheme="teal">
-                                            Log in
-                                        </Button>
-                                    </RouteLink>
-                                </Flex>
-                            </Flex>
-                        </Center>
+                            </Center>
+                        </Box>
                     </BrowserRouter>
                 </PersistGate>
             </Provider>

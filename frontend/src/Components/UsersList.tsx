@@ -57,51 +57,24 @@ function UsersList() {
         (loading)
             ? (
                 <>
-                    <Center mt={"1rem"}>
-                        <Container borderWidth='2px' borderTopWidth="0" borderBottomWidth={"0"} py={"5"} minW="3xl" centerContent>
-                            <Heading fontSize="5xl" fontWeight="extrabold">
-                                Users List
-                            </Heading>
-                            {/* Displays current users */}
-                            <Center flexDirection="column">
-                                <Heading size="m">Current Users:</Heading>
-                                <Grid templateColumns={"repeat(3, 1fr)"}>
-                                    {reqUserData.map((user:any) => {
-                                        return (
-                                            (currentUser.returned.length === 1)
-                                                ? (
+                    <Heading fontSize="5xl" fontWeight="extrabold">
+                                Current Users
+                    </Heading>
+                    {/* Displays current users */}
+                    <Center flexDirection="column">
+                        <Grid templateColumns={"repeat(3, 1fr)"}>
+                            {reqUserData.map((user:any) => {
+                                return (
+                                    (currentUser.returned.length === 1)
+                                        ? (
                                             // Check if user is the logged in User,
                                             // if it is, then return an empty Text container
-                                                    (loggedinUser.username == user.username)
-                                                        ? (
-                                                            <></>
-                                                        ) : (
-                                                            // TODO: move this to a separate card component :D
-                                                    // Do not display logged in user in list of current users
-                                                            <RouteLink key={uuidv4()} to={`/${user._id}`}  style={{ textDecoration: 'none' }}>
-                                                                <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
-                                                                    <Flex flexDir="row" gap={5} alignItems="center">
-                                                                        {(user.avatarURL)
-                                                                            ? (
-                                                                                <Image
-                                                                                    borderRadius='full'
-                                                                                    boxSize='50px'
-                                                                                    src={user.avatarURL}
-                                                                                    objectFit="cover"
-                                                                                    alt='Avatar'/>
-                                                                            )
-                                                                            : (
-                                                                                <Avatar size={"md"}></Avatar>
-                                                                            )}
-                                                                        <Flex overflow="hidden" flexDir={"column"}>
-                                                                            <Text fontSize="xl" fontWeight="bold">{user.username}</Text>
-                                                                            <Text fontSize="sm" color="gray">@{user.handle}</Text>
-                                                                        </Flex>
-                                                                    </Flex>
-                                                                </Container>
-                                                            </RouteLink>
-                                                        )
+                                            (loggedinUser.username == user.username)
+                                                ? (
+                                                    <></>
                                                 ) : (
+                                            // TODO: move this to a separate card component :D
+                                                    // Do not display logged in user in list of current users
                                                     <RouteLink key={uuidv4()} to={`/${user._id}`}  style={{ textDecoration: 'none' }}>
                                                         <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
                                                             <Flex flexDir="row" gap={5} alignItems="center">
@@ -125,11 +98,33 @@ function UsersList() {
                                                         </Container>
                                                     </RouteLink>
                                                 )
+                                        ) : (
+                                            <RouteLink key={uuidv4()} to={`/${user._id}`}  style={{ textDecoration: 'none' }}>
+                                                <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
+                                                    <Flex flexDir="row" gap={5} alignItems="center">
+                                                        {(user.avatarURL)
+                                                            ? (
+                                                                <Image
+                                                                    borderRadius='full'
+                                                                    boxSize='50px'
+                                                                    src={user.avatarURL}
+                                                                    objectFit="cover"
+                                                                    alt='Avatar'/>
+                                                            )
+                                                            : (
+                                                                <Avatar size={"md"}></Avatar>
+                                                            )}
+                                                        <Flex overflow="hidden" flexDir={"column"}>
+                                                            <Text fontSize="xl" fontWeight="bold">{user.username}</Text>
+                                                            <Text fontSize="sm" color="gray">@{user.handle}</Text>
+                                                        </Flex>
+                                                    </Flex>
+                                                </Container>
+                                            </RouteLink>
                                         )
-                                    })}
-                                </Grid>
-                            </Center>
-                        </Container>
+                                )
+                            })}
+                        </Grid>
                     </Center>
                 </>
 

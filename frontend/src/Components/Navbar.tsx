@@ -9,7 +9,7 @@ import { SunIcon } from '@chakra-ui/icons';
 function NavBar () {
     const { colorMode, toggleColorMode } = useColorMode()
     return (
-        <Box borderWidth={"2px"} borderLeftWidth="0" borderRightWidth={"0"} py={3} mb={5}>
+        <Box backgroundColor={colorMode === "light" ? "white" : "gray.800"} zIndex={2} top={0} position={"sticky"} w="100vw" h="6vh" borderWidth={"2px"} borderLeftWidth="0" borderRightWidth={"0"} py={3}>
             <Flex justifyContent={"space-evenly"} alignItems="center">
                 <Heading fontSize={"xl"}>POP IT</Heading>
                 <Flex gap={"10px"} alignItems="center" justifyContent={"space-evenly"}>

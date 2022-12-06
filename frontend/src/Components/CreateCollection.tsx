@@ -1,4 +1,4 @@
-import { Spinner, Divider, Container, Heading, Center, Text, Button, Stack, Link, Select } from '@chakra-ui/react'
+import { Spinner, Divider, Container, Heading, Center, Text, Button, Stack, Link, Select, Alert, AlertDescription, AlertIcon, AlertTitle } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
@@ -63,71 +63,68 @@ function CreateCollection () {
             ? (
                 (currentUser.returned.length === 1)
                     ? (
-                        <Center>
-                            <Center flexDirection="column" w="600px">
-                                <Heading size='2xl' fontWeight="extrabold">Create a Collection</Heading>
-                                <Heading size='l'> Please fill out the fields below.</Heading>
-                                <Container borderWidth='1px' borderRadius='lg' py={"5"} px={"10"} mt="1rem" centerContent>
-                                    <form onSubmit={formik.handleSubmit}>
-                                        <FormControl isRequired>
-                                            <FormLabel>Name:</FormLabel>
-                                            <Input 
-                                                width="400px"
-                                                type="text" 
-                                                name="name" 
-                                                id="name" 
-                                                onChange={formik.handleChange}
-                                                value={formik.values.name} 
-                                            />
-                                            <FormHelperText>Username cannot be empty.</FormHelperText>
-                                        </FormControl>
-                                        <Divider my="1rem"/>
-                                        <FormControl isRequired>
-                                            <FormLabel>Summary:</FormLabel>
-                                            <Input 
-                                                type="text" 
-                                                name="summary" 
-                                                id="summary" 
-                                                onChange={formik.handleChange}
-                                                value={formik.values.summary} 
-                                            />
-                                            <FormHelperText>Some text to introduce yourself.</FormHelperText>
-                                        </FormControl>
-                                        <Divider my="1rem"/>
-                                        <FormControl>
-                                            <FormLabel>Image URL:</FormLabel>
-                                            <Input 
-                                                type="text" 
-                                                name="img_url" 
-                                                id="img_url" 
-                                                onChange={formik.handleChange}
-                                                value={formik.values.img_url} 
-                                            />
-                                            <FormHelperText>Optional. URL for your pfp.</FormHelperText>
-                                        </FormControl>
-                                        <Divider my="1rem"/>
-                                        <Select 
-                                            id ="user" 
-                                            name="user" 
-                                            placeholder={currentUser.returned[0].username}
-                                            onChange={formik.handleChange}
-                                            // defaultValue={formik.values.user}
-                                            value={formik.values.user}
-                                            isRequired
-                                            disabled>
-                                            <option key={uuidv4()} value={currentUser.returned[0]._id}>{currentUser.returned[0].username}</option>
-                                        </Select>
-                                        <Divider my="1rem"/>
-                                        <Button type='submit' colorScheme="teal">Create!</Button>
-                                    </form>
-                                </Container>
-                            </Center>
-                        </Center>
+                        <>
+                            <form onSubmit={formik.handleSubmit}>
+                                <FormControl isRequired>
+                                    <FormLabel>Name:</FormLabel>
+                                    <Input 
+                                        width="400px"
+                                        type="text" 
+                                        name="name" 
+                                        id="name" 
+                                        onChange={formik.handleChange}
+                                        value={formik.values.name} 
+                                    />
+                                    <FormHelperText>Username cannot be empty.</FormHelperText>
+                                </FormControl>
+                                <Divider my="1rem"/>
+                                <FormControl isRequired>
+                                    <FormLabel>Summary:</FormLabel>
+                                    <Input 
+                                        type="text" 
+                                        name="summary" 
+                                        id="summary" 
+                                        onChange={formik.handleChange}
+                                        value={formik.values.summary} 
+                                    />
+                                    <FormHelperText>Some text to introduce yourself.</FormHelperText>
+                                </FormControl>
+                                <Divider my="1rem"/>
+                                <FormControl>
+                                    <FormLabel>Image URL:</FormLabel>
+                                    <Input 
+                                        type="text" 
+                                        name="img_url" 
+                                        id="img_url" 
+                                        onChange={formik.handleChange}
+                                        value={formik.values.img_url} 
+                                    />
+                                    <FormHelperText>Optional. URL for your pfp.</FormHelperText>
+                                </FormControl>
+                                <Divider my="1rem"/>
+                                <Select 
+                                    id ="user" 
+                                    name="user" 
+                                    placeholder={currentUser.returned[0].username}
+                                    onChange={formik.handleChange}
+                                    // defaultValue={formik.values.user}
+                                    value={formik.values.user}
+                                    isRequired
+                                    disabled>
+                                    <option key={uuidv4()} value={currentUser.returned[0]._id}>{currentUser.returned[0].username}</option>
+                                </Select>
+                                <Divider my="1rem"/>
+                                <Button type='submit' colorScheme="teal">Create!</Button>
+                            </form>
+                               
+                        </>
                     ) : (
-                        <Center mt="5rem">
-                            <Heading>
-                                Please login first to create a collection.
-                            </Heading>
+                        <Center>
+                            <Alert status='error' borderRadius={"3xl"}>
+                                <AlertIcon />
+                                <AlertTitle>Please log in first.</AlertTitle>
+                                <AlertDescription>Create collections here after logging in.</AlertDescription>
+                            </Alert>
                         </Center>
                     )
             )
