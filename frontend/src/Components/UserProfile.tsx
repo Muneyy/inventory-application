@@ -36,6 +36,7 @@ function UserProfile () {
     // Refactor REDUX states
     if (currentUser.returned.length === 1) {
         loggedinUser = currentUser.returned[0];
+        console.log(loggedinUser);
     }
     if (token.returned.length === 1) {
         tokenJWT = token.returned[0];
@@ -103,7 +104,7 @@ function UserProfile () {
     // Also check if loggedinUser has already added viewed user
     const userFriends: string[] = []
     const addedFriends: string[] = []
-    if (loggedinUser.length === 1) {
+    if (loggedinUser._id) {
         loggedinUser.friends.map((friend: {status: number,recipient: {_id: string}}) => {
             if (friend.status === 3) {
                 userFriends.push(friend.recipient._id);
@@ -112,6 +113,9 @@ function UserProfile () {
             }
         })
     }
+
+    // TODO: Fix bug/ Add functionality
+    // Frontend does not determine who sent/received friend request
 
     return (
         (loading) 
@@ -140,7 +144,7 @@ function UserProfile () {
                                     <Text fontSize={"md"} fontWeight={500}>{fetchedUser.bio}</Text>
                                     {/* TODO: remove add friend button if user is not logged in. */}
 
-                                    {(loggedinUser.length === 1)
+                                    {(loggedinUser._id)
                                         ? (
                                             (userFriends.includes(fetchedUser._id))
                                                 ? (
