@@ -1,10 +1,11 @@
+import { Request, Response } from "express";
 import express = require('express');
 import async = require('async');
 import bcrypt = require('bcrypt');
 // Set saltrounds for hashing and salting using bcrypt
 const saltRounds = 10;
 
-const { body, validationResult } = require('express-validator');
+import { body, validationResult } from 'express-validator';
 
 import User from '../Models/user';
 import Group from '../Models/collection';
@@ -12,7 +13,7 @@ import Friend from '../Models/friend';
 
 const router = express.Router();
 
-router.get('/', (req, res, next) => {
+exports.users = (req: Request, res: Response, next: any) => {
     User.find()
         .select("-password")
         .sort([['name', 'ascending']])
@@ -24,9 +25,9 @@ router.get('/', (req, res, next) => {
             }
             res.send(list_user);
         });
-});
+};
 
-router.get('/:userId', (req, res, next) => {
+exports.user = (req: Request, res: Response, next: any) => {
     async.parallel(
         {
             user(callback) {
@@ -71,7 +72,7 @@ router.get('/:userId', (req, res, next) => {
             );
         },
     );
-});
+};
 
 type UserReq = {
     body: {
@@ -83,7 +84,7 @@ type UserReq = {
     }
 }
 
-router.post('/', [
+exports.post_user = [
     body('username', 'Username invalid.')
         .trim()
         .isLength( {min : 1})
@@ -140,6 +141,4 @@ router.post('/', [
         }
     },
 
-]);
-
-module.exports = router;
+];

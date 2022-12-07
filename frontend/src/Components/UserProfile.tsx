@@ -108,6 +108,7 @@ function UserProfile () {
         loggedinUser.friends.map((friend: {status: number,recipient: {_id: string}}) => {
             if (friend.status === 3) {
                 userFriends.push(friend.recipient._id);
+                // TODO: separate 2 from 1 to determine who sent friend request
             } else if (friend.status === 2 || friend.status === 1) {
                 addedFriends.push(friend.recipient._id)
             }

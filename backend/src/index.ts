@@ -1,14 +1,13 @@
 import express = require('express');
+const router = express.Router();
 import cors = require('cors');
 import 'dotenv/config';
 import mongoose from 'mongoose';
 import bcrypt = require('bcrypt');
 
 // import Routes
-import itemRouter = require('./Routes/itemRoute');
-import userRouter = require('./Routes/userRoute');
-import collectionRouter = require('./Routes/collectionRoute');
-import friendRouter = require('./Routes/friendRoute')
+const unprotectedRoutes = require("./Routes/unprotectedRoutes");
+const protectedRoutes = require("./Routes/protectedRoutes");
 
 import session = require("express-session");
 import passport = require("passport");
@@ -155,30 +154,6 @@ app.post('/uploadAvatar', parser.single('image'), function (req: any, res, next)
 });
 // Cloudinary Config END
 
-// Setup Routes
-app.use("/users", (userRouter as any));
-app.use("/collections", (collectionRouter as any));
-app.use("/items", passport.authenticate('jwt', { session: false }), (itemRouter as any));
-app.use("/friends", (friendRouter as any));
-
-
-app.get('/', (req, res) => {
-    res.send('Hello');
-});
-
-app.post("/sign-up", (req, res, next) => {
-    const user = new User({
-        username: req.body.username,
-        password: req.body.password,
-        bio: req.body.bio,
-    }).save((err: any) => {
-        if (err) { 
-            return next(err);
-        }
-        res.send("Success!");
-    });
-});
-
 app.post(
     "/log-in",
     (req, res, next) => {
@@ -203,6 +178,24 @@ app.post(
     },
 );
 
+app.get('/', (req, res) => {
+    res.send('Hello');
+});
+
+app.post("/sign-up", (req, res, next) => {
+    const user = new User({
+        username: req.body.username,
+        password: req.body.password,
+        bio: req.body.bio,
+    }).save((err: any) => {
+        if (err) { 
+            return next(err);
+        }
+        res.send("Success!");
+    });
+});
+
+
 app.get("/log-out", (req, res, next) => {
     req.logout(function (err) {
         if (err) {
@@ -211,6 +204,11 @@ app.get("/log-out", (req, res, next) => {
         res.redirect("/");
     });
 });
+// Setup Routes
+app.use("/", unprotectedRoutes);
+// Why does this protect other routes below it????
+app.use("/", passport.authenticate('jwt', { session: false }), protectedRoutes);
+
 
 app.listen(process.env.PORT, () => {
     console.log(`Node App listening on port ${process.env.PORT}`);

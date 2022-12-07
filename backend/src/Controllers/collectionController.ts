@@ -1,12 +1,13 @@
 import express = require('express');
+import { Request, Response } from "express";
 import async = require('async');
 import Group from '../Models/collection';
 import Item from '../Models/item';
-const { body, validationResult } = require('express-validator');
+import { body, validationResult } from 'express-validator';
 
 const router = express.Router();
 
-router.get('/', (req, res, next) => {
+exports.collections = (req: Request, res: Response, next: any) => {
     Group.find()
         .populate('user')
         .sort([['name', 'ascending']])
@@ -16,9 +17,9 @@ router.get('/', (req, res, next) => {
             }
             res.send(list_group);
         });
-});
+};
 
-router.get('/:groupId', (req, res, next) => {
+exports.collection = (req: Request, res: Response, next: any) => {
     async.parallel(
         {
             group(callback) {
@@ -47,7 +48,7 @@ router.get('/:groupId', (req, res, next) => {
             });
         },
     );
-});
+};
 
 type collectionReq = {
     body: {
@@ -58,7 +59,7 @@ type collectionReq = {
     }
 }
 
-router.post('/', [
+exports.post_collection = [
     body('name', 'Name must be specified.')
         .trim()
         .isLength( {min: 1})
@@ -76,7 +77,7 @@ router.post('/', [
         .trim()
         .isLength( {min: 1})
         .escape(),
-    (req: collectionReq, res: any, next:any) => {
+    (req: Request, res: Response, next:any) => {
         const errors = validationResult(req);
 
         const group = new Group({
@@ -97,6 +98,4 @@ router.post('/', [
             res.send("Group successfully saved!");
         });
     },
-]);
-
-module.exports = router;
+];

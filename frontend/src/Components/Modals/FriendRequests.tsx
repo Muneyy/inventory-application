@@ -87,6 +87,8 @@ const FriendRequestsModal = () => {
             })
     }
 
+    console.log(loggedinUser.friends);
+
     return (
         <>
             <Button size="sm" onClick={onOpen}>
@@ -99,30 +101,30 @@ const FriendRequestsModal = () => {
                     <ModalHeader>Friend Requests</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
-
-                        {loggedinUser.friends?.map((friend: any) => {
+                        {/* {loggedinUser?.friends?.map((friend: any) => {
                             return (
                                 (friend.status === 2)
                                     ? (
                                         <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
                                             <Flex flexDir={"row"} alignItems="center" gap={5}>
-                                                {(friend.recipient.avatarURL) 
-                                                    ? (
-                                                        <Image
-                                                            borderRadius='full'
-                                                            boxSize='50px'
-                                                            src={friend.recipient.avatarURL}
-                                                            objectFit="cover"
-                                                            alt='Avatar'/>
-                                                    ) 
-                                                    : (
-                                                        <Avatar size={"md"}></Avatar>
-                                                    )}
+                                                {
+                                                    (friend.recipient.avatarURL) 
+                                                        ? (
+                                                            <Image
+                                                                borderRadius='full'
+                                                                boxSize='50px'
+                                                                src={friend.recipient.avatarURL}
+                                                                objectFit="cover"
+                                                                alt='Avatar'/>
+                                                        ) 
+                                                        : (
+                                                            <Avatar size={"md"}></Avatar>
+                                                        )
+                                                }
                                                 <Flex flexDir={"column"} w="" flex={"1"}>
                                                     <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
                                                     <Text fontSize="sm" color="gray">@{friend.recipient.handle}</Text>
                                                     <FriendAction acceptFriendRequest={acceptFriendRequest} rejectFriendRequest={rejectFriendRequest} id = {friend.recipient._id} />
-                                                        
                                                 </Flex>
                                             </Flex>
                                         </Container>
@@ -130,10 +132,7 @@ const FriendRequestsModal = () => {
                                         <Text key={uuidv4()}></Text>
                                     )
                             )
-                        })}
-
-
-
+                        })} */}
                     </ModalBody>
                     <ModalFooter>
                     </ModalFooter>

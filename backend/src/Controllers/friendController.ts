@@ -1,19 +1,14 @@
+import { Request, Response } from "express";
 import express = require('express');
 import async = require('async');
-const { body, validationResult } = require('express-validator');
+import { body, validationResult } from 'express-validator';
 
 import User from '../Models/user';
 import Friend from '../Models/friend';
 
 const router = express.Router();
 
-// router.get('/getSentFriendRequests', async (req: any, res, next) => {
-//     const friends = req.params.friends;
-
-//     Friend.find()
-// })
-
-router.post('/sendFriendRequest', async (req, res, next) => {
+exports.send_friend_request = async (req: Request, res: Response, next: any) => {
     const userRequester = req.body.requester;
     const userRecipient = req.body.recipient;
 
@@ -59,14 +54,10 @@ router.post('/sendFriendRequest', async (req, res, next) => {
                 return res.send("Friend Request successfully sent!");
             });
         }
-        
     });
+};
 
-    
-
-});
-
-router.post('/acceptFriendRequest', async (req,res,next) => {
+exports.accept_friend_request = async (req: Request, res: Response, next: any) => {
     const userRequester = req.body.requester;
     const userRecipient = req.body.recipient;
 
@@ -79,10 +70,9 @@ router.post('/acceptFriendRequest', async (req,res,next) => {
         { $set: { status: 3 }},
     );
     res.send("You have accepted their friend request!");
+};
 
-});
-
-router.post('/rejectFriendRequest', async (req, res, next) => {
+exports.reject_friend_request = async (req: Request, res: Response, next: any) => {
     const userRequester = req.body.requester;
     const userRecipient = req.body.recipient;
 
@@ -105,6 +95,4 @@ router.post('/rejectFriendRequest', async (req, res, next) => {
         );
     }
     res.send("You have deleted their friend request!");
-});
-
-module.exports = router;
+};
