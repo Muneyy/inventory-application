@@ -36,69 +36,6 @@ function Profile () {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const btnRef = React.useRef() as React.MutableRefObject<HTMLInputElement> & React.LegacyRef<HTMLButtonElement>;
 
-    // Sends a friend request to backend
-    async function sendFriendRequest (recipient: string) {
-        const friendRequest = {
-            requester: loggedinUser._id,
-            recipient,
-        }
-
-        await axios.post('http://localhost:3000/friends/sendFriendRequest', friendRequest)
-            .then(res => {
-                console.log(res);
-            })
-            .catch(err => {
-                console.log(err);
-            })
-    }
-
-    // Accepts a friend request
-    async function acceptFriendRequest (recipient: string, e: React.MouseEvent<HTMLElement>) {
-        // const target = e.target as HTMLInputElement
-        // target.disabled = true;
-        const friendRequest = {
-            requester: loggedinUser._id,
-            recipient,
-        }
-
-        await axios.post('http://localhost:3000/friends/acceptFriendRequest', friendRequest)
-            .then(res => {
-                console.log(res);
-            })
-            .catch(err => {
-                console.log(err);
-            })
-        
-        // update friends list by updating user state
-        await refreshUserState()    
-    }
-
-    // Reject friend request
-    async function rejectFriendRequest (recipient: string, e: React.MouseEvent<HTMLElement>) {
-        const target = e.target as HTMLInputElement
-        target.disabled = true;
-        const friendRequest = {
-            requester: loggedinUser._id,
-            recipient,
-        }
-
-        await axios.post('http://localhost:3000/friends/rejectFriendRequest', friendRequest)
-            .then(res => {
-                console.log(res);
-            })
-            .catch(err => {
-                console.log(err);
-            })
-
-        // update friends list by updating user state
-        await refreshUserState()    
-    }
-
-    const navigate = useNavigate();
-    function navigateHome () {
-        navigate("/");
-    }
-
     // GET request to get updated attributes of updated logged in user
     async function refreshUserState () {
         await axios.get(`http://localhost:3000/users/${loggedinUser._id}`)
@@ -123,10 +60,6 @@ function Profile () {
         },
         onSubmit: async (values) => {
             setAvatarLoading(true);
-            const submitImage = {
-                image: values.image,
-                userID: loggedinUser._id,
-            }
 
             const formData = new FormData();
             formData.append("image", values.image);

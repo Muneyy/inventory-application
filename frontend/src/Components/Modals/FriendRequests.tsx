@@ -34,6 +34,18 @@ const FriendRequestsModal = () => {
         loggedinUser = currentUser.returned[0];
     }
 
+    // Get token and refactor
+    const token = useAppSelector(state => state.currentToken);
+    let tokenJWT = ""
+
+    if (token.returned.length === 1) {
+        tokenJWT = token.returned[0];
+    }
+
+    const JWTconfig = {
+        headers: { Authorization: `Bearer ${tokenJWT}` }
+    };
+
     const dispatch = useAppDispatch();
 
     // Accepts a friend request
@@ -43,7 +55,7 @@ const FriendRequestsModal = () => {
             recipient,
         }
   
-        await axios.post('http://localhost:3000/friends/acceptFriendRequest', friendRequest)
+        await axios.post('http://localhost:3000/friends/acceptFriendRequest', friendRequest, JWTconfig)
             .then(res => {
                 console.log(res);
             })
@@ -62,7 +74,7 @@ const FriendRequestsModal = () => {
             recipient,
         }
   
-        await axios.post('http://localhost:3000/friends/rejectFriendRequest', friendRequest)
+        await axios.post('http://localhost:3000/friends/rejectFriendRequest', friendRequest, JWTconfig)
             .then(res => {
                 console.log(res);
             })
@@ -75,7 +87,7 @@ const FriendRequestsModal = () => {
 
     // GET request to get updated attributes of updated logged in user
     async function refreshUserState () {
-        await axios.get(`http://localhost:3000/users/${loggedinUser._id}`)
+        await axios.get(`http://localhost:3000/users/${loggedinUser._id}`, JWTconfig)
             .then(async (res) => {
                 console.log(res);
                 await dispatch(login(res.data.user));
@@ -87,7 +99,7 @@ const FriendRequestsModal = () => {
             })
     }
 
-    console.log(loggedinUser.friends);
+    console.log(loggedinUser);
 
     return (
         <>
@@ -101,38 +113,47 @@ const FriendRequestsModal = () => {
                     <ModalHeader>Friend Requests</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
-                        {/* {loggedinUser?.friends?.map((friend: any) => {
+                        {loggedinUser?.friends?.map((friend: any) => {
                             return (
                                 (friend.status === 2)
                                     ? (
                                         <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
-                                            <Flex flexDir={"row"} alignItems="center" gap={5}>
-                                                {
-                                                    (friend.recipient.avatarURL) 
-                                                        ? (
-                                                            <Image
-                                                                borderRadius='full'
-                                                                boxSize='50px'
-                                                                src={friend.recipient.avatarURL}
-                                                                objectFit="cover"
-                                                                alt='Avatar'/>
-                                                        ) 
-                                                        : (
-                                                            <Avatar size={"md"}></Avatar>
-                                                        )
-                                                }
-                                                <Flex flexDir={"column"} w="" flex={"1"}>
-                                                    <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
-                                                    <Text fontSize="sm" color="gray">@{friend.recipient.handle}</Text>
-                                                    <FriendAction acceptFriendRequest={acceptFriendRequest} rejectFriendRequest={rejectFriendRequest} id = {friend.recipient._id} />
-                                                </Flex>
-                                            </Flex>
+                                            {/* Sometimes recipient is null (probably deleted user without deleting friends.) 
+                                                so we need to check if recipient is not null*/}
+                                            {friend.recipient
+                                                ? (
+
+                                                    <Flex flexDir={"row"} alignItems="center" gap={5}>
+                                                        {
+                                                            (friend.recipient?.avatarURL) 
+                                                                ? (
+                                                                    <Image
+                                                                        borderRadius='full'
+                                                                        boxSize='50px'
+                                                                        src={friend.recipient.avatarURL}
+                                                                        objectFit="cover"
+                                                                        alt='Avatar'/>
+                                                                ) 
+                                                                : (
+                                                                    <Avatar size={"md"}></Avatar>
+                                                                )
+                                                        }
+                                                        <Flex flexDir={"column"} w="" flex={"1"}>
+                                                            <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
+                                                            <Text fontSize="sm" color="gray">@{friend.recipient.handle}</Text>
+                                                            <FriendAction acceptFriendRequest={acceptFriendRequest} rejectFriendRequest={rejectFriendRequest} id = {friend.recipient._id} />
+                                                        </Flex>
+                                                    </Flex>
+                                                )
+                                                : (
+                                                    <></>
+                                                )}
                                         </Container>
                                     ) : (
                                         <Text key={uuidv4()}></Text>
                                     )
                             )
-                        })} */}
+                        })}
                     </ModalBody>
                     <ModalFooter>
                     </ModalFooter>

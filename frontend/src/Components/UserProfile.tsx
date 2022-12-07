@@ -36,7 +36,6 @@ function UserProfile () {
     // Refactor REDUX states
     if (currentUser.returned.length === 1) {
         loggedinUser = currentUser.returned[0];
-        console.log(loggedinUser);
     }
     if (token.returned.length === 1) {
         tokenJWT = token.returned[0];

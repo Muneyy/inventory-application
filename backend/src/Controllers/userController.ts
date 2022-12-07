@@ -38,11 +38,11 @@ exports.user = (req: Request, res: Response, next: any) => {
                         model: 'Friend',
                         populate: [{
                             path: 'recipient',
-                            select: ['username', 'avatarURL'],
+                            select: ['username', 'avatarURL', 'handle'],
                             model: 'User',
                         }, {
                             path: 'requester',
-                            select: ['username', 'avatarURL'],
+                            select: ['username', 'avatarURL', 'handle'],
                             model: 'User',
                         }],
                     })

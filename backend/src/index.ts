@@ -28,6 +28,7 @@ const app = express();
 // Initialize Passport.js and express session
 app.use(session({ secret: `${process.env.SESSION_SECRET}`, resave: false, saveUninitialized: true }));
 
+// This is route used when logging in
 passport.use(
     new LocalStrategy((username: string, password: string, done: any) => {
         User.findOne({ username: username }, async (err: any, user: any) => {
@@ -53,26 +54,25 @@ passport.use(
             model: 'Friend',
             populate: [{
                 path: 'recipient',
-                select: ['username', 'avatarURL'],
+                select: ['username', 'avatarURL', 'handle'],
                 model: 'User',
             }, {
                 path: 'requester',
-                select: ['username', 'avatarURL'],
+                select: ['username', 'avatarURL', 'handle'],
                 model: 'User',
             }],
         });
     }),
 );
 
-
+// Used to verify JWT token for each request to protected route
 passport.use(new JWTStrategy({
     jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
     secretOrKey : `${process.env.SESSION_SECRET}`,
 },
 function (jwtPayload, done) {
     //find the user in db if needed. This functionality may be omitted if you store everything you'll need in JWT payload.
-    console.log(jwtPayload);
-    return User.findById(jwtPayload, (err: Error, user: any) => {
+    return User.findById(jwtPayload.id, (err: Error, user: any) => {
         if (err) {
             return done(err, false);
         }
@@ -137,7 +137,6 @@ const parser = multer({ storage: cloudStorage });
    
 app.post('/uploadAvatar', parser.single('image'), function (req: any, res, next) {
     if (req.file) {
-        console.log(req.body.userID);
         User.findByIdAndUpdate(req.body.userID,
             { $set: {avatarURL: `${req.file.path}`}},
             {},
@@ -171,7 +170,10 @@ app.post(
                     }
                     // sign JSON web token with entire user object
                     // do not know if this is great practice
-                    const token = jwt.sign(user._id.toJSON(), `${process.env.SESSION_SECRET}`);
+                    const token = jwt.sign({id: user._id.toJSON()}, `${process.env.SESSION_SECRET}`, {
+                        // expires in seven days
+                        expiresIn: "7d",
+                    });
                     res.send({user, token});
                 });
             })(req, res);
