@@ -99,8 +99,6 @@ const FriendRequestsModal = () => {
             })
     }
 
-    console.log(loggedinUser);
-
     return (
         <>
             <Button size="sm" onClick={onOpen}>

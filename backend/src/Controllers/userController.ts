@@ -27,6 +27,18 @@ exports.users = (req: Request, res: Response, next: any) => {
         });
 };
 
+exports.users_handles = (req: Request, res: Response, next: any) => {
+    User.find()
+        .select("handle")
+        .sort([['name', 'ascending']])
+        .exec((err, list_users_handles) => {
+            if (err) {
+                return next(err);
+            }
+            res.send(list_users_handles);
+        });
+};
+
 exports.user = (req: Request, res: Response, next: any) => {
     async.parallel(
         {
@@ -87,11 +99,11 @@ type UserReq = {
 exports.post_user = [
     body('username', 'Username invalid.')
         .trim()
-        .isLength( {min : 1})
+        .isLength( {min : 8, max: 20})
         .escape(),
     body('handle', 'Handle invalid or not unique.')
         .trim()
-        .isLength( {min : 1})
+        .isLength( {min : 6, max:12})
         .escape(),
     body('password', 'Password invalid.')
         .trim()
@@ -103,7 +115,6 @@ exports.post_user = [
         .escape(),
     body('bio', 'Bio must be specfiied.')
         .trim()
-        .isLength( {min : 1})
         .escape(),
     async (req: UserReq, res: any, next: any) => {
         const errors = validationResult(req);

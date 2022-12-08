@@ -4,7 +4,7 @@ import User from './Components/User';
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import Home from './Components/Home';
 import { Box, Button, Center, ChakraProvider, Container, Flex, Grid, GridItem, Heading, Icon, useColorMode } from '@chakra-ui/react'
-import CreateUser from './Components/CreateUser';
+import CreateUser from './Components/SignUp';
 import CreateCollection from './Components/CreateCollection';
 import LogIn from './Components/LogIn';
 import store from './app/store'

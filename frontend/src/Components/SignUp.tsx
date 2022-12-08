@@ -1,9 +1,10 @@
-import { Spinner, Divider, Container, Heading, Center, Text, Button, Stack, Link } from '@chakra-ui/react'
+import { Spinner, Divider, Container, Heading, Center, Text, Button, Stack, Link, AlertIcon, Alert } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
 import { FormControl, FormLabel, FormErrorMessage, FormHelperText, Input } from '@chakra-ui/react';
-import { useFormik } from "formik";
+import { Formik, Form, Field, useFormik } from "formik";
+import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
 import persistStore from 'redux-persist/es/persistStore';
 import store from '../app/store';
@@ -12,10 +13,43 @@ import store from '../app/store';
 import { login, logout } from '../Features/currentUserSlice';
 
 function CreateUser () {
-    const [loading, setLoading] = useState(1);
+    const [loading, setLoading] = useState(0);
     const navigate = useNavigate();
-
     const dispatch = useDispatch();
+
+    const usersHandles: string[] = [];
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                await axios.get('http://localhost:3000/users/handles')
+                    .then(res => {
+                        console.log(res.data);
+                        res.data.forEach((handle: string)=> {
+                            usersHandles.push(handle);
+                        })})
+                setLoading(1);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        fetchData();
+    }, [])
+
+    const SignupSchema = Yup.object().shape({
+        username: Yup.string()
+            .min(8, "Username must be between 8-20 characters")
+            .required('Required'),
+        handle: Yup.string()
+            .min(6, "Handle must be between 4-12 characters")
+            .required('Required')
+            .oneOf(usersHandles, "This handle is already taken."),
+        password: Yup.string()
+            .min(8, "Password must be a minimum of 8 characters"),
+        email: Yup.string()
+            .email('Invalid email')
+            .required('Required'),
+    })
 
     const formik = useFormik({
         initialValues: {
@@ -25,8 +59,8 @@ function CreateUser () {
             email: "",
             bio: ""
         },
+        validationSchema: SignupSchema,
         onSubmit: (values) => {
-
             const submitUser = {
                 username: values.username,
                 handle: values.handle,
@@ -42,7 +76,8 @@ function CreateUser () {
                     persistor.purge();
                     navigate('/');
                 })
-        }
+        },
+        
     })
 
     return(
@@ -51,6 +86,7 @@ function CreateUser () {
                 <>
                     <Heading size='2xl' fontWeight="extrabold">Sign Up!</Heading>
                     <Heading size='l'> Please fill out the fields below.</Heading>
+                    
                     <form onSubmit={formik.handleSubmit}>
                         <FormControl isRequired w="md">
                             <FormLabel>Username:</FormLabel>
@@ -61,7 +97,14 @@ function CreateUser () {
                                 onChange={formik.handleChange}
                                 value={formik.values.username}
                             />
-                            <FormHelperText>Username cannot be empty.</FormHelperText>
+                            {formik.errors.username && formik.touched.username ? (
+                                <Alert mt={1} p={2} size="sm" borderRadius="3xl" status="warning">
+                                    <AlertIcon />
+                                    {formik.errors.username}
+                                </Alert>
+                            ) : (
+                                <FormHelperText>Username must be 8-20 characters.</FormHelperText>
+                            )}
                         </FormControl>
                         <Divider my="1rem"/>
                         <FormControl isRequired w="md">
@@ -73,7 +116,14 @@ function CreateUser () {
                                 onChange={formik.handleChange}
                                 value={formik.values.handle}
                             />
-                            <FormHelperText>Handle must be unique.</FormHelperText>
+                            {formik.errors.handle && formik.touched.handle ? (
+                                <Alert mt={1} p={2} size="sm" borderRadius="3xl" status="warning">
+                                    <AlertIcon />
+                                    {formik.errors.handle}
+                                </Alert>
+                            ) : (
+                                <FormHelperText>Handle must be 6-12 characters and unique.</FormHelperText>
+                            )}
                         </FormControl>
                         <Divider my="1rem"/>
                         <FormControl isRequired>
@@ -86,7 +136,14 @@ function CreateUser () {
                                 value={formik.values.password}
                                 minLength={8}
                             />
-                            <FormHelperText>Minimum of 8 characters.</FormHelperText>
+                            {formik.errors.password && formik.touched.password ? (
+                                <Alert mt={1} p={2} size="sm" borderRadius="3xl" status="warning">
+                                    <AlertIcon />
+                                    {formik.errors.password}
+                                </Alert>
+                            ) : (
+                                <FormHelperText>Minimum of 8 characters.</FormHelperText>
+                            )}
                         </FormControl>
                         <Divider my="1rem"/>
                         <FormControl isRequired w="md">
@@ -98,7 +155,14 @@ function CreateUser () {
                                 onChange={formik.handleChange}
                                 value={formik.values.bio}
                             />
-                            <FormHelperText>Description.</FormHelperText>
+                            {formik.errors.bio && formik.touched.bio ? (
+                                <Alert mt={1} p={2} size="sm" borderRadius="3xl" status="warning">
+                                    <AlertIcon />
+                                    {formik.errors.bio}
+                                </Alert>
+                            ) : (
+                                <FormHelperText>Make a brief statement.</FormHelperText>
+                            )}
                         </FormControl>
                         <Divider my="1rem"/>
                         <FormControl isRequired>
@@ -110,10 +174,18 @@ function CreateUser () {
                                 onChange={formik.handleChange}
                                 value={formik.values.email}
                             />
-                            <FormHelperText>Please enter a valid email.</FormHelperText>
+                            {formik.errors.email && formik.touched.email ? (
+                                <Alert mt={1} p={2} size="sm" borderRadius="3xl" status="warning">
+                                    <AlertIcon />
+                                    {formik.errors.email}
+                                </Alert>
+                            ) : (
+                                <FormHelperText>Please enter a valid email.</FormHelperText>
+                            )}
                         </FormControl>
                         <Divider my="1rem"/>
                         <Button type='submit' colorScheme="teal">Create!</Button>
+                        {/* </Formik> */}
                     </form>
                 </>
             )
