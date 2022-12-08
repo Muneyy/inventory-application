@@ -4,12 +4,17 @@ import async = require('async');
 import Group from '../Models/collection';
 import Item from '../Models/item';
 import { body, validationResult } from 'express-validator';
+import User from '../Models/user';
 
 const router = express.Router();
 
 exports.collections = (req: Request, res: Response, next: any) => {
     Group.find()
-        .populate('user')
+        .populate({
+            path: 'user',
+            model: User,
+            select: ['username'],
+        })
         .sort([['name', 'ascending']])
         .exec((err, list_group) => {
             if (err) {

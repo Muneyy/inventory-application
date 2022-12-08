@@ -11,13 +11,25 @@ function CreateCollection () {
     const [loading, setLoading] = useState(1);
     const navigate = useNavigate();
     const [reqData, setReqData] = useState([]);
-    const currentUser: {
-        returned: [
-            {username: string,
-            _id: string}
-        ]
-            
-    } = useAppSelector(state => state.currentUser);
+
+    // Retrieve logged in user state and JWT token from Redux
+    const currentUser = useAppSelector(state => state.currentUser);
+    let loggedinUser: any = {};
+    // Get token and refactor
+    const token = useAppSelector(state => state.currentToken);
+    let tokenJWT = ""
+
+    // Refactor REDUX states
+    if (currentUser.returned.length === 1) {
+        loggedinUser = currentUser.returned[0];
+    }
+    if (token.returned.length === 1) {
+        tokenJWT = token.returned[0];
+    }
+
+    const JWTconfig = {
+        headers: { Authorization: `Bearer ${tokenJWT}` }
+    };
 
     const formik = useFormik({
         enableReinitialize: true,
@@ -38,7 +50,7 @@ function CreateCollection () {
             console.log("This is what I am submitting:")
             console.log(submitCollection)
 
-            axios.post('http://localhost:3000/collections', submitCollection)
+            axios.post('http://localhost:3000/collections/post', submitCollection, JWTconfig)
                 .then(res => {
                     console.log(res);
                     navigate('/');
@@ -105,13 +117,13 @@ function CreateCollection () {
                                 <Select 
                                     id ="user" 
                                     name="user" 
-                                    placeholder={currentUser.returned[0].username}
+                                    placeholder={loggedinUser.username}
                                     onChange={formik.handleChange}
                                     // defaultValue={formik.values.user}
                                     value={formik.values.user}
                                     isRequired
                                     disabled>
-                                    <option key={uuidv4()} value={currentUser.returned[0]._id}>{currentUser.returned[0].username}</option>
+                                    <option key={uuidv4()} value={loggedinUser._id}>{loggedinUser.username}</option>
                                 </Select>
                                 <Divider my="1rem"/>
                                 <Button type='submit' colorScheme="teal">Create!</Button>

@@ -13,6 +13,7 @@ import { userInfo } from 'os';
 
 import persistStore from 'redux-persist/es/persistStore';
 import store from '../app/store';
+import { unescape } from 'querystring';
 
 
 
@@ -46,10 +47,12 @@ function Home() {
         // At page mount, get users and collections to display them
         const fetchData = async () => {
             try {
-                axios.get('http://localhost:3000/collections')
+                await axios.get('http://localhost:3000/collections')
                     .then(res => {
                         setReqCollectionData(res.data);
                     });
+                console.log("uh?")
+                console.log(reqCollectionData);
                 setLoading(1);
             } catch (error) {
                 console.error(error);
@@ -75,6 +78,11 @@ function Home() {
             })
     }
 
+    function decodeHTMLEntities(rawStr: string) {
+        return rawStr.replace(/&#(\d+);/g, ((match, dec) => `${String.fromCharCode(dec)}`));
+    }
+
+
     return (
         (loading)
             ? (
@@ -97,9 +105,11 @@ function Home() {
                         <Center flexDirection="column">
                             <Heading size="m">Current Collections:</Heading>
                             {reqCollectionData.map((collection:any) => {
+                                const decodedString = decodeHTMLEntities(collection.name);
+                                console.log(decodedString);
                                 return (
                                     <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
-                                        <Text fontSize="xl" fontWeight="bold">{collection.name}</Text>
+                                        <Text fontSize="xl" fontWeight="bold">{(collection.name).split(/[%$]/).join('')}</Text>
                                         <Text fontSize="m">{collection.summary}</Text>
                                         <Text fontSize="m">Owned by: {collection.user.username}</Text>
                                     </Container>
