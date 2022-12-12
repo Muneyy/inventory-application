@@ -56,7 +56,7 @@ function UploadAvatar(props: {
 
             await refreshUserState();
             await setAvatarLoading(false);
-            await props.onClose;
+            await props.onClose();
         }
     })
 
@@ -73,7 +73,9 @@ function UploadAvatar(props: {
                             setFileName(acceptedFiles[0].name)
                         }}
                         accept={{
-                            image: ['image/png', 'image/jpeg', 'image/gif', 'image/jpg'],
+                            'image/png': ['.png'], 
+                            'image/jpeg': ['.jpg', '.jpeg'],
+                            'image/gif': ['.gif'] 
                         }}
                     >
                         {({ getRootProps, getInputProps, isDragActive }) => (

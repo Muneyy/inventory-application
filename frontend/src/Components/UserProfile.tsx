@@ -150,69 +150,66 @@ function UserProfile () {
             ?   (
                 (fetchedUser) 
                     ? (
-                        <>
-                            <Grid ml={10} alignSelf={"flex-start"} templateColumns={"260px 1fr"} gap={4}>
-                                <GridItem display={"flex"} alignItems="center" justifyContent={"center"}>
-                                    {(fetchedUser.avatarURL) 
-                                        ? (
-                                            <Image
-                                                borderRadius='full'
-                                                boxSize='200px'
-                                                src={fetchedUser.avatarURL}
-                                                objectFit="cover"
-                                                alt='Avatar'/>
-                                        ) 
-                                        : (
-                                            <Avatar size={"md"}></Avatar>
-                                        )}
-                                </GridItem>
-                                <GridItem display={"flex"} justifyContent="center" alignItems="start" p={5} flexDir="column">
-                                    <Text fontSize="5xl" fontWeight={700}>{fetchedUser.username}</Text>
-                                    <Text fontSize={"sm"} fontWeight={300}>@{fetchedUser.handle}</Text>
-                                    <Text fontSize={"md"} fontWeight={500}>{fetchedUser.bio}</Text>
-                                    {/* TODO: remove add friend button if user is not logged in. */}
+                        <Grid ml={10} alignSelf={"flex-start"} templateColumns={"260px 1fr"} gap={4}>
+                            <GridItem display={"flex"} alignItems="center" justifyContent={"center"} p={5}>
+                                {(fetchedUser.avatarURL) 
+                                    ? (
+                                        <Image
+                                            borderRadius='full'
+                                            boxSize='200px'
+                                            src={fetchedUser.avatarURL}
+                                            objectFit="cover"
+                                            alt='Avatar'/>
+                                    ) 
+                                    : (
+                                        <Avatar size={"md"}></Avatar>
+                                    )}
+                            </GridItem>
+                            <GridItem display={"flex"} justifyContent="center" alignItems="start" p={5} flexDir="column">
+                                <Text fontSize="5xl" fontWeight={700}>{fetchedUser.username}</Text>
+                                <Text fontSize={"sm"} fontWeight={300}>@{fetchedUser.handle}</Text>
+                                <Text fontSize={"md"} fontWeight={500}>{fetchedUser.bio}</Text>
+                                {/* TODO: remove add friend button if user is not logged in. */}
 
-                                    {(loggedinUser._id)
-                                        ? ( 
-                                            (userFriends.includes(fetchedUser._id))
-                                                ? (
-                                                    <Button mt={1} disabled colorScheme="pink" ref={btnRef} size="sm">
-                                                        <CheckCircleIcon mr={2}/>{"Friend"}
-                                                    </Button> 
-                                                ) 
-                                                : (
-                                                    (addedFriends.includes(fetchedUser._id)
-                                                        ? (
-                                                            <Button mt={1}  colorScheme="pink" ref={btnRef} onClick={() => acceptFriendRequest(fetchedUser._id)} size="sm" disabled={friendRequestSent}>
-                                                                {friendRequestSent ? <Spinner></Spinner> : "Accept Friend Request"}
-                                                            </Button>
-                                                        )
-                                                        : (
-                                                            (incomingFriends.includes(fetchedUser._id)
-                                                                ? (
-                                                                    <Button mt={1}  colorScheme="pink" ref={btnRef} size="sm" disabled>
-                                                                        <CheckCircleIcon mr={2}/>{"Friend Request sent"}
-                                                                    </Button>
-                                                                ) 
-                                                                : (
-                                                                    <Button mt={1}  colorScheme="pink" ref={btnRef} onClick={() => sendFriendRequest(fetchedUser._id)} size="sm" disabled={friendRequestSent}>
+                                {(loggedinUser._id)
+                                    ? ( 
+                                        (userFriends.includes(fetchedUser._id))
+                                            ? (
+                                                <Button mt={1} disabled colorScheme="pink" ref={btnRef} size="sm">
+                                                    <CheckCircleIcon mr={2}/>{"Friend"}
+                                                </Button> 
+                                            ) 
+                                            : (
+                                                (addedFriends.includes(fetchedUser._id)
+                                                    ? (
+                                                        <Button mt={1}  colorScheme="pink" ref={btnRef} onClick={() => acceptFriendRequest(fetchedUser._id)} size="sm" disabled={friendRequestSent}>
+                                                            {friendRequestSent ? <Spinner></Spinner> : "Accept Friend Request"}
+                                                        </Button>
+                                                    )
+                                                    : (
+                                                        (incomingFriends.includes(fetchedUser._id)
+                                                            ? (
+                                                                <Button mt={1}  colorScheme="pink" ref={btnRef} size="sm" disabled>
+                                                                    <CheckCircleIcon mr={2}/>{"Friend Request sent"}
+                                                                </Button>
+                                                            ) 
+                                                            : (
+                                                                <Button mt={1}  colorScheme="pink" ref={btnRef} onClick={() => sendFriendRequest(fetchedUser._id)} size="sm" disabled={friendRequestSent}>
                                                          
-                                                                        {friendRequestSent ? <Spinner></Spinner> : "Add Friend"}
+                                                                    {friendRequestSent ? <Spinner></Spinner> : "Add Friend"}
 
-                                                                    </Button>
-                                                                ))
-                                                        ))
-                                                )
-                                        )
-                                        : (
-                                            <></>
-                                        )}
+                                                                </Button>
+                                                            ))
+                                                    ))
+                                            )
+                                    )
+                                    : (
+                                        <></>
+                                    )}
 
 
-                                </GridItem>
-                            </Grid>
-                        </>
-
+                            </GridItem>
+                        </Grid>
                     ) 
                     : (
 

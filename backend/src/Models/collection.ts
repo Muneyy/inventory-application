@@ -10,6 +10,17 @@ const groupSchema = new Schema(
             type: String,
             required: true,
         },
+        tags: [{
+            type: String,
+            enums: [
+                "k-pop",
+                "j-pop",
+                "p-pop",
+                "soloist",
+                "boy group",
+                "girl group",
+            ],
+        }],
         img_url: {
             type: String,
         },

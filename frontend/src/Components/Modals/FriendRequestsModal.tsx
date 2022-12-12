@@ -19,7 +19,7 @@ import {
     Avatar,
 } from '@chakra-ui/react'
 import { PlusSquareIcon } from '@chakra-ui/icons';
-import { login, logout } from '../../Features/currentUserSlice';
+import { login } from '../../Features/currentUserSlice';
 import FriendAction from '../Buttons/FriendAction';
 
 const FriendRequestsModal = () => {
@@ -35,7 +35,7 @@ const FriendRequestsModal = () => {
     }
 
     // Get token and refactor
-    const token = useAppSelector(state => state.currentToken);
+    const token: any = useAppSelector(state => state.currentToken);
     let tokenJWT = ""
 
     if (token.returned.length === 1) {

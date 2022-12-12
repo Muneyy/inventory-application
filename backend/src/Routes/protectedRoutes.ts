@@ -10,8 +10,6 @@ const friend_controller = require('../Controllers/friendController');
 
 router.post('/collections/post', collection_controller.post_collection);
 
-router.post('/users/post', user_controller.post_user);
-
 router.post('/friends/sendFriendRequest', friend_controller.send_friend_request);
 
 router.post('/friends/acceptFriendRequest', friend_controller.accept_friend_request);

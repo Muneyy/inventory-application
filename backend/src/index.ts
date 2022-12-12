@@ -121,15 +121,14 @@ cloudinary.config({
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 import multer from 'multer';
-import { randomUUID } from 'crypto';
-import { uuid } from 'uuidv4';
+import { v4 as uuidv4 } from 'uuid';
 import { nextTick } from 'process';
 const cloudStorage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
         folder: 'user-avatars',
         format: async (req: any, file: any) => 'png', // supports promises as well
-        public_id: (req: any, file: any) => `${uuid()}`,
+        public_id: (req: any, file: any) => `${uuidv4()}`,
     },
 });
    

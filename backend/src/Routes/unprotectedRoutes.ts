@@ -16,4 +16,6 @@ router.get('/users/handles', user_controller.users_handles);
 
 router.get('/users/:userId', user_controller.user);
 
+router.post('/users/post', user_controller.post_user);
+
 module.exports = router;

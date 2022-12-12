@@ -10,12 +10,32 @@ const itemSchema = new Schema(
             type: String,
             required: true,
         },
-        img_url: {
+        tags: [{
             type: String,
-        },
+            enums: [
+                "apparel",
+                "photocard",
+                "lightstick",
+                "album",
+                "boy group",
+                "girl group",
+                "poster",
+                "film",
+                "cd",
+                "ticket",
+            ],
+        }],
+        images_url: [{
+            type: String,
+        }],
         group: {
             type: Schema.Types.ObjectId,
             ref: 'Group',
+            required: true,
+        },
+        user: {
+            type: Schema.Types.ObjectId,
+            ref: 'User',
             required: true,
         },
     },

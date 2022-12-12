@@ -67,11 +67,23 @@ type collectionReq = {
 exports.post_collection = [
     body('name', 'Name must be specified.')
         .trim()
-        .isLength( {min: 1})
+        .isLength( {min: 1, max: 20})
         .escape(),
     body('summary', 'Summary must be specified.')
         .trim()
-        .isLength( {min: 1})
+        .isLength( {min: 1, max: 50})
+        .escape(),
+    body('tags', 'Summary must be specified.')
+        .trim()
+        .isArray()
+        .isIn([
+            "k-pop",
+            "j-pop",
+            "p-pop",
+            "soloist",
+            "boy group",
+            "girl group",
+        ])
         .escape(),
     body('img_url', 'Invalid URL for image.')
         .optional({ checkFalsy: true })
@@ -81,6 +93,7 @@ exports.post_collection = [
     body('user', 'User must be specified.')
         .trim()
         .isLength( {min: 1})
+        .isMongoId()
         .escape(),
     (req: Request, res: Response, next:any) => {
         const errors = validationResult(req);
@@ -88,6 +101,7 @@ exports.post_collection = [
         const group = new Group({
             name: req.body.name,
             summary: req.body.summary,
+            tags: req.body.tags,
             img_url: req.body.img_url,
             user: req.body.user,
         });

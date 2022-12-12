@@ -24,9 +24,11 @@ function CreateUser () {
             try {
                 await axios.get('http://localhost:3000/users/handles')
                     .then(res => {
-                        console.log(res.data);
-                        res.data.forEach((handle: string)=> {
-                            usersHandles.push(handle);
+                        res.data.forEach((handle: {handle: string})=> {
+                            if (handle.handle != undefined) {
+                                usersHandles.push(handle.handle);
+                                console.log(usersHandles);
+                            }
                         })})
                 setLoading(1);
             } catch (error) {
@@ -38,12 +40,17 @@ function CreateUser () {
 
     const SignupSchema = Yup.object().shape({
         username: Yup.string()
-            .min(8, "Username must be between 8-20 characters")
+            .min(2, "Username must be between 8-20 characters")
+            .max(20, "Username must be between 8-20 characters")
             .required('Required'),
         handle: Yup.string()
-            .min(6, "Handle must be between 4-12 characters")
-            .required('Required')
-            .oneOf(usersHandles, "This handle is already taken."),
+            .min(4, "Handle must be between 4-12 characters")
+            .max(12, "Handle must be between 4-12 characters")
+            .test('handle-not-taken', 'This handle is already taken.', (handle: any) => {
+                // Check if the handle is already taken
+                return !usersHandles.includes(handle);
+            })
+            .required('Required'),
         password: Yup.string()
             .min(8, "Password must be a minimum of 8 characters"),
         email: Yup.string()
@@ -69,7 +76,7 @@ function CreateUser () {
                 email: values.email,
             }
 
-            axios.post('http://localhost:3000/users', submitUser)
+            axios.post('http://localhost:3000/users/post', submitUser)
                 .then(res => {
                     console.log(res);
                     const persistor = persistStore(store);
@@ -122,7 +129,7 @@ function CreateUser () {
                                     {formik.errors.handle}
                                 </Alert>
                             ) : (
-                                <FormHelperText>Handle must be 6-12 characters and unique.</FormHelperText>
+                                <FormHelperText>Handle must be 4-12 characters and unique.</FormHelperText>
                             )}
                         </FormControl>
                         <Divider my="1rem"/>
