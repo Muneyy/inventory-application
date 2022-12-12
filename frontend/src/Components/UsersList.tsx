@@ -71,7 +71,7 @@ function UsersList() {
                                             // if it is, then return an empty Text container
                                             (loggedinUser.username == user.username)
                                                 ? (
-                                                    <></>
+                                                    null
                                                 ) : (
                                             // TODO: move this to a separate card component :D
                                                     // Do not display logged in user in list of current users

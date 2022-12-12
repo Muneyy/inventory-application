@@ -64,6 +64,11 @@ function UserProfile () {
         fetchUserData();
     }, [])
 
+
+    const JWTconfig = {
+        headers: { Authorization: `Bearer ${tokenJWT}` }
+    };
+
     // Sends a friend request to backend
     async function sendFriendRequest (recipient: string) {
         setFriendRequestSent(true);
@@ -71,7 +76,7 @@ function UserProfile () {
             requester: loggedinUser._id,
             recipient,
         }
-        await axios.post('http://localhost:3000/friends/sendFriendRequest', friendRequest)
+        await axios.post('http://localhost:3000/friends/sendFriendRequest', friendRequest, JWTconfig)
             .then(res => {
                 console.log(res);
             })
@@ -80,6 +85,26 @@ function UserProfile () {
             })
 
         await refreshUserState();
+    }
+
+    // Accepts a friend request
+    async function acceptFriendRequest (recipient: string) {
+        setFriendRequestSent(true);
+        const friendRequest = {
+            requester: loggedinUser._id,
+            recipient,
+        }
+      
+        await axios.post('http://localhost:3000/friends/acceptFriendRequest', friendRequest, JWTconfig)
+            .then(res => {
+                console.log(res);
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    
+        await refreshUserState();
+            
     }
 
     const navigate = useNavigate();
@@ -103,13 +128,16 @@ function UserProfile () {
     // Also check if loggedinUser has already added viewed user
     const userFriends: string[] = []
     const addedFriends: string[] = []
+    const incomingFriends: string[] = []
     if (loggedinUser._id) {
         loggedinUser.friends.map((friend: {status: number,recipient: {_id: string}}) => {
             if (friend.status === 3) {
                 userFriends.push(friend.recipient._id);
                 // TODO: separate 2 from 1 to determine who sent friend request
-            } else if (friend.status === 2 || friend.status === 1) {
-                addedFriends.push(friend.recipient._id)
+            } else if (friend.status === 2) {
+                addedFriends.push(friend.recipient._id);
+            } else if (friend.status === 1) {
+                incomingFriends.push(friend.recipient._id);
             }
         })
     }
@@ -123,7 +151,7 @@ function UserProfile () {
                 (fetchedUser) 
                     ? (
                         <>
-                            <Grid templateColumns={"230px 1fr"} gap={4}>
+                            <Grid ml={10} alignSelf={"flex-start"} templateColumns={"260px 1fr"} gap={4}>
                                 <GridItem display={"flex"} alignItems="center" justifyContent={"center"}>
                                     {(fetchedUser.avatarURL) 
                                         ? (
@@ -145,24 +173,34 @@ function UserProfile () {
                                     {/* TODO: remove add friend button if user is not logged in. */}
 
                                     {(loggedinUser._id)
-                                        ? (
+                                        ? ( 
                                             (userFriends.includes(fetchedUser._id))
                                                 ? (
-                                                    <Button mt={1} disabled colorScheme="pink" ref={btnRef} onClick={() => sendFriendRequest(fetchedUser._id)} size="sm">
-                                                        <CheckCircleIcon/>{"Friend"}
+                                                    <Button mt={1} disabled colorScheme="pink" ref={btnRef} size="sm">
+                                                        <CheckCircleIcon mr={2}/>{"Friend"}
                                                     </Button> 
                                                 ) 
                                                 : (
                                                     (addedFriends.includes(fetchedUser._id)
                                                         ? (
-                                                            <Button mt={1}  colorScheme="pink" ref={btnRef} onClick={() => sendFriendRequest(fetchedUser._id)} size="sm" disabled>
-                                                                <CheckCircleIcon/>{"Friend Request sent"}
+                                                            <Button mt={1}  colorScheme="pink" ref={btnRef} onClick={() => acceptFriendRequest(fetchedUser._id)} size="sm" disabled={friendRequestSent}>
+                                                                {friendRequestSent ? <Spinner></Spinner> : "Accept Friend Request"}
                                                             </Button>
                                                         )
                                                         : (
-                                                            <Button mt={1}  colorScheme="pink" ref={btnRef} onClick={() => sendFriendRequest(fetchedUser._id)} size="sm" disabled={friendRequestSent}>
-                                                                {"Add Friend"}
-                                                            </Button>
+                                                            (incomingFriends.includes(fetchedUser._id)
+                                                                ? (
+                                                                    <Button mt={1}  colorScheme="pink" ref={btnRef} size="sm" disabled>
+                                                                        <CheckCircleIcon mr={2}/>{"Friend Request sent"}
+                                                                    </Button>
+                                                                ) 
+                                                                : (
+                                                                    <Button mt={1}  colorScheme="pink" ref={btnRef} onClick={() => sendFriendRequest(fetchedUser._id)} size="sm" disabled={friendRequestSent}>
+                                                         
+                                                                        {friendRequestSent ? <Spinner></Spinner> : "Add Friend"}
+
+                                                                    </Button>
+                                                                ))
                                                         ))
                                                 )
                                         )

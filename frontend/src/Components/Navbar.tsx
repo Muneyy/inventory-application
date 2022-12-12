@@ -1,6 +1,6 @@
 import { useColorMode, Flex, Heading, Button, Box, Icon } from '@chakra-ui/react';
 import React from 'react';
-import FriendRequestsModal from './Modals/FriendRequests';
+import FriendRequestsModal from './Modals/FriendRequestsModal';
 import MessagesModal from './Modals/MessagesModal';
 import SettingsModal from './Modals/SettingsModal';
 import BsSun from "react-icons/bs"
