@@ -5,7 +5,7 @@ import React from 'react'
 
 export default function RightLinks() {
     return (
-        <Flex flexDirection="column" alignItems={"flex-start"} mt={8} gap="5px" position={"sticky"} top={"80px"} w={"100%"} h={"100%"}>
+        <Flex flexDirection="column" alignItems={"flex-start"} gap="5px" position={"sticky"} top={"80px"} w={"100%"} h={"100%"}>
             <RouteLink to='/createUser' style={{ textDecoration: 'none' }}>
                 <Button size="sm" rightIcon={<ArrowForwardIcon />} variant="outline" borderRadius={"3xl"} colorScheme="teal">
                                                 Sign up

@@ -13,7 +13,7 @@ exports.collections = (req: Request, res: Response, next: any) => {
         .populate({
             path: 'user',
             model: User,
-            select: ['username'],
+            select: ['username', 'handle', 'avatarURL'],
         })
         .sort([['name', 'ascending']])
         .exec((err, list_group) => {
@@ -71,21 +71,20 @@ exports.post_collection = [
         .escape(),
     body('summary', 'Summary must be specified.')
         .trim()
-        .isLength( {min: 1, max: 50})
+        .isLength( {min: 1, max: 40})
         .escape(),
-    body('tags', 'Summary must be specified.')
-        .trim()
+    body('tags', 'Tags must not be empty.')
         .isArray()
+        .notEmpty()
         .isIn([
             "k-pop",
             "j-pop",
             "p-pop",
             "soloist",
-            "boy group",
-            "girl group",
-        ])
-        .escape(),
-    body('img_url', 'Invalid URL for image.')
+            "boy-group",
+            "girl-group",
+        ]),
+    body('image_url', 'Invalid URL for image.')
         .optional({ checkFalsy: true })
         .trim()
         .isLength( {min: 1})
@@ -97,24 +96,26 @@ exports.post_collection = [
         .escape(),
     (req: Request, res: Response, next:any) => {
         const errors = validationResult(req);
-
+        console.log("This one");
+        console.log(req.body);
         const group = new Group({
             name: req.body.name,
             summary: req.body.summary,
             tags: req.body.tags,
-            img_url: req.body.img_url,
+            image_url: req.body.image_url,
             user: req.body.user,
         });
 
         if (!errors.isEmpty()) {
             res.send(errors.array());
+        } else {
+            group.save((err) => {
+                if (err) {
+                    return next(err);
+                }
+                res.send("Group successfully saved!");
+            });
         }
 
-        group.save((err) => {
-            if (err) {
-                return next(err);
-            }
-            res.send("Group successfully saved!");
-        });
     },
 ];

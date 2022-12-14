@@ -1,10 +1,11 @@
-import { Spinner, Divider, Container, Heading, Center, Text, Button, Stack, Link, Select, Alert, AlertDescription, AlertIcon, AlertTitle } from '@chakra-ui/react'
+import { Spinner, Flex, Checkbox, Divider, Container, Heading, Center, Text, Button, Stack, Link, Select, Alert, AlertDescription, AlertIcon, AlertTitle, CheckboxGroup, Tag, Textarea } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
 import { FormControl, FormLabel, FormErrorMessage, FormHelperText, Input } from '@chakra-ui/react';
 import { useFormik } from "formik";
+import * as Yup from 'yup';
 import { useAppSelector } from '../app/hooks';
 
 function CreateCollection () {
@@ -27,6 +28,21 @@ function CreateCollection () {
         tokenJWT = token.returned[0];
     }
 
+    const CollectionSchema = Yup.object().shape({
+        name: Yup.string()
+            .min(1, "Name must be between 1-20 characters")
+            .max(20, "Name must be between 1-20 characters")
+            .required('Required'),
+        summary: Yup.string()
+            .min(1, "Summary must be between 1-40 characters")
+            .max(40, "Summary must be between 1-40 characters")
+            .required('Required'),
+        tags: Yup.array()
+            .of(Yup.string())
+            .min(1, "Please select at least one tag")
+            .required("Please select at least one tag")
+    })
+
     const JWTconfig = {
         headers: { Authorization: `Bearer ${tokenJWT}` }
     };
@@ -36,15 +52,19 @@ function CreateCollection () {
         initialValues: {
             name: "",
             summary: "",
+            tags: [
+            ],
             img_url: "",
             user: "",
         },
+        validationSchema: CollectionSchema,
         onSubmit: (values) => {
             const submitCollection = {
                 name: values.name,
                 summary: values.summary,
+                tags: values.tags,
                 img_url: values.img_url,
-                user: currentUser.returned[0]._id,
+                user: loggedinUser._id,
             }
 
             console.log("This is what I am submitting:")
@@ -70,6 +90,15 @@ function CreateCollection () {
         fetchUsers()
     }, [])
 
+    const availableTags = [
+        "k-pop",
+        "j-pop",
+        "p-pop",
+        "soloist",
+        "boy-group",
+        "girl-group",
+    ]
+
     return(
         (loading)
             ? (
@@ -80,26 +109,78 @@ function CreateCollection () {
                                 <FormControl isRequired>
                                     <FormLabel>Name:</FormLabel>
                                     <Input 
-                                        width="400px"
                                         type="text" 
                                         name="name" 
                                         id="name" 
                                         onChange={formik.handleChange}
                                         value={formik.values.name} 
                                     />
-                                    <FormHelperText>Username cannot be empty.</FormHelperText>
+                                    {formik.errors.name && formik.touched.name ? (
+                                        <Alert mt={1} p={2} size="sm" borderRadius="3xl" status="warning">
+                                            <AlertIcon />
+                                            {formik.errors.name}
+                                        </Alert>
+                                    ) : (
+                                
+                                        <FormHelperText>Name cannot be empty.</FormHelperText>
+                                    )}
                                 </FormControl>
                                 <Divider my="1rem"/>
                                 <FormControl isRequired>
                                     <FormLabel>Summary:</FormLabel>
-                                    <Input 
-                                        type="text" 
+                                    <Textarea 
                                         name="summary" 
                                         id="summary" 
                                         onChange={formik.handleChange}
-                                        value={formik.values.summary} 
+                                        value={formik.values.summary}
                                     />
-                                    <FormHelperText>Some text to introduce yourself.</FormHelperText>
+                                    {formik.errors.summary && formik.touched.summary ? (
+                                        <Alert mt={1} p={2} size="sm" borderRadius="3xl" status="warning">
+                                            <AlertIcon />
+                                            {formik.errors.summary}
+                                        </Alert>
+                                    ) : (
+                                        <FormHelperText>Describe your collection.</FormHelperText>
+                                    )}
+                                </FormControl>
+                                <Divider my="1rem"/>
+                                <FormControl>
+                                    <FormLabel>Tags:</FormLabel>
+                                    <CheckboxGroup colorScheme={"teal"}>
+                                        <Flex wrap={"wrap"} gap={3}>
+                                            {availableTags.map((tag: string) => {
+                                                return (
+                                                    <Checkbox
+                                                        key={uuidv4()}
+                                                        name={tag}
+                                                        id={tag}
+                                                        onChange={(e) => {
+                                                            const { checked, name } = e.target;
+                                                            if (checked) {
+                                                                formik.setFieldValue("tags", [...formik.values.tags, name]);
+                                                            } else {
+                                                                formik.setFieldValue(
+                                                                    "tags",
+                                                                    formik.values.tags.filter((v) => v !== name)
+                                                                );
+                                                            }
+                                                        }}
+                                                        value={tag}
+                                                    >
+                                                        {tag}
+                                                    </Checkbox>
+                                                )
+                                            })}
+                                        </Flex>
+                                    </CheckboxGroup>
+                                    {formik.errors.tags && formik.touched.tags ? (
+                                        <Alert mt={1} p={2} size="sm" borderRadius="3xl" status="warning">
+                                            <AlertIcon />
+                                            {formik.errors.tags}
+                                        </Alert>
+                                    ) : (
+                                        <FormHelperText>Choose appropriate tags for your collection.</FormHelperText>
+                                    )}
                                 </FormControl>
                                 <Divider my="1rem"/>
                                 <FormControl>

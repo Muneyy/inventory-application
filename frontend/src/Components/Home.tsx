@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { Spinner, Container, Heading, Center, Text, Button, Stack, Link, Grid, FormLabel, FormControl, useDisclosure, Collapse, Box, Flex, Avatar } from '@chakra-ui/react'
+import { Spinner, Wrap, Image, Container, Heading, Center, Text, Button, Stack, Link, Grid, FormLabel, FormControl, useDisclosure, Collapse, Box, Flex, Avatar, Badge } from '@chakra-ui/react'
 import {ArrowForwardIcon} from '@chakra-ui/icons'
 import { useAppSelector, useAppDispatch } from '../app/hooks'
 import { useNavigate } from 'react-router-dom';
@@ -45,8 +45,6 @@ function Home() {
                     .then(res => {
                         setReqCollectionData(res.data);
                     });
-                console.log("uh?")
-                console.log(reqCollectionData);
                 setLoading(1);
             } catch (error) {
                 console.error(error);
@@ -81,7 +79,7 @@ function Home() {
         (loading)
             ? (
                 <>
-                    <Stack direction="row" spacing={4} mt={3} ml={4}>
+                    <Stack direction="row" spacing={4}>
                         <RouteLink to="/createCollection">
                             <Button size="sm" rightIcon={<ArrowForwardIcon />} variant="outline" colorScheme="teal">
                                         Collection
@@ -95,28 +93,40 @@ function Home() {
                         </Button>
                         {/* </RouteLink> */}
                     </Stack>
-                    <Grid templateColumns='repeat(2, 50%)' gap='10' alignItems="start" mt="2">
-                        <Center flexDirection="column">
-                            <Heading size="m">Current Collections:</Heading>
+                    <Center display="flex" mt={2} flexDirection="column">
+                        <Heading size="m">Current Collections:</Heading>
+                        <Grid templateColumns={"1fr"}>
                             {reqCollectionData.map((collection:any) => {
-                                const decodedString = decodeHTMLEntities(collection.name);
-                                console.log(decodedString);
                                 return (
-                                    <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
-                                        <Text fontSize="xl" fontWeight="bold">{(collection.name).split(/[%$]/).join('')}</Text>
-                                        <Text fontSize="m">{collection.summary}</Text>
-                                        <Text fontSize="m">Owned by: {collection.user.username}</Text>
-                                    </Container>
+                                    <Grid borderWidth='1px' key={uuidv4()} templateColumns={"1fr 2fr"}>
+                                        <Image
+                                            boxSize='300px'
+                                            objectFit='cover'
+                                            src='https://res.cloudinary.com/dxnmxxph1/image/upload/v1671005414/user-avatars/14a9ccdd-59e4-4dd2-902d-b8535bd34467.png'
+                                            alt='Dan Abramov'
+                                        />
+                                        <Container position="relative" display="flex" flexDir={"column"} px="24px" py="8px">
+                                            <Text fontSize="xl" fontWeight="bold">{(collection.name).split(/[%$]/).join('')}</Text>
+                                            <Wrap>
+                                                {collection.tags?.map((tag: string) => {
+                                                    return (
+                                                        <Badge colorScheme={"purple"} mr={2} key={uuidv4()}>{tag}</Badge>
+                                                    )
+                                                })}
+                                            </Wrap>
+                                            <Text mt={3} fontSize="m">{collection.summary}</Text>
+                                            <Wrap bottom="5" position="absolute" mt={3} alignSelf={"flex-end"}>
+                                                <Avatar size="xs" src={collection.user.avatarURL} />
+                                                <Text fontSize="m">{collection.user.username}</Text>
+                                            </Wrap>
+                                        </Container>
+                                    </Grid>
                                 )
                             })}
-                        </Center>
-                    </Grid>
-                    <Text mt="1rem">
-                            Select which category you would like to create:
-                    </Text>
-                </>
+                        </Grid>
 
-                    
+                    </Center>
+                </>
             )
             : (
                 <div>

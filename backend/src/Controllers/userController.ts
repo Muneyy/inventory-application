@@ -129,17 +129,17 @@ exports.post_user = [
             email: req.body.email,
             bio: req.body.bio,
         });
-
+        
         if (!errors.isEmpty()) {
             res.send(errors.array());
         } else {
-            User.findOne( {username: req.body.username})
+            User.findOne( {handle: req.body.handle})
                 .exec((err, found_user) => {
                     if (err) {
                         return next(err);
                     }
                     if (found_user) {
-                        res.send("Username already exists, please use another one.");
+                        res.send("Handle already exists, please use another one.");
                     } else {
                         user.save((err) => {
                             if (err) {

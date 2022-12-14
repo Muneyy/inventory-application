@@ -17,11 +17,11 @@ const groupSchema = new Schema(
                 "j-pop",
                 "p-pop",
                 "soloist",
-                "boy group",
-                "girl group",
+                "boy-group",
+                "girl-group",
             ],
         }],
-        img_url: {
+        image_url: {
             type: String,
         },
         user: {

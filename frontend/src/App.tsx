@@ -28,12 +28,13 @@ function App() {
             <Provider store={store}>
                 <PersistGate loading={null} persistor={persistor}>
                     <BrowserRouter>
-                        <Box position={"relative"}>
+                        <Box position={"relative"} overflowY="hidden" maxW="100vw">
                             <NavBar />
                             <Center>
                                 <Flex>
                                     <LeftLinks />
-                                    <Center alignItems={"center"} mx={3} py={8} px={4} display="flex" justifyContent={"flex-start"} flexDirection="column" borderWidth='1px' borderY={"none"} minW="3xl" minHeight={"94vh"}>
+                                    <Center alignItems={"center"} mx={3} display="flex" justifyContent={"flex-start"} flexDirection="column" 
+                                        borderWidth='1px' borderY={"none"} minW="768px" maxW="768px" minHeight={"94vh"}>
                                         <Routes>
                                             <Route path ='/' element={<Home/>}/>
                                             <Route path ='/createUser' element={<CreateUser/>} />
