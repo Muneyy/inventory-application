@@ -30,6 +30,11 @@ exports.collection = (req: Request, res: Response, next: any) => {
             group(callback) {
                 Group
                     .findById(req.params.groupId)
+                    .populate({
+                        path: 'user',
+                        model: User,
+                        select: ['username', 'handle', 'avatarURL'],
+                    })
                     .exec(callback);
             },
             group_items(callback) {

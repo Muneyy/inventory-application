@@ -212,7 +212,6 @@ function UserProfile () {
                         </Grid>
                     ) 
                     : (
-
                         <Alert status='error'>
                             <AlertIcon />
                             <AlertTitle>Error!</AlertTitle>

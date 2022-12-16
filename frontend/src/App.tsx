@@ -15,8 +15,9 @@ import UserProfile from './Components/UserProfile';
 import UsersList from './Components/UsersList';
 import theme from "./theme"
 import NavBar from './Components/Navbar';
-import LeftLinks from './Components/AppSubComponents/LeftLinks';
-import RightLinks from './Components/AppSubComponents/RightLinks';
+import LeftLinks from './Components/AppComponents/LeftLinks';
+import RightLinks from './Components/AppComponents/RightLinks';
+import CollectionPage from './Components/CollectionPage';
 
 function App() {
 
@@ -42,6 +43,7 @@ function App() {
                                             <Route path ='/profile' element={<Profile/>} />
                                             <Route path='/:userId' element={<UserProfile/>} />
                                             <Route path="/users" element={<UsersList/>}/>
+                                            <Route path="/collections/:collectionId" element={<CollectionPage/>} />
                                         </Routes>
                                     </Center>
                                     <RightLinks />

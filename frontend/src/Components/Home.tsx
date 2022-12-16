@@ -10,7 +10,6 @@ import persistStore from 'redux-persist/es/persistStore';
 import store from '../app/store';
 
 
-
 function Home() {
     const [loading, setLoading] = useState(0);
     const [reqCollectionData, setReqCollectionData] = useState<any>([]);
@@ -90,20 +89,6 @@ function Home() {
         (loading)
             ? (
                 <>
-                    <Stack direction="row" spacing={4}>
-                        <RouteLink to="/createCollection">
-                            <Button size="sm" rightIcon={<ArrowForwardIcon />} variant="outline" colorScheme="teal">
-                                        Collection
-                            </Button>
-                        </RouteLink>
-
-
-                        {/* <RouteLink to='/createItem' style={{ textDecoration: 'none' }}> */}
-                        <Button size="sm" onClick = {() => testJWT()} rightIcon={<ArrowForwardIcon />} variant="outline" colorScheme="teal">
-                                    Item
-                        </Button>
-                        {/* </RouteLink> */}
-                    </Stack>
                     <Center display="flex" mt={2} flexDirection="column">
                         <Heading size="m">Current Collections:</Heading>
                         <Grid templateColumns={"1fr"}>
@@ -118,7 +103,9 @@ function Home() {
                                             alt='Collection'
                                         />
                                         <Container position="relative" display="flex" flexDir={"column"} px="24px" py="8px">
-                                            <Text fontSize="xl" fontWeight="bold">{(collection.name).split(/[%$]/).join('')}</Text>
+                                            <RouteLink to={`collections/${collection._id}`}  style={{ textDecoration: 'none' }}>
+                                                <Text fontSize="xl" fontWeight="bold">{(collection.name).split(/[%$]/).join('')}</Text>
+                                            </RouteLink>
                                             <Wrap>
                                                 {collection.tags?.map((tag: string) => {
                                                     if (yellowTags.includes(tag)) {
@@ -134,8 +121,12 @@ function Home() {
                                             </Wrap>
                                             <Text mt={3} fontSize="m">{collection.summary}</Text>
                                             <Wrap bottom="5" position="absolute" mt={3} alignSelf={"flex-end"}>
-                                                <Avatar size="xs" src={collection.user.avatarURL} />
-                                                <Text fontSize="m">{collection.user.username}</Text>
+                                                <RouteLink to={`/${collection.user._id}`}  style={{ textDecoration: 'none' }}>
+                                                    <Wrap>
+                                                        <Avatar size="xs" src={collection.user.avatarURL} />
+                                                        <Text fontSize="m">{collection.user.username}</Text>
+                                                    </Wrap>
+                                                </RouteLink>
                                             </Wrap>
                                         </Container>
                                     </Grid>
