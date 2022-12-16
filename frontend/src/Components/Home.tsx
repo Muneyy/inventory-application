@@ -70,10 +70,21 @@ function Home() {
             })
     }
 
-    function decodeHTMLEntities(rawStr: string) {
-        return rawStr.replace(/&#(\d+);/g, ((match, dec) => `${String.fromCharCode(dec)}`));
-    }
-
+    const yellowTags = [
+        "anime",
+        "comics",
+        "cartoon",
+        "series",
+        "movie",
+    ];
+    const purpleTags = [
+        "k-pop",
+        "j-pop",
+        "p-pop",
+        "soloist",
+        "boy-group",
+        "girl-group",
+    ];
 
     return (
         (loading)
@@ -100,18 +111,25 @@ function Home() {
                                 return (
                                     <Grid borderWidth='1px' key={uuidv4()} templateColumns={"1fr 2fr"}>
                                         <Image
-                                            boxSize='300px'
+                                            w="300px"
+                                            h="200px"
                                             objectFit='cover'
-                                            src='https://res.cloudinary.com/dxnmxxph1/image/upload/v1671005414/user-avatars/14a9ccdd-59e4-4dd2-902d-b8535bd34467.png'
-                                            alt='Dan Abramov'
+                                            src={collection.image_url}
+                                            alt='Collection'
                                         />
                                         <Container position="relative" display="flex" flexDir={"column"} px="24px" py="8px">
                                             <Text fontSize="xl" fontWeight="bold">{(collection.name).split(/[%$]/).join('')}</Text>
                                             <Wrap>
                                                 {collection.tags?.map((tag: string) => {
-                                                    return (
-                                                        <Badge colorScheme={"purple"} mr={2} key={uuidv4()}>{tag}</Badge>
-                                                    )
+                                                    if (yellowTags.includes(tag)) {
+                                                        return (
+                                                            <Badge colorScheme={"yellow"} mr={2} key={uuidv4()}>{tag}</Badge>
+                                                        )
+                                                    } else if (purpleTags.includes(tag)) {
+                                                        return (
+                                                            <Badge colorScheme={"purple"} mr={2} key={uuidv4()}>{tag}</Badge>
+                                                        )
+                                                    }
                                                 })}
                                             </Wrap>
                                             <Text mt={3} fontSize="m">{collection.summary}</Text>

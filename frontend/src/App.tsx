@@ -17,7 +17,6 @@ import theme from "./theme"
 import NavBar from './Components/Navbar';
 import LeftLinks from './Components/AppSubComponents/LeftLinks';
 import RightLinks from './Components/AppSubComponents/RightLinks';
-// Yes 
 
 function App() {
 
@@ -28,13 +27,13 @@ function App() {
             <Provider store={store}>
                 <PersistGate loading={null} persistor={persistor}>
                     <BrowserRouter>
-                        <Box position={"relative"} overflowY="hidden" maxW="100vw">
+                        <Box overflowX={"clip"} maxW="99vw">
                             <NavBar />
                             <Center>
-                                <Flex>
+                                <Flex position="static">
                                     <LeftLinks />
                                     <Center alignItems={"center"} mx={3} display="flex" justifyContent={"flex-start"} flexDirection="column" 
-                                        borderWidth='1px' borderY={"none"} minW="768px" maxW="768px" minHeight={"94vh"}>
+                                        borderWidth='1px' py={10} borderY={"none"} minW="768px" maxW="768px" minHeight={"94vh"}>
                                         <Routes>
                                             <Route path ='/' element={<Home/>}/>
                                             <Route path ='/createUser' element={<CreateUser/>} />

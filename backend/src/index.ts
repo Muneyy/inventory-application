@@ -2,7 +2,7 @@ import express = require('express');
 const router = express.Router();
 import cors = require('cors');
 import 'dotenv/config';
-import mongoose from 'mongoose';
+import mongoose, { Collection } from 'mongoose';
 import bcrypt = require('bcrypt');
 
 // import Routes
@@ -123,6 +123,7 @@ const { CloudinaryStorage } = require('multer-storage-cloudinary');
 import multer from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import { nextTick } from 'process';
+import Group from './Models/collection';
 const cloudStorage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
@@ -134,9 +135,9 @@ const cloudStorage = new CloudinaryStorage({
    
 const parser = multer({ storage: cloudStorage });
    
-app.post('/uploadAvatar', parser.single('image'), function (req: any, res, next) {
-    if (req.file) {
-        User.findByIdAndUpdate(req.body.userID,
+app.post('/uploadAvatar', parser.single('image'), function (req, res, next) {
+    if (req.file && req.body.userId) {
+        User.findByIdAndUpdate(req.body.userId,
             { $set: {avatarURL: `${req.file.path}`}},
             {},
             (err, user) => {
@@ -147,6 +148,20 @@ app.post('/uploadAvatar', parser.single('image'), function (req: any, res, next)
                     return res.send("Error. User not found.");
                 }
                 return res.send({msg: "Avatar successfully updated", user: user});
+            });
+    } else if (req.file && req.body.collectionId) {
+        console.log(req.body.collectionId);
+        Group.findByIdAndUpdate(req.body.collectionId,
+            { $set: {image_url: `${req.file.path}`}},
+            {},
+            (err, collection) => {
+                if (err) {
+                    return next(err);
+                }
+                if (collection === null) {
+                    return res.send("Error. Collection not found.");
+                }
+                return res.send({msg: "Image successfully uploaded", collection: collection});
             });
     }
 });

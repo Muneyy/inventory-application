@@ -39,16 +39,16 @@ function UploadAvatar(props: {
     const formik = useFormik({
         initialValues: {
             image: '',
-            userID: props.userId,
+            userId: props.userId,
         },
         onSubmit: async (values) => {
             setAvatarLoading(true);
 
             const formData = new FormData();
             formData.append("image", values.image);
-            formData.append("userID", props.userId)
+            formData.append("userId", props.userId)
 
-            console.log(formData);
+            console.log(values.image);
             await axios.post('http://localhost:3000/uploadAvatar', formData)
                 .then(res => {
                     console.log(res);
@@ -75,7 +75,8 @@ function UploadAvatar(props: {
                         accept={{
                             'image/png': ['.png'], 
                             'image/jpeg': ['.jpg', '.jpeg'],
-                            'image/gif': ['.gif'] 
+                            'image/gif': ['.gif'],
+                            'image/webp': ['.webp']
                         }}
                     >
                         {({ getRootProps, getInputProps, isDragActive }) => (

@@ -1,4 +1,4 @@
-import { Spinner, Flex, Checkbox, Divider, Container, Heading, Center, Text, Button, Stack, Link, Select, Alert, AlertDescription, AlertIcon, AlertTitle, CheckboxGroup, Tag, Textarea } from '@chakra-ui/react'
+import { Spinner, Box, Flex, Checkbox, Divider, Container, Heading, Center, Text, Button, Stack, Link, Select, Alert, AlertDescription, AlertIcon, AlertTitle, CheckboxGroup, Tag, Textarea } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
@@ -6,12 +6,18 @@ import {useNavigate} from 'react-router-dom';
 import { FormControl, FormLabel, FormErrorMessage, FormHelperText, Input } from '@chakra-ui/react';
 import { useFormik } from "formik";
 import * as Yup from 'yup';
+import Dropzone from "react-dropzone";
 import { useAppSelector } from '../app/hooks';
 
 function CreateCollection () {
-    const [loading, setLoading] = useState(1);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [submitting, setSubmitting] = useState<boolean>(false);
     const navigate = useNavigate();
     const [reqData, setReqData] = useState([]);
+    // filename for react dropzone
+    const [fileName, setFileName] = useState<string>("");
+    // check if picture has been uploaded
+    const [uploadedPicture, setUploadedPicture] = useState<boolean>(false);
 
     // Retrieve logged in user state and JWT token from Redux
     const currentUser = useAppSelector(state => state.currentUser);
@@ -28,6 +34,20 @@ function CreateCollection () {
         tokenJWT = token.returned[0];
     }
 
+    const availableTags = [
+        "anime",
+        "comics",
+        "cartoon",
+        "series",
+        "movie",
+        "k-pop",
+        "j-pop",
+        "p-pop",
+        "soloist",
+        "boy-group",
+        "girl-group",
+    ]
+
     const CollectionSchema = Yup.object().shape({
         name: Yup.string()
             .min(1, "Name must be between 1-20 characters")
@@ -35,10 +55,10 @@ function CreateCollection () {
             .required('Required'),
         summary: Yup.string()
             .min(1, "Summary must be between 1-40 characters")
-            .max(40, "Summary must be between 1-40 characters")
+            .max(200, "Summary must be between 1-40 characters")
             .required('Required'),
         tags: Yup.array()
-            .of(Yup.string())
+            .of(Yup.string().oneOf(availableTags, 'Invalid tag'))
             .min(1, "Please select at least one tag")
             .required("Please select at least one tag")
     })
@@ -54,26 +74,30 @@ function CreateCollection () {
             summary: "",
             tags: [
             ],
-            img_url: "",
+            image: "",
             user: "",
         },
         validationSchema: CollectionSchema,
-        onSubmit: (values) => {
+        onSubmit: async (values) => {
+            setSubmitting(true);
             const submitCollection = {
                 name: values.name,
                 summary: values.summary,
                 tags: values.tags,
-                img_url: values.img_url,
                 user: loggedinUser._id,
             }
 
-            console.log("This is what I am submitting:")
-            console.log(submitCollection)
+            await axios.post('http://localhost:3000/collections/post', submitCollection, JWTconfig)
+                .then(async res => {
+                    const imageUploadForm = new FormData();
+                    imageUploadForm.append("image", values.image);
+                    imageUploadForm.append("collectionId", res.data._id)
 
-            axios.post('http://localhost:3000/collections/post', submitCollection, JWTconfig)
-                .then(res => {
-                    console.log(res);
-                    navigate('/');
+                    await axios.post('http://localhost:3000/uploadAvatar', imageUploadForm, JWTconfig)
+                        .then(res => {
+                            console.log(res.data.msg);
+                            navigate('/');
+                        })
                 })
         }
     })
@@ -90,21 +114,15 @@ function CreateCollection () {
         fetchUsers()
     }, [])
 
-    const availableTags = [
-        "k-pop",
-        "j-pop",
-        "p-pop",
-        "soloist",
-        "boy-group",
-        "girl-group",
-    ]
+
 
     return(
+        // TODO: FIX: loading is not working as intended
         (loading)
             ? (
                 (currentUser.returned.length === 1)
                     ? (
-                        <>
+                        <Flex px={10}>
                             <form onSubmit={formik.handleSubmit}>
                                 <FormControl isRequired>
                                     <FormLabel>Name:</FormLabel>
@@ -183,16 +201,40 @@ function CreateCollection () {
                                     )}
                                 </FormControl>
                                 <Divider my="1rem"/>
-                                <FormControl>
-                                    <FormLabel>Image URL:</FormLabel>
-                                    <Input 
-                                        type="text" 
-                                        name="img_url" 
-                                        id="img_url" 
-                                        onChange={formik.handleChange}
-                                        value={formik.values.img_url} 
-                                    />
-                                    <FormHelperText>Optional. URL for your pfp.</FormHelperText>
+                                <FormControl isRequired w="md">
+                                    <FormLabel>Upload image for your profile picture here</FormLabel>
+                                    <Dropzone
+                                        onDrop={(acceptedFiles) => {
+                                            formik.setFieldValue('image', acceptedFiles[0]);
+                                            console.log(acceptedFiles[0]);
+                                            setUploadedPicture(true);
+                                            setFileName(acceptedFiles[0].name)
+                                        }}
+                                        // Accept only images of these filetypes
+                                        accept={{
+                                            'image/png': ['.png'], 
+                                            'image/jpeg': ['.jpg', '.jpeg'],
+                                            'image/gif': ['.gif'],
+                                            'image/webp': ['.webp']
+                                        }}
+                                    >
+                                        {({ getRootProps, getInputProps, isDragActive }) => (
+                                            <Box p={3} w="sm" borderStyle={"dashed"} borderWidth="1px" {...getRootProps()}>
+                                                <input {...getInputProps()} />
+                                                {isDragActive ? (
+                                                    <p>Drop the files here ...</p>
+                                                ) : (
+                                                    ((uploadedPicture)
+                                                        ? (
+                                                            <Text opacity={"80%"}>{fileName}</Text>
+                                                        )
+                                                        : (
+                                                            <Text opacity={"80%"}>Drag and drop your image here, or click to select an image.</Text>
+                                                        ))
+                                                )}
+                                            </Box>
+                                        )}
+                                    </Dropzone>
                                 </FormControl>
                                 <Divider my="1rem"/>
                                 <Select 
@@ -207,10 +249,12 @@ function CreateCollection () {
                                     <option key={uuidv4()} value={loggedinUser._id}>{loggedinUser.username}</option>
                                 </Select>
                                 <Divider my="1rem"/>
-                                <Button type='submit' colorScheme="teal">Create!</Button>
+                                <Button disabled={submitting} type='submit' colorScheme="teal">
+                                    {submitting ? <Spinner></Spinner> : <Text>Create</Text>}
+                                </Button>
                             </form>
                                
-                        </>
+                        </Flex>
                     ) : (
                         <Center>
                             <Alert status='error' borderRadius={"3xl"}>

@@ -64,26 +64,35 @@ type collectionReq = {
     }
 }
 
+const availableTags = [
+    "anime",
+    "comics",
+    "cartoon",
+    "series",
+    "movie",
+    "k-pop",
+    "j-pop",
+    "p-pop",
+    "soloist",
+    "boy-group",
+    "girl-group",
+];
+
 exports.post_collection = [
     body('name', 'Name must be specified.')
         .trim()
-        .isLength( {min: 1, max: 20})
+        .isLength({min: 1, max: 20})
         .escape(),
     body('summary', 'Summary must be specified.')
         .trim()
-        .isLength( {min: 1, max: 40})
+        .isLength({min: 1, max: 200})
         .escape(),
     body('tags', 'Tags must not be empty.')
         .isArray()
         .notEmpty()
-        .isIn([
-            "k-pop",
-            "j-pop",
-            "p-pop",
-            "soloist",
-            "boy-group",
-            "girl-group",
-        ]),
+        // This validation returns a CastError: Cast to ObjectId failed for 
+        // value "undefined" (type string) at path "_id" for model "Group"
+        .isIn(availableTags),
     body('image_url', 'Invalid URL for image.')
         .optional({ checkFalsy: true })
         .trim()
@@ -113,7 +122,7 @@ exports.post_collection = [
                 if (err) {
                     return next(err);
                 }
-                res.send("Group successfully saved!");
+                res.send(group);
             });
         }
 
