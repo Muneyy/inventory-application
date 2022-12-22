@@ -14,7 +14,9 @@ import { SettingsIcon } from '@chakra-ui/icons';
 import persistStore from 'redux-persist/es/persistStore';
 import store from '../../app/store';
 
-const SettingsModal = () => {
+const SettingsModal = (props: {
+    loggedinUser: any
+}) => {
 
     // Logout user and then reload
     const persistor = persistStore(store);
@@ -38,9 +40,16 @@ const SettingsModal = () => {
                     <ModalCloseButton />
                     <ModalBody>
                     </ModalBody>
-                    <ModalFooter>
-                        <Button size="md" onClick={logoutUser} colorScheme="red"> Logout </Button>
-                    </ModalFooter>
+                    {(props.loggedinUser._id)
+                        ? (
+                            <ModalFooter>
+                                <Button size="md" onClick={logoutUser} colorScheme="red"> Log Out </Button>
+                            </ModalFooter>
+                        )
+                        : (
+                            <ModalFooter>
+                            </ModalFooter>
+                        )}
                 </ModalContent>
             </Modal>
         </>

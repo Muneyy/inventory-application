@@ -28,7 +28,8 @@ function App() {
             <Provider store={store}>
                 <PersistGate loading={null} persistor={persistor}>
                     <BrowserRouter>
-                        <Box overflowX={"clip"} maxW="99vw">
+                        {/* prevent scrollbar from messing up width of the page */}
+                        <Box overflowX={"clip"} maxW="calc(100vw - 1em)" >
                             <NavBar />
                             <Center>
                                 <Flex position="static">

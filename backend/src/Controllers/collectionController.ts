@@ -10,6 +10,7 @@ const router = express.Router();
 
 exports.collections = (req: Request, res: Response, next: any) => {
     Group.find()
+        .sort([['createdAt', 'descending']])
         .populate({
             path: 'user',
             model: User,

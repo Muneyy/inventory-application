@@ -1,13 +1,24 @@
-import { Flex, Image, Center, Spinner, Text, Alert, AlertDescription, AlertIcon, AlertTitle, Avatar, Wrap, Heading, Box } from '@chakra-ui/react';
+import { ArrowForwardIcon, PlusSquareIcon } from '@chakra-ui/icons';
+import { Flex, Image, Center, Spinner, Text, Alert, AlertDescription, AlertIcon, AlertTitle, Avatar, Wrap, Heading, Box, Button } from '@chakra-ui/react';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Link as RouteLink } from 'react-router-dom';
 import { useParams } from 'react-router-dom'
+import { useAppSelector } from '../app/hooks';
 
 function CollectionPage() {
     const { collectionId } = useParams();
     const [loadingDone, setLoadingDone] = useState<boolean>(false);
     const [fetchedCollection, setFetchedCollection] = useState<CollectionType>();
+
+    // Retrieve logged in user state and JWT token from Redux
+    const currentUser = useAppSelector(state => state.currentUser);
+    let loggedinUser: any = {};
+    
+    // Refactor code for convenience
+    if (currentUser.returned.length === 1) {
+        loggedinUser = currentUser.returned[0];
+    }
 
     type CollectionType = {
         name: string,
@@ -63,6 +74,18 @@ function CollectionPage() {
                             <Flex flexDir={"column"} p={10}>
                                 <Heading size="lg">{fetchedCollection.name}</Heading>
                                 <Text size="sm">{fetchedCollection.summary}</Text>
+                                {(fetchedCollection.user._id === loggedinUser._id)
+                                    ? (
+                                        <RouteLink to={`/${fetchedCollection.user._id}/createitem`} style={{ textDecoration: 'none' }}>
+                                            <Button borderRadius="3xl" size="sm" rightIcon={<PlusSquareIcon />} colorScheme="teal">
+                                        Add Item
+                                            </Button>
+                                        </RouteLink>
+                                    )
+                                    : (
+                                        null
+                                    )
+                                }
                             </Flex>
                         </Flex>
                     )

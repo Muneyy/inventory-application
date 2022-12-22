@@ -110,11 +110,11 @@ function Home() {
                                                 {collection.tags?.map((tag: string) => {
                                                     if (yellowTags.includes(tag)) {
                                                         return (
-                                                            <Badge colorScheme={"yellow"} mr={2} key={uuidv4()}>{tag}</Badge>
+                                                            <Badge borderRadius={"lg"} colorScheme={"yellow"} mr={2} key={uuidv4()}>{tag}</Badge>
                                                         )
                                                     } else if (purpleTags.includes(tag)) {
                                                         return (
-                                                            <Badge colorScheme={"purple"} mr={2} key={uuidv4()}>{tag}</Badge>
+                                                            <Badge borderRadius={"lg"} colorScheme={"purple"} mr={2} key={uuidv4()}>{tag}</Badge>
                                                         )
                                                     }
                                                 })}
