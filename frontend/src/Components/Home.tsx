@@ -119,7 +119,7 @@ function Home() {
                                                     }
                                                 })}
                                             </Wrap>
-                                            <Text mt={3} fontSize="m">{collection.summary}</Text>
+                                            <Text mt={3} fontSize="m">{`${collection.summary}`}</Text>
                                             <Wrap bottom="5" position="absolute" mt={3} alignSelf={"flex-end"}>
                                                 <RouteLink to={`/${collection.user._id}`}  style={{ textDecoration: 'none' }}>
                                                     <Wrap>

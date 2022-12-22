@@ -93,7 +93,7 @@ exports.post_collection = [
         .trim()
         .isLength({min: 1, max: 200})
         .escape(),
-    body('tags', 'Tags must not be empty.')
+    body('tags', 'Tags must not be empty and valid.')
         .isArray()
         .notEmpty()
         // This validation returns a CastError: Cast to ObjectId failed for 

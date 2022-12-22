@@ -7,8 +7,12 @@ const collection_controller = require('../Controllers/collectionController');
 const user_controller = require('../Controllers/userController');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const friend_controller = require('../Controllers/friendController');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const item_controller = require('../Controllers/itemController');
 
 router.post('/collections/post', collection_controller.post_collection);
+
+router.post('/items/post', item_controller.post_item);
 
 router.post('/friends/sendFriendRequest', friend_controller.send_friend_request);
 

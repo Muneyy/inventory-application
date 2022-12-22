@@ -17,15 +17,20 @@ const itemSchema = new Schema(
                 "photocard",
                 "lightstick",
                 "album",
-                "boy group",
-                "girl group",
                 "poster",
                 "film",
                 "cd",
                 "ticket",
+                "card",
+                "peripheral",
+                "stationery",
             ],
         }],
-        images_url: [{
+        price: {
+            type: Number,
+            required: true,
+        },
+        images_urls: [{
             type: String,
         }],
         group: {

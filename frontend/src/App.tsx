@@ -18,6 +18,7 @@ import NavBar from './Components/Navbar';
 import LeftLinks from './Components/AppComponents/LeftLinks';
 import RightLinks from './Components/AppComponents/RightLinks';
 import CollectionPage from './Components/CollectionPage';
+import CreateItem from './Components/CreateItem';
 
 function App() {
 
@@ -40,6 +41,7 @@ function App() {
                                             <Route path ='/' element={<Home/>}/>
                                             <Route path ='/createUser' element={<CreateUser/>} />
                                             <Route path ='/createCollection' element={<CreateCollection/>} />
+                                            <Route path='/collections/:collectionId/createItem' element={<CreateItem/>} />
                                             <Route path ='/login' element={<LogIn/>} />
                                             <Route path ='/profile' element={<Profile/>} />
                                             <Route path='/:userId' element={<UserProfile/>} />

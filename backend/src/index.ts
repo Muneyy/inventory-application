@@ -124,6 +124,7 @@ import multer from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import { nextTick } from 'process';
 import Group from './Models/collection';
+import Item from './Models/item';
 const cloudStorage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
@@ -136,6 +137,7 @@ const cloudStorage = new CloudinaryStorage({
 const parser = multer({ storage: cloudStorage });
    
 app.post('/uploadAvatar', parser.single('image'), function (req, res, next) {
+    // ROUTE FOR USER PROFILE PICTURE/AVATAR
     if (req.file && req.body.userId) {
         User.findByIdAndUpdate(req.body.userId,
             { $set: {avatarURL: `${req.file.path}`}},
@@ -149,8 +151,8 @@ app.post('/uploadAvatar', parser.single('image'), function (req, res, next) {
                 }
                 return res.send({msg: "Avatar successfully updated", user: user});
             });
+    // ROUTE FOR POSTING A GROUP/COLLECTION IMAGE
     } else if (req.file && req.body.collectionId) {
-        console.log(req.body.collectionId);
         Group.findByIdAndUpdate(req.body.collectionId,
             { $set: {image_url: `${req.file.path}`}},
             {},
@@ -163,6 +165,23 @@ app.post('/uploadAvatar', parser.single('image'), function (req, res, next) {
                 }
                 return res.send({msg: "Image successfully uploaded", collection: collection});
             });
+    // ROUTE FOR POSTING AN ITEM IMAGE
+    } else if (req.file && req.body.itemId) {
+        console.log(req.file.path);
+        console.log(req.body.itemId);
+        Item.findByIdAndUpdate(req.body.itemId,
+            { $push: {images_urls: `${req.file.path}`}},
+            {},
+            (err, collection) => {
+                if (err) {
+                    return next(err);
+                }
+                if (collection === null) {
+                    return res.send("Error. Collection not found.");
+                }
+                return res.send({msg: "Item image successfully uploaded", collection: collection});
+            });
+
     }
 });
 // Cloudinary Config END

@@ -30,6 +30,7 @@ function CollectionPage() {
             username: string,
             avatarURL: string,
         },
+        _id: string,
     }
 
     useEffect(() => {
@@ -76,9 +77,9 @@ function CollectionPage() {
                                 <Text size="sm">{fetchedCollection.summary}</Text>
                                 {(fetchedCollection.user._id === loggedinUser._id)
                                     ? (
-                                        <RouteLink to={`/${fetchedCollection.user._id}/createitem`} style={{ textDecoration: 'none' }}>
+                                        <RouteLink to={`/collections/${fetchedCollection._id}/createitem`} style={{ textDecoration: 'none' }}>
                                             <Button borderRadius="3xl" size="sm" rightIcon={<PlusSquareIcon />} colorScheme="teal">
-                                        Add Item
+                                                Add Item
                                             </Button>
                                         </RouteLink>
                                     )
