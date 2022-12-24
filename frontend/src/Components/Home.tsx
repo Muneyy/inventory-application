@@ -88,54 +88,51 @@ function Home() {
     return (
         (loading)
             ? (
-                <>
-                    <Center display="flex" mt={2} flexDirection="column">
-                        <Heading size="m">Current Collections:</Heading>
-                        <Grid templateColumns={"1fr"}>
-                            {reqCollectionData.map((collection:any) => {
-                                return (
-                                    <Grid borderWidth='1px' key={uuidv4()} templateColumns={"1fr 2fr"}>
-                                        <Image
-                                            w="300px"
-                                            h="200px"
-                                            objectFit='cover'
-                                            src={collection.image_url}
-                                            alt='Collection'
-                                        />
-                                        <Container position="relative" display="flex" flexDir={"column"} px="24px" py="8px">
-                                            <RouteLink to={`collections/${collection._id}`}  style={{ textDecoration: 'none' }}>
-                                                <Text fontSize="xl" fontWeight="bold">{(collection.name).split(/[%$]/).join('')}</Text>
+                <Center position={"relative"} top={-10} display="flex" flexDirection="column">
+                    <Grid templateColumns={"1fr"}>
+                        {reqCollectionData.map((collection:any) => {
+                            return (
+                                <Grid borderBottomWidth='1px' key={uuidv4()} templateColumns={"1fr 2fr"}>
+                                    <Image
+                                        w="300px"
+                                        h="200px"
+                                        objectFit='cover'
+                                        src={collection.image_url}
+                                        alt='Collection'
+                                    />
+                                    <Container position="relative" display="flex" flexDir={"column"} px="24px" py="8px">
+                                        <RouteLink to={`collections/${collection._id}`}  style={{ textDecoration: 'none' }}>
+                                            <Text fontSize="xl" fontWeight="bold">{(collection.name).split(/[%$]/).join('')}</Text>
+                                        </RouteLink>
+                                        <Wrap>
+                                            {collection.tags?.map((tag: string) => {
+                                                if (yellowTags.includes(tag)) {
+                                                    return (
+                                                        <Badge borderRadius={"lg"} colorScheme={"yellow"} mr={2} key={uuidv4()}>{tag}</Badge>
+                                                    )
+                                                } else if (purpleTags.includes(tag)) {
+                                                    return (
+                                                        <Badge borderRadius={"lg"} colorScheme={"purple"} mr={2} key={uuidv4()}>{tag}</Badge>
+                                                    )
+                                                }
+                                            })}
+                                        </Wrap>
+                                        <Text mt={3} fontSize="m">{`${collection.summary}`}</Text>
+                                        <Wrap bottom="5" position="absolute" mt={3} alignSelf={"flex-end"}>
+                                            <RouteLink to={`/${collection.user._id}`}  style={{ textDecoration: 'none' }}>
+                                                <Wrap>
+                                                    <Avatar size="xs" src={collection.user.avatarURL} />
+                                                    <Text fontSize="m">{collection.user.username}</Text>
+                                                </Wrap>
                                             </RouteLink>
-                                            <Wrap>
-                                                {collection.tags?.map((tag: string) => {
-                                                    if (yellowTags.includes(tag)) {
-                                                        return (
-                                                            <Badge borderRadius={"lg"} colorScheme={"yellow"} mr={2} key={uuidv4()}>{tag}</Badge>
-                                                        )
-                                                    } else if (purpleTags.includes(tag)) {
-                                                        return (
-                                                            <Badge borderRadius={"lg"} colorScheme={"purple"} mr={2} key={uuidv4()}>{tag}</Badge>
-                                                        )
-                                                    }
-                                                })}
-                                            </Wrap>
-                                            <Text mt={3} fontSize="m">{`${collection.summary}`}</Text>
-                                            <Wrap bottom="5" position="absolute" mt={3} alignSelf={"flex-end"}>
-                                                <RouteLink to={`/${collection.user._id}`}  style={{ textDecoration: 'none' }}>
-                                                    <Wrap>
-                                                        <Avatar size="xs" src={collection.user.avatarURL} />
-                                                        <Text fontSize="m">{collection.user.username}</Text>
-                                                    </Wrap>
-                                                </RouteLink>
-                                            </Wrap>
-                                        </Container>
-                                    </Grid>
-                                )
-                            })}
-                        </Grid>
+                                        </Wrap>
+                                    </Container>
+                                </Grid>
+                            )
+                        })}
+                    </Grid>
 
-                    </Center>
-                </>
+                </Center>
             )
             : (
                 <div>

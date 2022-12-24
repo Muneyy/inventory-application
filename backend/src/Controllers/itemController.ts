@@ -2,14 +2,20 @@ import express = require('express');
 import Item from '../Models/item';
 import async = require('async');
 import { Request, Response } from "express";
+import User from '../Models/user';
 import { body, validationResult } from 'express-validator';
 
 const router = express.Router();
 
 exports.items = (req: Request, res: Response, next: any) => {
-    Item.find()
+    Item.find({group: req.params.groupId})
         .populate('group')
-        .sort([['name', 'ascending']])
+        .populate({
+            path: 'user',
+            model: User,
+            select: ['username', 'handle', 'avatarURL'],
+        })
+        .sort([['createdAt', 'descending']])
         .exec((err, list_item) => {
             if (err) {
                 return next(err);

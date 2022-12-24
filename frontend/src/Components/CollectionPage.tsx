@@ -4,12 +4,30 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Link as RouteLink } from 'react-router-dom';
 import { useParams } from 'react-router-dom'
+import { v4 } from 'uuid';
 import { useAppSelector } from '../app/hooks';
+import ItemCard from './ItemCard';
 
 function CollectionPage() {
     const { collectionId } = useParams();
     const [loadingDone, setLoadingDone] = useState<boolean>(false);
     const [fetchedCollection, setFetchedCollection] = useState<CollectionType>();
+    const [fetchedCollectionItems, setFetchedCollectionItems] = useState<ItemType[]>([]);
+
+    type ItemType = {
+        name: string,
+        description: string,
+        tags: string[],
+        price: number,
+        images_urls: string[],
+        group: string,
+        user: {
+            avatarURL: string,
+            username: string,
+            handle: string,
+            _id: string,
+        },
+    }
 
     // Retrieve logged in user state and JWT token from Redux
     const currentUser = useAppSelector(state => state.currentUser);
@@ -41,6 +59,11 @@ function CollectionPage() {
                         // collection and group are sometimes the same thing
                         // since collection is a reserved keyword in mongoDB
                         setFetchedCollection(res.data.group);
+                    })
+                await axios.get(`http://localhost:3000/collections/${collectionId}/items`)
+                    .then(res => {
+                        // fetch items from this collection
+                        setFetchedCollectionItems(res.data)
                     })
                 setLoadingDone(true);
             } catch (error) {
@@ -88,6 +111,17 @@ function CollectionPage() {
                                     )
                                 }
                             </Flex>
+                            {(fetchedCollectionItems)
+                                ? (
+                                    fetchedCollectionItems.map((item: ItemType) => {
+                                        return (
+                                            <ItemCard key={v4()} item={item} />
+                                        )
+                                    })
+                                )
+                                : (
+                                    <Heading>No items have been added to this collection yet.</Heading>
+                                )}
                         </Flex>
                     )
                     : (
