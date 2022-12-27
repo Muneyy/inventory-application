@@ -14,7 +14,7 @@ function FriendsDrawer(props: {
             placement='right'
             onClose={props.onClose}
             finalFocusRef={props.btnRef}
-            size="sm"
+            size="xs"
         >
             <DrawerOverlay />
             <DrawerContent>
@@ -40,9 +40,9 @@ function FriendsDrawer(props: {
                                                         <Avatar size={"md"}></Avatar>
                                                     )}
                                                 <Flex flex="1" overflow="hidden" flexDir={"column"}>
-                                                    <Text fontSize="xl" fontWeight="bold">{friend.recipient.username}</Text>
-                                                    <Text fontSize="sm" color="gray">@{friend.recipient.handle}</Text>
-                                                    <Button maxWidth={"80px"} size ="sm" colorScheme="pink" disabled> Friend </Button>
+                                                    <Text fontSize="lg" fontWeight="bold">{friend.recipient.username}</Text>
+                                                    <Text fontSize="xs" color="gray">@{friend.recipient.handle}</Text>
+                                                    <Button maxWidth={"80px"} size ="xs" colorScheme="pink" disabled> Friend </Button>
                                                 </Flex>
                                             </Flex>
                                         </Container>

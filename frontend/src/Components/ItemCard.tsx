@@ -58,8 +58,10 @@ function ItemCard(props: {
                             <SwiperSlide key={v4()}>
                                 {/* Import chakra ui Image as ChakraImage to avoid overlap with Image() */}
                                 <ChakraImage
-                                    w="762px"
-                                    h="600px"
+                                    // Size of the image
+                                    // TODO: make image size dynamic
+                                    w="570px"
+                                    h="590px"
                                     objectFit='cover'
                                     src={image_url}
                                     alt={`Item from ${image_url}`}

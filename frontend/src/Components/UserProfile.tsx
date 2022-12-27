@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { Spinner, Container, Image, Heading, Center, Text, Button, Stack, Link, Grid, FormLabel, FormControl, useDisclosure, Collapse, Box, Flex, GridItem, Circle, Avatar, AvatarBadge, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, Input, Alert, AlertDescription, AlertIcon, AlertTitle } from '@chakra-ui/react'
+import { Spinner, Container, Image, Heading, Center, Text, Button, Stack, Link, Grid, FormLabel, FormControl, useDisclosure, Collapse, Box, Flex, GridItem, Circle, Avatar, AvatarBadge, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, Input, Alert, AlertDescription, AlertIcon, AlertTitle, useMediaQuery } from '@chakra-ui/react'
 import {ArrowForwardIcon, CheckIcon} from '@chakra-ui/icons'
 import { login, logout } from '../Features/currentUserSlice';
 import { useAppSelector, useAppDispatch } from '../app/hooks'
@@ -9,6 +9,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import {Link as RouteLink} from "react-router-dom";
 import { CheckCircleIcon } from '@chakra-ui/icons'
 import FriendAction from './Buttons/FriendAction';
+import LoadingPage from './LoadingPage';
 
 function UserProfile () {
     const [loading, setLoading] = useState(0);
@@ -145,18 +146,26 @@ function UserProfile () {
     // TODO: Fix bug/ Add functionality
     // Frontend does not determine who sent/received friend request
 
+    const [isSmallScreen] = useMediaQuery("(max-width: 570px)");
+    const [width, setWidth] = useState(isSmallScreen ? "100vw" : "570px");
+  
+    useEffect(() => {
+        setWidth(isSmallScreen ? "100vw" : "570px");
+    }, [isSmallScreen]);
+
     return (
         (loading) 
             ?   (
                 (fetchedUser) 
                     ? (
-                        <Grid ml={10} alignSelf={"flex-start"} templateColumns={"260px 1fr"} gap={4}>
+                        <Grid position="relative" top={-10} w={width} alignSelf={"flex-start"} alignContent="space-between" 
+                            templateColumns={"40% 1fr"} alignItems={"center"} gap={1} borderBottomWidth="1px">
                             <GridItem display={"flex"} alignItems="center" justifyContent={"center"} p={5}>
                                 {(fetchedUser.avatarURL) 
                                     ? (
                                         <Image
                                             borderRadius='full'
-                                            boxSize='200px'
+                                            boxSize='150px'
                                             src={fetchedUser.avatarURL}
                                             objectFit="cover"
                                             alt='Avatar'/>
@@ -166,9 +175,9 @@ function UserProfile () {
                                     )}
                             </GridItem>
                             <GridItem display={"flex"} justifyContent="center" alignItems="start" p={5} flexDir="column">
-                                <Text fontSize="5xl" fontWeight={700}>{fetchedUser.username}</Text>
-                                <Text fontSize={"sm"} fontWeight={300}>@{fetchedUser.handle}</Text>
-                                <Text fontSize={"md"} fontWeight={500}>{fetchedUser.bio}</Text>
+                                <Text fontSize="2xl" fontWeight={700}>{fetchedUser.username}</Text>
+                                <Text fontSize={"xs"} fontWeight={300}>@{fetchedUser.handle}</Text>
+                                <Text fontSize={"sm"} fontWeight={500}>{fetchedUser.bio}</Text>
                                 {/* TODO: remove add friend button if user is not logged in. */}
 
                                 {(loggedinUser._id)
@@ -220,10 +229,7 @@ function UserProfile () {
                     )
             ) 
             : (
-                <Center mt={"5rem"} display="flex" flexDir={"column"}>
-                    <Spinner />
-                    <Text>Loading...</Text>
-                </Center>
+                <LoadingPage/>
             )
     )
 }

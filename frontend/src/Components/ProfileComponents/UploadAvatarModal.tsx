@@ -25,7 +25,7 @@ const UploadAvatarModal = (props: {
     const { isOpen, onOpen, onClose } = useDisclosure()
     return (
         <>
-            <Button colorScheme={"pink"} mt={2} size="sm" onClick={onOpen}>
+            <Button colorScheme={"pink"} mt={2} size="xs" onClick={onOpen}>
                 <Icon mr={2} as={AiOutlinePicture} />
                 <Text>Change Profile Picture</Text>
             </Button>

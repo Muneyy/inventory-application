@@ -1,18 +1,25 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { Spinner, Wrap, Image, Container, Heading, Center, Text, Button, Stack, Link, Grid, FormLabel, FormControl, useDisclosure, Collapse, Box, Flex, Avatar, Badge } from '@chakra-ui/react'
+import { Spinner, Wrap, Image, Container, Heading, useMediaQuery, Center, Text, Button, Stack, Link, Grid, FormLabel, FormControl, useDisclosure, Collapse, Box, Flex, Avatar, Badge } from '@chakra-ui/react'
 import {ArrowForwardIcon} from '@chakra-ui/icons'
 import { useAppSelector, useAppDispatch } from '../app/hooks'
 import { useNavigate } from 'react-router-dom';
 import {Link as RouteLink} from "react-router-dom";
 import persistStore from 'redux-persist/es/persistStore';
 import store from '../app/store';
+import LoadingPage from './LoadingPage';
 
 
 function Home() {
     const [loading, setLoading] = useState(0);
     const [reqCollectionData, setReqCollectionData] = useState<any>([]);
+    const [isSmallScreen] = useMediaQuery("(max-width: 570px)");
+    const [width, setWidth] = useState(isSmallScreen ? "100vw" : "570px");
+  
+    useEffect(() => {
+        setWidth(isSmallScreen ? "100vw" : "570px");
+    }, [isSmallScreen]);
 
     // Retrieve logged in user state and JWT token from Redux
     const currentUser = useAppSelector(state => state.currentUser);
@@ -88,7 +95,7 @@ function Home() {
     return (
         (loading)
             ? (
-                <Center position={"relative"} top={-10} display="flex" flexDirection="column">
+                <Center position={"relative"} w={width} top={-10} display="flex" flexDirection="column">
                     <Grid templateColumns={"1fr"}>
                         {reqCollectionData.map((collection:any) => {
                             return (
@@ -135,14 +142,7 @@ function Home() {
                 </Center>
             )
             : (
-                <div>
-                    <h1>
-                        <Center mt={"5rem"} display="flex" flexDir={"column"}>
-                            <Spinner />
-                            <Text>Loading...</Text>
-                        </Center>
-                    </h1>
-                </div>
+                <LoadingPage />
             )
     );
 

@@ -1,4 +1,4 @@
-import { Spinner, Box, Flex, Checkbox, Divider, Container, Heading, Center, Text, Button, Stack, Link, Select, Alert, AlertDescription, AlertIcon, AlertTitle, CheckboxGroup, Tag, Textarea } from '@chakra-ui/react'
+import { Spinner, Box, Flex, Checkbox, Divider, Container, Heading, Center, Text, Button, Stack, Link, Select, Alert, AlertDescription, AlertIcon, AlertTitle, CheckboxGroup, Tag, Textarea, useMediaQuery } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
@@ -8,6 +8,7 @@ import { useFormik } from "formik";
 import * as Yup from 'yup';
 import Dropzone from "react-dropzone";
 import { useAppSelector } from '../app/hooks';
+import LoadingPage from './LoadingPage';
 
 function CreateCollection () {
     const [loading, setLoadingDone] = useState<boolean>(false);
@@ -136,11 +137,11 @@ function CreateCollection () {
                         await axios.post('http://localhost:3000/uploadAvatar', imageUploadForm, JWTconfig)
                             .then(res => {
                                 console.log(res.data.msg);
-                                setSubmitting(false);
                             })
                     }
-                    // navigate('/');
                 })
+            setSubmitting(false);
+            navigate(`/collections/${collectionId}`);
         }
     })
 
@@ -156,7 +157,12 @@ function CreateCollection () {
         fetchUsers()
     }, [])
 
-
+    const [isSmallScreen] = useMediaQuery("(max-width: 570px)");
+    const [width, setWidth] = useState(isSmallScreen ? "100vw" : "570px");
+  
+    useEffect(() => {
+        setWidth(isSmallScreen ? "100vw" : "570px");
+    }, [isSmallScreen]);
 
     return(
         // TODO: FIX: loading is not working as intended
@@ -164,7 +170,7 @@ function CreateCollection () {
             ? (
                 (currentUser.returned.length === 1)
                     ? (
-                        <Flex px={10}>
+                        <Flex w={width} px={10}>
                             <form onSubmit={formik.handleSubmit}>
                                 <FormControl isRequired>
                                     <FormLabel>Name:</FormLabel>
@@ -262,7 +268,7 @@ function CreateCollection () {
                                     )}
                                 </FormControl>
                                 <Divider my="1rem"/>
-                                <FormControl isRequired w="md">
+                                <FormControl isRequired>
                                     <FormLabel>Upload images for your item here:</FormLabel>
                                     <Dropzone
                                         onDrop={ (acceptedFilesArray) => {
@@ -283,7 +289,7 @@ function CreateCollection () {
                                         }}
                                     >
                                         {({ getRootProps, getInputProps, isDragActive }) => (
-                                            <Box p={3} w="sm" borderStyle={"dashed"} borderWidth="1px" {...getRootProps()}>
+                                            <Box p={3} borderStyle={"dashed"} borderWidth="1px" {...getRootProps()}>
                                                 <input {...getInputProps()} multiple />
                                                 {isDragActive ? (
                                                     <p>Drop the files here ...</p>
@@ -358,9 +364,7 @@ function CreateCollection () {
             )
             : (
 
-                <Center mt={"5rem"}>
-                    <Spinner />
-                </Center>
+                <LoadingPage />
 
             )
     );

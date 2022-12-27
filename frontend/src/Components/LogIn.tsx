@@ -1,4 +1,4 @@
-import { Spinner, Divider, Container, Heading, Center, Text, Button, Stack, Link, Flex } from '@chakra-ui/react'
+import { Spinner, Divider, Container, Heading, Center, Text, Button, Stack, Link, Flex, useMediaQuery, Box } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
@@ -36,6 +36,13 @@ function LogIn () {
                 })
         }
     })
+    
+    const [isSmallScreen] = useMediaQuery("(max-width: 570px)");
+    const [width, setWidth] = useState(isSmallScreen ? "100vw" : "570px");
+  
+    useEffect(() => {
+        setWidth(isSmallScreen ? "100vw" : "570px");
+    }, [isSmallScreen]);
 
     return (
         (currentUser) 
@@ -45,11 +52,11 @@ function LogIn () {
                 </Center>
             )
             : (
-                <>
-                    <Heading size='2xl' fontWeight="extrabold">Log In</Heading>
+                <Box p={5} width={width} display="flex" flexDir={"column"}>
+                    <Heading size='xl' fontWeight="extrabold">Log In</Heading>
                     <form onSubmit={formik.handleSubmit}>
                         <Flex flexDir={"column"}>
-                            <FormControl isRequired w="md">
+                            <FormControl isRequired>
                                 <FormLabel>Username:</FormLabel>
                                 <Input
                                     type="text"
@@ -74,7 +81,7 @@ function LogIn () {
                             <Button alignSelf="flex-end" justifySelf="flex-end" mt={5} type='submit' colorScheme="teal">Login</Button>
                         </Flex>
                     </form>
-                </>
+                </Box>
 
             )
     )

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { Spinner, Image, Container, Heading, Center, Text, Button, Stack, Link, Grid, FormLabel, FormControl, useDisclosure, Collapse, Box, Flex, Avatar } from '@chakra-ui/react'
+import { Spinner, useMediaQuery, Image, Container, Heading, Center, Text, Button, Stack, Link, Grid, FormLabel, FormControl, useDisclosure, Collapse, Box, Flex, Avatar } from '@chakra-ui/react'
 import {ArrowForwardIcon} from '@chakra-ui/icons'
 import { login, logout } from '../Features/currentUserSlice';
 import { useAppSelector, useAppDispatch } from '../app/hooks'
@@ -13,6 +13,7 @@ import { userInfo } from 'os';
 
 import persistStore from 'redux-persist/es/persistStore';
 import store from '../app/store';
+import LoadingPage from './LoadingPage';
 
 
 
@@ -53,16 +54,23 @@ function UsersList() {
         fetchData();
     }, []);
 
+    const [isSmallScreen] = useMediaQuery("(max-width: 570px)");
+    const [width, setWidth] = useState(isSmallScreen ? "100vw" : "570px");
+  
+    useEffect(() => {
+        setWidth(isSmallScreen ? "100vw" : "570px");
+    }, [isSmallScreen]);
+
     return (
         (loading)
             ? (
-                <>
-                    <Heading fontSize="5xl" fontWeight="extrabold">
+                <Box width={width} display="flex" flexDir={"column"} alignItems="center">
+                    <Heading fontSize="2xl" fontWeight="extrabold">
                                 Current Users
                     </Heading>
                     {/* Displays current users */}
                     <Center flexDirection="column">
-                        <Grid templateColumns={"repeat(3, 1fr)"}>
+                        <Grid templateColumns={"repeat(2, 1fr)"}>
                             {reqUserData.map((user:any) => {
                                 return (
                                     (currentUser.returned.length === 1)
@@ -76,7 +84,7 @@ function UsersList() {
                                             // TODO: move this to a separate card component :D
                                                     // Do not display logged in user in list of current users
                                                     <RouteLink key={uuidv4()} to={`/${user._id}`}  style={{ textDecoration: 'none' }}>
-                                                        <Container key={uuidv4()} borderWidth='1px' borderRadius='lg' mt="12px" px="24px" py="8px">
+                                                        <Container key={uuidv4()} borderWidth='1px' borderRadius='sm' px="24px" py="8px">
                                                             <Flex flexDir="row" gap={5} alignItems="center">
                                                                 {(user.avatarURL)
                                                                     ? (
@@ -126,19 +134,12 @@ function UsersList() {
                             })}
                         </Grid>
                     </Center>
-                </>
+                </Box>
 
                     
             )
             : (
-                <div>
-                    <h1>
-                        <Center mt={"5rem"} display="flex" flexDir={"column"}>
-                            <Spinner />
-                            <Text>Loading...</Text>
-                        </Center>
-                    </h1>
-                </div>
+                <LoadingPage/>
             )
     );
 

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { Spinner, Image, Container, Heading, Center, Text, Button, Stack, Link, Grid, FormLabel, FormControl, useDisclosure, Collapse, Box, Flex, GridItem, Circle, Avatar, AvatarBadge, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, Input, Alert, AlertDescription, AlertIcon, AlertTitle, Icon } from '@chakra-ui/react'
+import { Spinner, Image, Container, Heading, Center, Text, Button, Stack, Link, Grid, FormLabel, FormControl, useDisclosure, Collapse, Box, Flex, GridItem, Circle, Avatar, AvatarBadge, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, Input, Alert, AlertDescription, AlertIcon, AlertTitle, Icon, useMediaQuery } from '@chakra-ui/react'
 import {ArrowForwardIcon, AttachmentIcon} from '@chakra-ui/icons'
 import { login, logout } from '../Features/currentUserSlice';
 import { useAppSelector, useAppDispatch } from '../app/hooks'
@@ -50,16 +50,24 @@ function Profile () {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const btnRef = React.useRef() as React.MutableRefObject<HTMLInputElement> & React.LegacyRef<HTMLButtonElement>;
 
+    const [isSmallScreen] = useMediaQuery("(max-width: 570px)");
+    const [width, setWidth] = useState(isSmallScreen ? "100vw" : "570px");
+  
+    useEffect(() => {
+        setWidth(isSmallScreen ? "100vw" : "570px");
+    }, [isSmallScreen]);
+
     return (
         (loggedinUser?._id) 
             ?   (
-                <Grid ml={10} alignSelf={"flex-start"} templateColumns={"260px 1fr"} alignItems={"start"} flex={"1"} gap={4}>
+                <Grid position="relative" top={-10} w={width} alignSelf={"flex-start"} alignContent="space-between" 
+                    templateColumns={"40% 1fr"} alignItems={"center"} gap={1} borderBottomWidth="1px">
                     <GridItem display={"flex"} alignItems="center" justifyContent={"center"} p={5}>
                         {(loggedinUser.avatarURL) 
                             ? (
                                 <Image
                                     borderRadius='full'
-                                    boxSize='200px'
+                                    boxSize='150px'
                                     src={`${loggedinUser.avatarURL}`}
                                     objectFit="cover"
                                     alt='Avatar'/>
@@ -68,11 +76,11 @@ function Profile () {
                                 <Avatar borderRadius='full' boxSize='200px' size={"xl"}></Avatar>
                             )}
                     </GridItem>
-                    <GridItem display={"flex"} justifyContent="center" alignItems="start" p={5} flexDir="column">
-                        <Text fontSize="5xl" fontWeight={700}>{loggedinUser.username}</Text>
-                        <Text fontSize={"sm"} fontWeight={300}>@{loggedinUser.handle}</Text>
-                        <Text fontSize={"md"} fontWeight={500}>{loggedinUser.bio}</Text>
-                        <Button mt={1} colorScheme="pink" ref={btnRef} onClick={onOpen} size="sm"><Icon as={FaUserFriends} mr={2} />Show Friends</Button>
+                    <GridItem display={"flex"} justifyContent="center" alignItems="start" flexDir="column">
+                        <Text fontSize="2xl" fontWeight={700}>{loggedinUser.username}</Text>
+                        <Text fontSize={"xs"} fontWeight={300}>@{loggedinUser.handle}</Text>
+                        <Text fontSize={"sm"} fontWeight={500}>{loggedinUser.bio}</Text>
+                        <Button mt={1} colorScheme="pink" ref={btnRef} onClick={onOpen} size="xs"><Icon as={FaUserFriends} mr={2} />Show Friends</Button>
                         {/* TODO: Put form in separate Modal for cleaner UI, put button to change picture in settings.
                                       Or can also make clicking profile picture as button to open modal to change profile picture. */}
                         <UploadAvatarModal userId={loggedinUser._id} setLoggedinUser={setLoggedinUser} />
@@ -83,7 +91,7 @@ function Profile () {
                 </Grid>
             ) 
             : (
-                <Center>
+                <Center w={width}>
                     <Alert status='error' borderRadius={"3xl"}>
                         <AlertIcon />
                         <AlertTitle>Please log in first!</AlertTitle>

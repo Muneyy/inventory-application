@@ -1,4 +1,4 @@
-import { Spinner, Divider, Container, Heading, Center, Text, Button, Stack, Link, AlertIcon, Alert } from '@chakra-ui/react'
+import { Spinner, Divider, Container, Heading, Center, Text, Button, Stack, Link, AlertIcon, Alert, Box, useMediaQuery } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
@@ -11,6 +11,7 @@ import store from '../app/store';
 
 // import dispatch actions for logging out user in Redux
 import { login, logout } from '../Features/currentUserSlice';
+import LoadingPage from './LoadingPage';
 
 function CreateUser () {
     const [loading, setLoading] = useState(0);
@@ -87,15 +88,22 @@ function CreateUser () {
         
     })
 
+    const [isSmallScreen] = useMediaQuery("(max-width: 570px)");
+    const [width, setWidth] = useState(isSmallScreen ? "100vw" : "570px");
+  
+    useEffect(() => {
+        setWidth(isSmallScreen ? "100vw" : "570px");
+    }, [isSmallScreen]);
+
     return(
         (loading)
             ? (
-                <>
-                    <Heading size='2xl' fontWeight="extrabold">Sign Up!</Heading>
-                    <Heading size='l'> Please fill out the fields below.</Heading>
+                <Box w={width} p={5}>
+                    <Heading size='xl' fontWeight="extrabold">Sign Up!</Heading>
+                    <Heading size='sm'> Please fill out the fields below.</Heading>
                     
                     <form onSubmit={formik.handleSubmit}>
-                        <FormControl isRequired w="md">
+                        <FormControl isRequired >
                             <FormLabel>Username:</FormLabel>
                             <Input
                                 type="text"
@@ -114,7 +122,7 @@ function CreateUser () {
                             )}
                         </FormControl>
                         <Divider my="1rem"/>
-                        <FormControl isRequired w="md">
+                        <FormControl isRequired >
                             <FormLabel>Handle:</FormLabel>
                             <Input
                                 type="text"
@@ -153,7 +161,7 @@ function CreateUser () {
                             )}
                         </FormControl>
                         <Divider my="1rem"/>
-                        <FormControl isRequired w="md">
+                        <FormControl isRequired >
                             <FormLabel>Bio:</FormLabel>
                             <Input
                                 type="text"
@@ -194,16 +202,10 @@ function CreateUser () {
                         <Button type='submit' colorScheme="teal">Create!</Button>
                         {/* </Formik> */}
                     </form>
-                </>
+                </Box>
             )
             : (
-                <div>
-                    <h1>
-                        <Center mt={"5rem"}>
-                            <Spinner />
-                        </Center>
-                    </h1>
-                </div>
+                <LoadingPage />
             )
     );
 

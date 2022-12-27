@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import Home from './Components/Home';
-import { Box, Button, Center, ChakraProvider, Container, Flex, Grid, GridItem, Heading, Icon, useColorMode } from '@chakra-ui/react'
+import { Box, Button, Center, ChakraProvider, Container, useMediaQuery, Flex, Grid, GridItem, Heading, Icon, useColorMode } from '@chakra-ui/react'
 import CreateUser from './Components/SignUp';
 import CreateCollection from './Components/CreateCollection';
 import LogIn from './Components/LogIn';
@@ -36,7 +36,7 @@ function App() {
                                 <Flex position="static">
                                     <LeftLinks />
                                     <Center alignItems={"center"} mx={3} display="flex" justifyContent={"flex-start"} flexDirection="column" 
-                                        borderWidth='1px' py={10} borderY={"none"} minW="768px" maxW="768px" minHeight={"94vh"}>
+                                        borderWidth='1px' py={10} borderY={"none"} minHeight={"94vh"}>
                                         <Routes>
                                             <Route path ='/' element={<Home/>}/>
                                             <Route path ='/createUser' element={<CreateUser/>} />

@@ -167,8 +167,6 @@ app.post('/uploadAvatar', parser.single('image'), function (req, res, next) {
             });
     // ROUTE FOR POSTING AN ITEM IMAGE
     } else if (req.file && req.body.itemId) {
-        console.log(req.file.path);
-        console.log(req.body.itemId);
         Item.findByIdAndUpdate(req.body.itemId,
             { $push: {images_urls: `${req.file.path}`}},
             {},

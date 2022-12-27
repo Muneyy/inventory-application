@@ -1,5 +1,5 @@
 import { ArrowForwardIcon, PlusSquareIcon } from '@chakra-ui/icons';
-import { Flex, Image, Center, Spinner, Text, Alert, AlertDescription, AlertIcon, AlertTitle, Avatar, Wrap, Heading, Box, Button } from '@chakra-ui/react';
+import { Flex, Image, Center, Spinner, Text, Alert, AlertDescription, AlertIcon, AlertTitle, Avatar, Wrap, Heading, Box, Button, useMediaQuery } from '@chakra-ui/react';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Link as RouteLink } from 'react-router-dom';
@@ -7,12 +7,19 @@ import { useParams } from 'react-router-dom'
 import { v4 } from 'uuid';
 import { useAppSelector } from '../app/hooks';
 import ItemCard from './ItemCard';
+import LoadingPage from './LoadingPage';
 
 function CollectionPage() {
     const { collectionId } = useParams();
     const [loadingDone, setLoadingDone] = useState<boolean>(false);
     const [fetchedCollection, setFetchedCollection] = useState<CollectionType>();
     const [fetchedCollectionItems, setFetchedCollectionItems] = useState<ItemType[]>([]);
+    const [isSmallScreen] = useMediaQuery("(max-width: 570px)");
+    const [width, setWidth] = useState(isSmallScreen ? "100vw" : "570px");
+  
+    useEffect(() => {
+        setWidth(isSmallScreen ? "100vw" : "570px");
+    }, [isSmallScreen]);
 
     type ItemType = {
         name: string,
@@ -79,15 +86,15 @@ function CollectionPage() {
                 (fetchedCollection)
                     ? (
                         // top = -10 to counteract padding from parent component
-                        <Flex top={-10} position={"relative"} w="100%" flexDirection={"column"}>
+                        <Flex top={-10} position={"relative"} w={width} flexDirection={"column"}>
                             <Image
                                 w="100%"
-                                h="300px"
+                                h="250px"
                                 objectFit='cover'
                                 src={fetchedCollection.image_url}
                                 alt='Collection'
                             />
-                            <Wrap top="220px" right="20px" position={"absolute"} bottom="5" mt={3} alignSelf={"flex-end"}>
+                            <Wrap top="170px" right="20px" position={"absolute"} bottom="5" mt={3} alignSelf={"flex-end"}>
                                 <RouteLink to={`/${fetchedCollection.user._id}`}  style={{ textDecoration: 'none' }}>
                                     <Box backgroundColor={"blackAlpha.800"} alignItems="center" borderRadius={"lg"} px={5} py={2} display="flex" gap={3}>
                                         <Avatar size="sm" src={fetchedCollection.user.avatarURL} />
@@ -133,10 +140,7 @@ function CollectionPage() {
                     )
             )
             : (
-                <Center mt={"5rem"} display="flex" flexDir={"column"}>
-                    <Spinner />
-                    <Text>Loading...</Text>
-                </Center>
+                <LoadingPage />
             )
     )
 }
