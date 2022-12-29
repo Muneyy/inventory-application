@@ -20,6 +20,11 @@ import { FiFeather } from 'react-icons/fi';
 function CreateModal() {
     const navigate = useNavigate();
     const { isOpen, onOpen, onClose } = useDisclosure();
+
+    function navigateTo (route:string) {
+        onClose();
+        navigate(route)
+    }
     
     return (
         <Button h="100%" flex="1" display="flex" justifyContent="center" alignItems="center" onClick={onOpen}>
@@ -30,22 +35,17 @@ function CreateModal() {
                 <ModalContent>
                     <ModalHeader>Links</ModalHeader>
                     <ModalCloseButton />
-                    <ModalBody display={"flex"} flexDir="column">
-                        <Button onClick={() => {onClose(); navigate('/createUser')}} size="sm" leftIcon={<ArrowForwardIcon />} variant="outline" borderRadius={"3xl"} colorScheme="teal">
+                    <ModalBody display={"flex"} gap={3} flexDir="column">
+                        <Button width="150px" onClick={() => navigateTo("/createUser")} size="sm" leftIcon={<ArrowForwardIcon />} variant="outline" borderRadius={"3xl"} colorScheme="teal">
                             Sign up
                         </Button>
-                        
-                        <Button onClick={() => {onClose(); navigate('/login')}} mb={10} size="sm" leftIcon={<ArrowForwardIcon />} variant="outline" borderRadius={"3xl"} colorScheme="teal">
+                        <Button width="150px" onClick={() => navigateTo("/login")} mb={10} size="sm" leftIcon={<ArrowForwardIcon />} variant="outline" borderRadius={"3xl"} colorScheme="teal">
                             Log in
                         </Button>
-                        
-                        
-                        <Button onClick={() => {onClose(); navigate('/createCollection')}} borderRadius="3xl" size="sm" leftIcon={<ArrowForwardIcon />} variant="outline" colorScheme="teal">
+                        <Button width="150px" onClick={() => navigateTo('/createCollection')} borderRadius="3xl" size="sm" leftIcon={<ArrowForwardIcon />} variant="outline" colorScheme="teal">
                             Collection
                         </Button>
-                        
-                        
-                        <Button onClick={() => {onClose(); navigate('/createItem')}} borderRadius="3xl" size="sm" leftIcon={<ArrowForwardIcon />} variant="outline" colorScheme="teal">
+                        <Button width="150px" onClick={() => navigateTo('/')} borderRadius="3xl" size="sm" leftIcon={<ArrowForwardIcon />} variant="outline" colorScheme="teal">
                             Item
                         </Button>
                         
