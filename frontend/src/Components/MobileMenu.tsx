@@ -30,7 +30,7 @@ function MobileMenu() {
                 </Button>
                 <Button onClick={() => navigate('/users')} h="100%" flex="1"><Icon boxSize={"22px"} as={FaUserFriends}></Icon></Button>
                 <CreateModal />
-                <Button onClick={() => navigate(`/${loggedinUser._id}`)} h="100%" flex="1"><Avatar boxSize={"22px"} src={loggedinUser.avatarURL}></Avatar></Button>
+                <Button onClick={() => navigate(`/profile`)} h="100%" flex="1"><Avatar boxSize={"22px"} src={loggedinUser.avatarURL}></Avatar></Button>
             </Flex>
         </Show>
     )
