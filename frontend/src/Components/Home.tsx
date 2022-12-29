@@ -14,12 +14,6 @@ import LoadingPage from './LoadingPage';
 function Home() {
     const [loading, setLoading] = useState(0);
     const [reqCollectionData, setReqCollectionData] = useState<any>([]);
-    const [isSmallScreen] = useMediaQuery("(max-width: 570px)");
-    const [width, setWidth] = useState(isSmallScreen ? "100vw" : "570px");
-  
-    useEffect(() => {
-        setWidth(isSmallScreen ? "100vw" : "570px");
-    }, [isSmallScreen]);
 
     // Retrieve logged in user state and JWT token from Redux
     const currentUser = useAppSelector(state => state.currentUser);
@@ -91,6 +85,13 @@ function Home() {
         "boy-group",
         "girl-group",
     ];
+
+    const [isSmallScreen] = useMediaQuery("(max-width: 570px)");
+    const [width, setWidth] = useState(isSmallScreen ? "100vw" : "570px");
+  
+    useEffect(() => {
+        setWidth(isSmallScreen ? "100vw" : "570px");
+    }, [isSmallScreen]);
 
     return (
         (loading)

@@ -19,6 +19,7 @@ import LeftLinks from './Components/AppComponents/LeftLinks';
 import RightLinks from './Components/AppComponents/RightLinks';
 import CollectionPage from './Components/CollectionPage';
 import CreateItem from './Components/CreateItem';
+import MobileMenu from './Components/MobileMenu';
 
 function App() {
 
@@ -30,7 +31,8 @@ function App() {
                 <PersistGate loading={null} persistor={persistor}>
                     <BrowserRouter>
                         {/* prevent scrollbar from messing up width of the page */}
-                        <Box overflowX={"clip"} maxW="calc(100vw - 1em)" >
+                        {/* TODO: find alternatives for scrollbar since this does not work well for mobiile viewports */}
+                        <Box position="relative" overflowX={"clip"} maxW="calc(100vw - 1em)" >
                             <NavBar />
                             <Center>
                                 <Flex position="static">
@@ -52,6 +54,7 @@ function App() {
                                     <RightLinks />
                                 </Flex>
                             </Center>
+                            <MobileMenu />
                         </Box>
                     </BrowserRouter>
                 </PersistGate>

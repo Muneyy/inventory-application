@@ -33,6 +33,7 @@ type ItemType = {
 
 function ItemCard(props: {
     item: ItemType
+    pictureWidth: string
 }) {
     const item = props.item;
     
@@ -61,7 +62,7 @@ function ItemCard(props: {
                                     // Size of the image
                                     // TODO: make image size dynamic
                                     w="570px"
-                                    h="590px"
+                                    h={props.pictureWidth}
                                     objectFit='cover'
                                     src={image_url}
                                     alt={`Item from ${image_url}`}

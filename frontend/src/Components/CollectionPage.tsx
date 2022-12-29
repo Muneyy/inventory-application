@@ -14,12 +14,6 @@ function CollectionPage() {
     const [loadingDone, setLoadingDone] = useState<boolean>(false);
     const [fetchedCollection, setFetchedCollection] = useState<CollectionType>();
     const [fetchedCollectionItems, setFetchedCollectionItems] = useState<ItemType[]>([]);
-    const [isSmallScreen] = useMediaQuery("(max-width: 570px)");
-    const [width, setWidth] = useState(isSmallScreen ? "100vw" : "570px");
-  
-    useEffect(() => {
-        setWidth(isSmallScreen ? "100vw" : "570px");
-    }, [isSmallScreen]);
 
     type ItemType = {
         name: string,
@@ -80,6 +74,15 @@ function CollectionPage() {
         fetchCollectionData();
     }, [])
 
+    const [isSmallScreen] = useMediaQuery("(max-width: 570px)");
+    const [width, setWidth] = useState(isSmallScreen ? "100vw" : "570px");
+    const [pictureWidth, setPictureWidth] = useState(isSmallScreen ? "300px" : "570px");
+  
+    useEffect(() => {
+        setWidth(isSmallScreen ? "100vw" : "570px");
+        setPictureWidth(isSmallScreen ? "100vw" : "570px")
+    }, [isSmallScreen]);
+    
     return (
         (loadingDone)
             ? (
@@ -122,7 +125,7 @@ function CollectionPage() {
                                 ? (
                                     fetchedCollectionItems.map((item: ItemType) => {
                                         return (
-                                            <ItemCard key={v4()} item={item} />
+                                            <ItemCard pictureWidth={pictureWidth} key={v4()} item={item} />
                                         )
                                     })
                                 )
