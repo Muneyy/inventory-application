@@ -7,9 +7,11 @@ import { FaUserFriends } from 'react-icons/fa';
 import CreateModal from './MobileModals/CreateModal';
 import {Link as RouteLink} from "react-router-dom";
 import { useAppSelector } from '../app/hooks';
+import { useNavigate } from 'react-router-dom';
 
 function MobileMenu() {
-
+    // navigate to other routers in react-router
+    const navigate = useNavigate();
     const currentUser = useAppSelector(state => state.currentUser);
     let loggedinUser: any = {};
     
@@ -21,11 +23,10 @@ function MobileMenu() {
     return (
         <Show below="700px">
             <Flex position="sticky" bottom={0} height="60px" w="100vw" 
-                zIndex={"2"} borderWidth="1px" backgroundColor={"blackAlpha.900"}>
-                <Button h="100%" flex="1" display={"flex"} justifyContent="center" alignItems={"center"}>
-                    <RouteLink to="/">
-                        <Icon top={-10} boxSize={"22px"} as={RiHomeHeartLine}></Icon>
-                    </RouteLink>
+                zIndex={"2"} borderWidth="1px" backgroundColor={"blackAlpha.900"} alignItems="center" justifyContent="center">
+                <Button onClick={() => navigate("/")} h="100%" flex="1" display={"flex"} justifyContent="center" alignItems={"center"}>
+                    <Icon boxSize="22px" as={RiHomeHeartLine}>
+                    </Icon>
                 </Button>
                 <Button h="100%" flex="1"><Icon boxSize={"22px"} as={FaUserFriends}></Icon></Button>
                 <CreateModal />
