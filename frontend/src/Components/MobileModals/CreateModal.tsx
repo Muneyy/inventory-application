@@ -14,9 +14,11 @@ import {
 } from '@chakra-ui/react';
 import {Link as RouteLink} from "react-router-dom";
 import { ArrowForwardIcon } from '@chakra-ui/icons';
+import { useNavigate } from 'react-router-dom';
 import { FiFeather } from 'react-icons/fi';
 
 function CreateModal() {
+    const navigate = useNavigate();
     const { isOpen, onOpen, onClose } = useDisclosure();
     
     return (
@@ -29,26 +31,24 @@ function CreateModal() {
                     <ModalHeader>Links</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody display={"flex"} flexDir="column">
-                        <RouteLink onClick={onClose} to='/createUser' style={{ textDecoration: 'none' }}>
-                            <Button onClick={onClose} size="sm" leftIcon={<ArrowForwardIcon />} variant="outline" borderRadius={"3xl"} colorScheme="teal">
+                        <Button onClick={() => {onClose(); navigate('/createUser')}} size="sm" leftIcon={<ArrowForwardIcon />} variant="outline" borderRadius={"3xl"} colorScheme="teal">
                             Sign up
-                            </Button>
-                        </RouteLink>
-                        <RouteLink onClick={onClose} to='/login' style={{ textDecoration: 'none' }}>
-                            <Button mb={10} size="sm" leftIcon={<ArrowForwardIcon />} variant="outline" borderRadius={"3xl"} colorScheme="teal">
+                        </Button>
+                        
+                        <Button onClick={() => {onClose(); navigate('/login')}} mb={10} size="sm" leftIcon={<ArrowForwardIcon />} variant="outline" borderRadius={"3xl"} colorScheme="teal">
                             Log in
-                            </Button>
-                        </RouteLink>
-                        <RouteLink onClick={onClose} to="/createCollection">
-                            <Button borderRadius="3xl" size="sm" leftIcon={<ArrowForwardIcon />} variant="outline" colorScheme="teal">
+                        </Button>
+                        
+                        
+                        <Button onClick={() => {onClose(); navigate('/createCollection')}} borderRadius="3xl" size="sm" leftIcon={<ArrowForwardIcon />} variant="outline" colorScheme="teal">
                             Collection
-                            </Button>
-                        </RouteLink>
-                        <RouteLink onClick={onClose} to='/createItem' style={{ textDecoration: 'none' }}>
-                            <Button borderRadius="3xl" size="sm" leftIcon={<ArrowForwardIcon />} variant="outline" colorScheme="teal">
+                        </Button>
+                        
+                        
+                        <Button onClick={() => {onClose(); navigate('/createItem')}} borderRadius="3xl" size="sm" leftIcon={<ArrowForwardIcon />} variant="outline" colorScheme="teal">
                             Item
-                            </Button>
-                        </RouteLink>
+                        </Button>
+                        
                     </ModalBody>
 
                     <ModalFooter>
