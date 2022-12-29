@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 function MobileMenu() {
     // navigate to other routers in react-router
     const navigate = useNavigate();
-    const currentUser = useAppSelector(state => state.currentUser);
+    const currentUser = useAppSelector<any>(state => state.currentUser);
     let loggedinUser: any = {};
     
     // Refactor code for convenience
@@ -28,9 +28,9 @@ function MobileMenu() {
                     <Icon boxSize="22px" as={RiHomeHeartLine}>
                     </Icon>
                 </Button>
-                <Button h="100%" flex="1"><Icon boxSize={"22px"} as={FaUserFriends}></Icon></Button>
+                <Button onClick={() => navigate('/users')} h="100%" flex="1"><Icon boxSize={"22px"} as={FaUserFriends}></Icon></Button>
                 <CreateModal />
-                <Button h="100%" flex="1"><Avatar boxSize={"22px"} src={loggedinUser.avatarURL}></Avatar></Button>
+                <Button onClick={() => navigate(`/${loggedinUser._id}`)} h="100%" flex="1"><Avatar boxSize={"22px"} src={loggedinUser.avatarURL}></Avatar></Button>
             </Flex>
         </Show>
     )
