@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import Home from './Components/Home';
-import { Box, Button, Center, ChakraProvider, Container, useMediaQuery, Flex, Grid, GridItem, Heading, Icon, useColorMode } from '@chakra-ui/react'
+import { Box, Button, Center, ChakraProvider, Container, Flex, Grid, GridItem, Heading, Icon, useColorMode } from '@chakra-ui/react'
 import CreateUser from './Components/SignUp';
 import CreateCollection from './Components/CreateCollection';
 import LogIn from './Components/LogIn';
@@ -21,8 +21,13 @@ import CollectionPage from './Components/CollectionPage';
 import CreateItem from './Components/CreateItem';
 import MobileMenu from './Components/MobileMenu';
 import ScrollToTop from './Components/ScrollToTop';
+import { useMediaQuery } from 'react-responsive'
 
 function App() {
+
+    const isDesktopOrLaptop = useMediaQuery({
+        query: '(min-width: 700px)'
+    });
 
     const persistor = persistStore(store);
 
@@ -34,7 +39,7 @@ function App() {
                         <ScrollToTop />
                         {/* prevent scrollbar from messing up width of the page */}
                         {/* TODO: find alternatives for scrollbar since this does not work well for mobiile viewports */}
-                        <Box position="relative" overflowX={"clip"} maxW="calc(100vw - 1em)" >
+                        <Box position="relative" overflowX={"clip"} maxW={isDesktopOrLaptop ? "calc(100vw - 1em)" : "100%"} >
                             <NavBar />
                             <Center>
                                 <Flex position="static">

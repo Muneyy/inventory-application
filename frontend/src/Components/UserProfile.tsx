@@ -1,12 +1,11 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { Spinner, Container, Image, Heading, Center, Text, Button, Stack, Link, Grid, FormLabel, FormControl, useDisclosure, Collapse, Box, Flex, GridItem, Circle, Avatar, AvatarBadge, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, Input, Alert, AlertDescription, AlertIcon, AlertTitle, useMediaQuery } from '@chakra-ui/react'
+import { Spinner, Container, Image, Heading, Center, Text, Button, Stack, Grid, FormLabel, FormControl, useDisclosure, Collapse, Box, Flex, GridItem, Circle, Avatar, AvatarBadge, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, Input, Alert, AlertDescription, AlertIcon, AlertTitle, useMediaQuery } from '@chakra-ui/react'
 import {ArrowForwardIcon, CheckIcon} from '@chakra-ui/icons'
 import { login, logout } from '../Features/currentUserSlice';
 import { useAppSelector, useAppDispatch } from '../app/hooks'
 import { useNavigate, useParams } from 'react-router-dom';
-import {Link as RouteLink} from "react-router-dom";
 import { CheckCircleIcon } from '@chakra-ui/icons'
 import FriendAction from './Buttons/FriendAction';
 import LoadingPage from './LoadingPage';
