@@ -73,7 +73,7 @@ function Profile () {
                                     alt='Avatar'/>
                             ) 
                             : (
-                                <Avatar borderRadius='full' boxSize='200px' size={"xl"}></Avatar>
+                                <Avatar borderRadius='full' boxSize='150px' size={"xl"}></Avatar>
                             )}
                     </GridItem>
                     <GridItem display={"flex"} justifyContent="center" alignItems="start" flexDir="column">

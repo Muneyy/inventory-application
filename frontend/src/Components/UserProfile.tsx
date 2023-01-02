@@ -117,13 +117,18 @@ function UserProfile () {
         await axios.get(`http://localhost:3000/users/${loggedinUser._id}`)
             .then(async (res) => {
                 await dispatch(login(res.data.user));
-                const updateUser = useAppSelector(state => state.currentUser);
-                loggedinUser = updateUser.returned[0];
+                // run useEffect that is subscribed to the value of currentUser
             })
             .catch(err => {
                 console.log(err);
             })
     }
+
+    // Update friends after the dispatch call in refreshUserState() 
+    // after accepting friend request. This is better than refreshing the page.
+    useEffect(() => {
+        loggedinUser = currentUser.returned[0]
+    }, [currentUser])
 
     // Make array of loggedinUser's friends to check
     // Also check if loggedinUser has already added viewed user
@@ -171,7 +176,7 @@ function UserProfile () {
                                             alt='Avatar'/>
                                     ) 
                                     : (
-                                        <Avatar size={"md"}></Avatar>
+                                        <Avatar boxSize='150px'></Avatar>
                                     )}
                             </GridItem>
                             <GridItem display={"flex"} justifyContent="center" alignItems="start" p={5} flexDir="column">
@@ -180,7 +185,7 @@ function UserProfile () {
                                 <Text fontSize={"sm"} fontWeight={500}>{fetchedUser.bio}</Text>
                                 {/* TODO: remove add friend button if user is not logged in. */}
 
-                                {(loggedinUser._id)
+                                {(loggedinUser._id != userId)
                                     ? ( 
                                         (userFriends.includes(fetchedUser._id))
                                             ? (
@@ -213,7 +218,7 @@ function UserProfile () {
                                             )
                                     )
                                     : (
-                                        <></>
+                                        null
                                     )}
 
 

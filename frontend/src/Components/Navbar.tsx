@@ -10,14 +10,14 @@ import { useAppSelector } from '../app/hooks';
 
 function NavBar () {
     const { colorMode, toggleColorMode } = useColorMode()
-    // Retrieve logged in user state and JWT token from Redux
-    const currentUser = useAppSelector(state => state.currentUser);
-    let loggedinUser: any = {};
+    // // Retrieve logged in user state and JWT token from Redux
+    // const currentUser = useAppSelector(state => state.currentUser);
+    // let loggedinUser: any = {};
         
-    // Refactor code for convenience
-    if (currentUser.returned.length === 1) {
-        loggedinUser = currentUser.returned[0];
-    }
+    // // Refactor code for convenience
+    // if (currentUser.returned.length === 1) {
+    //     loggedinUser = currentUser.returned[0];
+    // }
 
     return (
         <Box backgroundColor={colorMode === "light" ? "white" : "gray.800"} zIndex={2} top={0} position={"sticky"} w="100vw" borderWidth={"1px"} borderLeftWidth="0" borderRightWidth={"0"} py={3}>
@@ -28,7 +28,7 @@ function NavBar () {
                 <Flex gap={"10px"} alignItems="center" justifyContent={"space-evenly"}>
                     <MessagesModal />
                     <FriendRequestsModal/>
-                    <SettingsModal loggedinUser={loggedinUser} />
+                    <SettingsModal />
                     <Button size="sm" onClick={toggleColorMode}>
                         {colorMode === 'light' ? <SunIcon/> : <SunIcon/>}
                     </Button>

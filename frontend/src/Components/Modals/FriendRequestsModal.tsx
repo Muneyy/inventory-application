@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import { useAppSelector, useAppDispatch } from '../../app/hooks'
@@ -91,13 +91,18 @@ const FriendRequestsModal = () => {
             .then(async (res) => {
                 console.log(res);
                 await dispatch(login(res.data.user));
-                const updateUser = useAppSelector(state => state.currentUser);
-                loggedinUser = updateUser.returned[0];
+                // useEffect is then called because currentUser is subscribed to react store
             })
             .catch(err => {
                 console.log(err);
             })
     }
+
+    // Update friends after the dispatch call in refreshUserState() 
+    // after accepting friend request. This is better than refreshing the page.
+    useEffect(() => {
+        loggedinUser = currentUser.returned[0]
+    }, [currentUser])
 
     return (
         <>

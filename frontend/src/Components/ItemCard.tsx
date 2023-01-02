@@ -49,7 +49,7 @@ function ItemCard(props: {
                     })}
                 </Wrap>
                 <Wrap mt={1}>
-                    <Badge borderRadius={"lg"} colorScheme={"pink"} mr={2} key={v4()}>PHP {item.price}</Badge>
+                    <Badge borderRadius={"lg"} colorScheme={"pink"} mr={2}>Approximately PHP {item.price}</Badge>
                 </Wrap>
             </Box>
             <Swiper pagination={true} modules={[Pagination]} className="mySwiper">
