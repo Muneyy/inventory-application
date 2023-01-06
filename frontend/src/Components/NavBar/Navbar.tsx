@@ -6,7 +6,7 @@ import SettingsModal from './Modals/SettingsModal';
 import BsSun from "react-icons/bs"
 import { SunIcon } from '@chakra-ui/icons';
 import {Link as RouteLink} from "react-router-dom";
-import { useAppSelector } from '../app/hooks';
+import { useAppSelector } from '../../app/hooks';
 
 function NavBar () {
     const { colorMode, toggleColorMode } = useColorMode()

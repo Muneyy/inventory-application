@@ -6,7 +6,7 @@ import {FiFeather} from 'react-icons/fi'
 import { FaUserFriends } from 'react-icons/fa';
 import CreateModal from './MobileModals/CreateModal';
 import {Link as RouteLink} from "react-router-dom";
-import { useAppSelector } from '../app/hooks';
+import { useAppSelector } from '../../app/hooks';
 import { useNavigate } from 'react-router-dom';
 
 function MobileMenu() {

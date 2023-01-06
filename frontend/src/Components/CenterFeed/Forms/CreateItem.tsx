@@ -2,21 +2,33 @@ import { Spinner, Box, Flex, Checkbox, Divider, Container, Heading, Center, Text
 import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 import { FormControl, FormLabel, FormErrorMessage, FormHelperText, Input } from '@chakra-ui/react';
 import { useFormik } from "formik";
 import * as Yup from 'yup';
 import Dropzone from "react-dropzone";
-import { useAppSelector } from '../app/hooks';
-import LoadingPage from './LoadingPage';
+import { useAppSelector } from '../../../app/hooks';
+import LoadingPage from '../Loading/LoadingPage';
 
 function CreateCollection () {
-    const [loading, setLoading] = useState<boolean>(true);
+    const [loading, setLoadingDone] = useState<boolean>(false);
     const [submitting, setSubmitting] = useState<boolean>(false);
+    const [fetchedCollection, setFetchedCollection] = useState<CollectionType>();
+    type CollectionType = {
+        name: string,
+        summary: string,
+        tags: string[],
+        image_url: string,
+        user: {
+            _id: string,
+            username: string,
+            avatarURL: string,
+        },
+    }
     const navigate = useNavigate();
     const [reqData, setReqData] = useState([]);
     // filename for react dropzone
-    const [fileName, setFileName] = useState<string>("");
+    const [fileName, setFileName] = useState<string[]>();
     // check if picture has been uploaded
     const [uploadedPicture, setUploadedPicture] = useState<boolean>(false);
 
@@ -35,33 +47,55 @@ function CreateCollection () {
         tokenJWT = token.returned[0];
     }
 
+    useEffect(() => {
+        const fetchCollectionData = async () => {
+            try {
+                await axios.get(`http://localhost:3000/collections/${collectionId}`)
+                    .then(res => {
+                        // collection and group are sometimes the same thing
+                        // since collection is a reserved keyword in mongoDB
+                        setFetchedCollection(res.data.group);
+                    })
+                setLoadingDone(true);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        fetchCollectionData();
+    }, [])
+
+    const { collectionId } = useParams();
+
     const availableTags = [
-        "anime",
-        "comics",
-        "cartoon",
-        "series",
-        "movie",
-        "k-pop",
-        "j-pop",
-        "p-pop",
-        "soloist",
-        "boy-group",
-        "girl-group",
+        "apparel",
+        "photocard",
+        "lightstick",
+        "album",
+        "poster",
+        "film",
+        "cd",
+        "ticket",
+        "card",
+        "peripheral",
+        "stationery",
     ]
 
-    const CollectionSchema = Yup.object().shape({
+    const ItemSchema = Yup.object().shape({
         name: Yup.string()
             .min(1, "Name must be between 1-20 characters")
             .max(20, "Name must be between 1-20 characters")
             .required('Required'),
-        summary: Yup.string()
-            .min(1, "Summary must be between 1-40 characters")
-            .max(200, "Summary must be between 1-40 characters")
+        description: Yup.string()
+            .min(1, "Description must be between 1-40 characters")
+            .max(200, "Description must be between 1-40 characters")
             .required('Required'),
         tags: Yup.array()
             .of(Yup.string().oneOf(availableTags, 'Invalid tag'))
             .min(1, "Please select at least one tag")
-            .required("Please select at least one tag")
+            .required("Please select at least one tag"),
+        price: Yup.number()
+            .moreThan(0, "Price must be a positive number")
+            .required("Required")
     })
 
     const JWTconfig = {
@@ -72,34 +106,42 @@ function CreateCollection () {
         enableReinitialize: true,
         initialValues: {
             name: "",
-            summary: "",
-            tags: [
-            ],
-            image: "",
+            description: "",
+            tags: [],
+            price: 0,
+            imageArray: [],
+            group: "",
             user: "",
         },
-        validationSchema: CollectionSchema,
+        validationSchema: ItemSchema,
         onSubmit: async (values) => {
             setSubmitting(true);
-            const submitCollection = {
+            const submitItem = {
                 name: values.name,
-                summary: values.summary,
+                description: values.description,
                 tags: values.tags,
+                price: values.price,
+                group: collectionId,
                 user: loggedinUser._id,
             }
 
-            await axios.post('http://localhost:3000/collections/post', submitCollection, JWTconfig)
-                .then(async res => {
-                    const imageUploadForm = new FormData();
-                    imageUploadForm.append("image", values.image);
-                    imageUploadForm.append("collectionId", res.data._id)
+            console.log(submitItem);
 
-                    await axios.post('http://localhost:3000/uploadAvatar', imageUploadForm, JWTconfig)
-                        .then(res => {
-                            console.log(res.data.msg);
-                            navigate('/');
-                        })
+            await axios.post('http://localhost:3000/items/post', submitItem, JWTconfig)
+                .then(async res => {
+                    for (const image of values.imageArray) {
+                        const imageUploadForm = new FormData();
+                        imageUploadForm.append("image", image);
+                        imageUploadForm.append("itemId", res.data._id);
+                        console.log(values.imageArray);
+                        await axios.post('http://localhost:3000/uploadAvatar', imageUploadForm, JWTconfig)
+                            .then(res => {
+                                console.log(res.data.msg);
+                            })
+                    }
                 })
+            setSubmitting(false);
+            navigate(`/collections/${collectionId}`);
         }
     })
 
@@ -151,20 +193,20 @@ function CreateCollection () {
                                 </FormControl>
                                 <Divider my="1rem"/>
                                 <FormControl isRequired>
-                                    <FormLabel>Summary:</FormLabel>
+                                    <FormLabel>Description:</FormLabel>
                                     <Textarea 
-                                        name="summary" 
-                                        id="summary" 
+                                        name="description" 
+                                        id="description" 
                                         onChange={formik.handleChange}
-                                        value={formik.values.summary}
+                                        value={formik.values.description}
                                     />
-                                    {formik.errors.summary && formik.touched.summary ? (
+                                    {formik.errors.description && formik.touched.description ? (
                                         <Alert mt={1} p={2} size="sm" borderRadius="3xl" status="warning">
                                             <AlertIcon />
-                                            {formik.errors.summary}
+                                            {formik.errors.description}
                                         </Alert>
                                     ) : (
-                                        <FormHelperText>Describe your collection.</FormHelperText>
+                                        <FormHelperText>Describe your item.</FormHelperText>
                                     )}
                                 </FormControl>
                                 <Divider my="1rem"/>
@@ -208,13 +250,35 @@ function CreateCollection () {
                                 </FormControl>
                                 <Divider my="1rem"/>
                                 <FormControl isRequired>
-                                    <FormLabel>Upload image for your collection here</FormLabel>
+                                    <FormLabel>Approximate Price:</FormLabel>
+                                    <Input
+                                        type="number"
+                                        name="price" 
+                                        id="price" 
+                                        onChange={formik.handleChange}
+                                        value={formik.values.price}
+                                    />
+                                    {formik.errors.price && formik.touched.price ? (
+                                        <Alert mt={1} p={2} size="sm" borderRadius="3xl" status="warning">
+                                            <AlertIcon />
+                                            {formik.errors.price}
+                                        </Alert>
+                                    ) : (
+                                        <FormHelperText>{`Estimate your item's price.`}</FormHelperText>
+                                    )}
+                                </FormControl>
+                                <Divider my="1rem"/>
+                                <FormControl isRequired>
+                                    <FormLabel>Upload images for your item here:</FormLabel>
                                     <Dropzone
-                                        onDrop={(acceptedFiles) => {
-                                            formik.setFieldValue('image', acceptedFiles[0]);
-                                            console.log(acceptedFiles[0]);
+                                        onDrop={ (acceptedFilesArray) => {
+                                            const filenameArrayPlaceholder: string[] = [];
+                                            acceptedFilesArray.forEach((file) => {
+                                                filenameArrayPlaceholder.push(file.name);
+                                            })
+                                            formik.setFieldValue("imageArray", acceptedFilesArray);
                                             setUploadedPicture(true);
-                                            setFileName(acceptedFiles[0].name)
+                                            setFileName(filenameArrayPlaceholder);
                                         }}
                                         // Accept only images of these filetypes
                                         accept={{
@@ -226,13 +290,13 @@ function CreateCollection () {
                                     >
                                         {({ getRootProps, getInputProps, isDragActive }) => (
                                             <Box p={3} borderStyle={"dashed"} borderWidth="1px" {...getRootProps()}>
-                                                <input {...getInputProps()} />
+                                                <input {...getInputProps()} multiple />
                                                 {isDragActive ? (
                                                     <p>Drop the files here ...</p>
                                                 ) : (
-                                                    ((uploadedPicture)
+                                                    ((uploadedPicture && fileName)
                                                         ? (
-                                                            <Text opacity={"80%"}>{fileName}</Text>
+                                                            <Text opacity={"80%"}>{fileName.map((name) => `${name} `)}</Text>
                                                         )
                                                         : (
                                                             <Text opacity={"80%"}>Drag and drop your image here, or click to select an image.</Text>
@@ -243,21 +307,48 @@ function CreateCollection () {
                                     </Dropzone>
                                 </FormControl>
                                 <Divider my="1rem"/>
-                                <Select 
-                                    id ="user" 
-                                    name="user" 
-                                    placeholder={loggedinUser.username}
-                                    onChange={formik.handleChange}
-                                    // defaultValue={formik.values.user}
-                                    value={formik.values.user}
-                                    isRequired
-                                    disabled>
-                                    <option key={uuidv4()} value={loggedinUser._id}>{loggedinUser.username}</option>
-                                </Select>
-                                <Divider my="1rem"/>
-                                <Button disabled={submitting} type='submit' colorScheme="teal">
-                                    {submitting ? <Spinner></Spinner> : <Text>Create</Text>}
-                                </Button>
+                                <FormControl>
+                                    <FormLabel>User:</FormLabel>
+                                    <Select
+                                        id ="user"
+                                        name="user"
+                                        placeholder={loggedinUser.username}
+                                        onChange={formik.handleChange}
+                                        // defaultValue={formik.values.user}
+                                        value={formik.values.user}
+                                        isRequired
+                                        disabled>
+                                        <option key={uuidv4()} value={loggedinUser._id}>{loggedinUser.username}</option>
+                                    </Select>
+                                    <Divider my="1rem"/>
+                                </FormControl>
+                                {(fetchedCollection)
+                                    ? (
+                                        <>
+                                            <FormControl>
+                                                <FormLabel>Collection:</FormLabel>
+                                                <Select
+                                                    id ="group"
+                                                    name="group"
+                                                    placeholder={fetchedCollection.name}
+                                                    onChange={formik.handleChange}
+                                                    // defaultValue={formik.values.group}
+                                                    value={formik.values.group}
+                                                    isRequired
+                                                    disabled>
+                                                    <option key={uuidv4()} value={collectionId}>{fetchedCollection.name}</option>
+                                                </Select>
+                                                <Divider my="1rem"/>
+                                                <Button disabled={submitting} type='submit' colorScheme="teal">
+                                                    {submitting ? <Spinner></Spinner> : <Text>Create</Text>}
+                                                </Button>
+                                            </FormControl>
+                                        </>
+
+                                    )
+                                    : (
+                                        null
+                                    )}
                             </form>
                                
                         </Flex>
@@ -272,7 +363,9 @@ function CreateCollection () {
                     )
             )
             : (
+
                 <LoadingPage />
+
             )
     );
 

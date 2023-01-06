@@ -5,9 +5,10 @@ import React, { useEffect, useState } from 'react'
 import { Link as RouteLink } from 'react-router-dom';
 import { useParams } from 'react-router-dom'
 import { v4 } from 'uuid';
-import { useAppSelector } from '../app/hooks';
-import ItemCard from './ItemCard';
-import LoadingPage from './LoadingPage';
+import { useAppSelector } from '../../../app/hooks';
+import CollectionType from '../../../Types/CollectionType';
+import ItemCard from '../CardComponents/ItemCard';
+import LoadingPage from '../Loading/LoadingPage';
 
 function CollectionPage() {
     const { collectionId } = useParams();
@@ -39,18 +40,6 @@ function CollectionPage() {
         loggedinUser = currentUser.returned[0];
     }
 
-    type CollectionType = {
-        name: string,
-        summary: string,
-        tags: string[],
-        image_url: string,
-        user: {
-            _id: string,
-            username: string,
-            avatarURL: string,
-        },
-        _id: string,
-    }
 
     useEffect(() => {
         const fetchCollectionData = async () => {

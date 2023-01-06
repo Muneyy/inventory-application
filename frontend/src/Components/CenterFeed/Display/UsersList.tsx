@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Spinner, useMediaQuery, Image, Container, Heading, Center, Text, Button, Stack, Link, Grid, FormLabel, FormControl, useDisclosure, Collapse, Box, Flex, Avatar } from '@chakra-ui/react'
 import {ArrowForwardIcon} from '@chakra-ui/icons'
-import { login, logout } from '../Features/currentUserSlice';
-import { useAppSelector, useAppDispatch } from '../app/hooks'
+import { login, logout } from '../../../Features/currentUserSlice';
+import { useAppSelector, useAppDispatch } from '../../../app/hooks'
 import { useNavigate } from 'react-router-dom';
 import {Link as RouteLink} from "react-router-dom";
 import { useFormik } from 'formik';
@@ -12,8 +12,8 @@ import { current } from '@reduxjs/toolkit';
 import { userInfo } from 'os';
 
 import persistStore from 'redux-persist/es/persistStore';
-import store from '../app/store';
-import LoadingPage from './LoadingPage';
+import store from '../../../app/store';
+import LoadingPage from '../Loading/LoadingPage';
 
 
 

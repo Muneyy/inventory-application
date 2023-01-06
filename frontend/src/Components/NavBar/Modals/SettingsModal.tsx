@@ -12,8 +12,8 @@ import {
 } from '@chakra-ui/react'
 import { SettingsIcon } from '@chakra-ui/icons';
 import persistStore from 'redux-persist/es/persistStore';
-import store from '../../app/store';
-import { useAppSelector } from '../../app/hooks';
+import store from '../../../app/store';
+import { useAppSelector } from '../../../app/hooks';
 
 const SettingsModal = () => {
 

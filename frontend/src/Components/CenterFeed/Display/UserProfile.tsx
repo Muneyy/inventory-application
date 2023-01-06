@@ -3,17 +3,20 @@ import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Spinner, Container, Image, Heading, Center, Text, Button, Stack, Grid, FormLabel, FormControl, useDisclosure, Collapse, Box, Flex, GridItem, Circle, Avatar, AvatarBadge, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, Input, Alert, AlertDescription, AlertIcon, AlertTitle, useMediaQuery } from '@chakra-ui/react'
 import {ArrowForwardIcon, CheckIcon} from '@chakra-ui/icons'
-import { login, logout } from '../Features/currentUserSlice';
-import { useAppSelector, useAppDispatch } from '../app/hooks'
+import { login, logout } from '../../../Features/currentUserSlice';
+import { useAppSelector, useAppDispatch } from '../../../app/hooks'
 import { useNavigate, useParams } from 'react-router-dom';
 import { CheckCircleIcon } from '@chakra-ui/icons'
-import FriendAction from './Buttons/FriendAction';
-import LoadingPage from './LoadingPage';
+import FriendAction from '../../Buttons/FriendAction';
+import LoadingPage from '../Loading/LoadingPage';
+import CollectionCard from '../CardComponents/CollectionCard';
+import CollectionType from '../../../Types/CollectionType';
 
 function UserProfile () {
     const [loading, setLoading] = useState(0);
     const dispatch = useAppDispatch();
     const [fetchedUser, setFetchedUser] = useState<fetchedUserType>();
+    const [fetchedUserCollections, setFetchedUserCollections] = useState([]);
     const [friendRequestSent, setFriendRequestSent] = useState<boolean>(false);
 
     const { userId } = useParams();
@@ -54,6 +57,11 @@ function UserProfile () {
                     .then(res => {
                         setFetchedUser(res.data.user);
                     })
+                
+                await axios.get(`http://localhost:3000/${userId}/collections`)
+                    .then(res => {
+                        setFetchedUserCollections(res.data);
+                    })
 
                 // console.log(JSON.parse(JSON.stringify(reqUserData)));
                 setLoading(1);
@@ -63,6 +71,10 @@ function UserProfile () {
         }
         fetchUserData();
     }, [])
+
+    useEffect(() => {
+        console.log(fetchedUserCollections);
+    }, [fetchedUserCollections])
 
 
     const JWTconfig = {
@@ -162,67 +174,76 @@ function UserProfile () {
             ?   (
                 (fetchedUser) 
                     ? (
-                        <Grid position="relative" top={-10} w={width} alignSelf={"flex-start"} alignContent="space-between" 
-                            templateColumns={"40% 1fr"} alignItems={"center"} gap={1} borderBottomWidth="1px">
-                            <GridItem display={"flex"} alignItems="center" justifyContent={"center"} p={5}>
-                                {(fetchedUser.avatarURL) 
-                                    ? (
-                                        <Image
-                                            borderRadius='full'
-                                            boxSize='150px'
-                                            src={fetchedUser.avatarURL}
-                                            objectFit="cover"
-                                            alt='Avatar'/>
-                                    ) 
-                                    : (
-                                        <Avatar boxSize='150px'></Avatar>
-                                    )}
-                            </GridItem>
-                            <GridItem display={"flex"} justifyContent="center" alignItems="start" p={5} flexDir="column">
-                                <Text fontSize="2xl" fontWeight={700}>{fetchedUser.username}</Text>
-                                <Text fontSize={"xs"} fontWeight={300}>@{fetchedUser.handle}</Text>
-                                <Text fontSize={"sm"} fontWeight={500}>{fetchedUser.bio}</Text>
-                                {/* TODO: remove add friend button if user is not logged in. */}
-
-                                {(loggedinUser._id != userId)
-                                    ? ( 
-                                        (userFriends.includes(fetchedUser._id))
-                                            ? (
-                                                <Button mt={1} disabled colorScheme="pink" ref={btnRef} size="sm">
-                                                    <CheckCircleIcon mr={2}/>{"Friend"}
-                                                </Button> 
-                                            ) 
-                                            : (
-                                                (addedFriends.includes(fetchedUser._id)
-                                                    ? (
-                                                        <Button mt={1}  colorScheme="pink" ref={btnRef} onClick={() => acceptFriendRequest(fetchedUser._id)} size="sm" disabled={friendRequestSent}>
-                                                            {friendRequestSent ? <Spinner></Spinner> : "Accept Friend Request"}
-                                                        </Button>
-                                                    )
-                                                    : (
-                                                        (incomingFriends.includes(fetchedUser._id)
-                                                            ? (
-                                                                <Button mt={1}  colorScheme="pink" ref={btnRef} size="sm" disabled>
-                                                                    <CheckCircleIcon mr={2}/>{"Friend Request sent"}
-                                                                </Button>
-                                                            ) 
-                                                            : (
-                                                                <Button mt={1}  colorScheme="pink" ref={btnRef} onClick={() => sendFriendRequest(fetchedUser._id)} size="sm" disabled={friendRequestSent}>
-                                                         
-                                                                    {friendRequestSent ? <Spinner></Spinner> : "Add Friend"}
-
-                                                                </Button>
-                                                            ))
-                                                    ))
-                                            )
+                        <Box w={width}>
+                            <Grid position="relative" top={-10} alignSelf={"flex-start"} alignContent="space-between"
+                                templateColumns={"40% 1fr"} alignItems={"center"} gap={1} borderBottomWidth="1px">
+                                <GridItem display={"flex"} alignItems="center" justifyContent={"center"} p={5}>
+                                    {(fetchedUser.avatarURL)
+                                        ? (
+                                            <Image
+                                                borderRadius='full'
+                                                boxSize='150px'
+                                                src={fetchedUser.avatarURL}
+                                                objectFit="cover"
+                                                alt='Avatar'/>
+                                        )
+                                        : (
+                                            <Avatar boxSize='150px'></Avatar>
+                                        )}
+                                </GridItem>
+                                <GridItem display={"flex"} justifyContent="center" alignItems="start" p={5} flexDir="column">
+                                    <Text fontSize="2xl" fontWeight={700}>{fetchedUser.username}</Text>
+                                    <Text fontSize={"xs"} fontWeight={300}>@{fetchedUser.handle}</Text>
+                                    <Text fontSize={"sm"} fontWeight={500}>{fetchedUser.bio}</Text>
+                                    {/* TODO: remove add friend button if user is not logged in. */}
+                                    {(loggedinUser._id != userId)
+                                        ? (
+                                            (userFriends.includes(fetchedUser._id))
+                                                ? (
+                                                    <Button mt={1} disabled colorScheme="pink" ref={btnRef} size="sm">
+                                                        <CheckCircleIcon mr={2}/>{"Friend"}
+                                                    </Button>
+                                                )
+                                                : (
+                                                    (addedFriends.includes(fetchedUser._id)
+                                                        ? (
+                                                            <Button mt={1}  colorScheme="pink" ref={btnRef} onClick={() => acceptFriendRequest(fetchedUser._id)} size="sm" disabled={friendRequestSent}>
+                                                                {friendRequestSent ? <Spinner></Spinner> : "Accept Friend Request"}
+                                                            </Button>
+                                                        )
+                                                        : (
+                                                            (incomingFriends.includes(fetchedUser._id)
+                                                                ? (
+                                                                    <Button mt={1}  colorScheme="pink" ref={btnRef} size="sm" disabled>
+                                                                        <CheckCircleIcon mr={2}/>{"Friend Request sent"}
+                                                                    </Button>
+                                                                )
+                                                                : (
+                                                                    <Button mt={1}  colorScheme="pink" ref={btnRef} onClick={() => sendFriendRequest(fetchedUser._id)} size="sm" disabled={friendRequestSent}>
+                            
+                                                                        {friendRequestSent ? <Spinner></Spinner> : "Add Friend"}
+                                                                    </Button>
+                                                                ))
+                                                        ))
+                                                )
+                                        )
+                                        : (
+                                            null
+                                        )}
+                                </GridItem>
+                            </Grid>
+                            {/* TODO-CSS: FIX TOP EXTRACT WIDTH MEDIA QUERY FROM ALL COMPONENTS TO OUTER BOX */}
+                            <Center top={-10} position={"relative"} display="flex" flexDirection="column">
+                                {/* <Grid templateColumns={"1fr"}> */}
+                                {fetchedUserCollections.map((collection: CollectionType) => {
+                                    return (
+                                        <CollectionCard key={uuidv4()} collection={collection} isDisplayedInProfile={true} />
                                     )
-                                    : (
-                                        null
-                                    )}
+                                })}
+                                {/* </Grid> */}
 
-
-                            </GridItem>
-                        </Grid>
+                            </Center>
+                        </Box>
                     ) 
                     : (
                         <Alert status='error'>

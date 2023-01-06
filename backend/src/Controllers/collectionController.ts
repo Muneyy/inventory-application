@@ -25,6 +25,25 @@ exports.collections = (req: Request, res: Response, next: any) => {
         });
 };
 
+exports.user_collections = (req: Request, res: Response, next: any) => {
+    Group.find( 
+        {
+            user: req.params.userId,
+        })
+        .sort([['createdAt', 'descending']])
+        .populate({
+            path: 'user',
+            model: User,
+            select: ['username', 'handle', 'avatarURL'],
+        })
+        .exec((err, list_group) => {
+            if (err) {
+                return next(err);
+            }
+            res.send(list_group);
+        });
+};
+
 exports.collection = (req: Request, res: Response, next: any) => {
     async.parallel(
         {

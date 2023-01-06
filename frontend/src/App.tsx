@@ -1,25 +1,25 @@
 import React from 'react';
 import './App.css';
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
-import Home from './Components/Home';
+import Home from './Components/CenterFeed/Display/Home';
 import { Box, Button, Center, ChakraProvider, Container, Flex, Grid, GridItem, Heading, Icon, useColorMode } from '@chakra-ui/react'
-import CreateUser from './Components/SignUp';
-import CreateCollection from './Components/CreateCollection';
-import LogIn from './Components/LogIn';
+import CreateUser from './Components/CenterFeed/Forms/SignUp';
+import CreateCollection from './Components/CenterFeed/Forms/CreateCollection';
+import LogIn from './Components/CenterFeed/Forms/LogIn';
 import store from './app/store'
 import { Provider } from 'react-redux'
-import Profile from './Components/Profile';
+import Profile from './Components/CenterFeed/Display/Profile/Profile';
 import { PersistGate } from 'redux-persist/integration/react'
 import { persistStore } from 'redux-persist'
-import UserProfile from './Components/UserProfile';
-import UsersList from './Components/UsersList';
+import UserProfile from './Components/CenterFeed/Display/UserProfile';
+import UsersList from './Components/CenterFeed/Display/UsersList';
 import theme from "./theme"
-import NavBar from './Components/Navbar';
+import NavBar from './Components/NavBar/Navbar';
 import LeftLinks from './Components/AppComponents/LeftLinks';
 import RightLinks from './Components/AppComponents/RightLinks';
-import CollectionPage from './Components/CollectionPage';
-import CreateItem from './Components/CreateItem';
-import MobileMenu from './Components/MobileMenu';
+import CollectionPage from './Components/CenterFeed/Display/CollectionPage';
+import CreateItem from './Components/CenterFeed/Forms/CreateItem';
+import MobileMenu from './Components/MobileBar/MobileMenu';
 import ScrollToTop from './Components/ScrollToTop';
 import { useMediaQuery } from 'react-responsive'
 

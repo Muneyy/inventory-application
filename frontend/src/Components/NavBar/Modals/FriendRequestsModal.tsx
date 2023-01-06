@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
-import { useAppSelector, useAppDispatch } from '../../app/hooks'
+import { useAppSelector, useAppDispatch } from '../../../app/hooks'
 import {
     Modal,
     ModalOverlay,
@@ -19,8 +19,8 @@ import {
     Avatar,
 } from '@chakra-ui/react'
 import { PlusSquareIcon } from '@chakra-ui/icons';
-import { login } from '../../Features/currentUserSlice';
-import FriendAction from '../Buttons/FriendAction';
+import { login } from '../../../Features/currentUserSlice';
+import FriendAction from '../../Buttons/FriendAction';
 
 const FriendRequestsModal = () => {
 

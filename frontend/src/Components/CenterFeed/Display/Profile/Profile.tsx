@@ -3,14 +3,14 @@ import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Spinner, Image, Container, Heading, Center, Text, Button, Stack, Grid, FormLabel, FormControl, useDisclosure, Collapse, Box, Flex, GridItem, Circle, Avatar, AvatarBadge, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, Input, Alert, AlertDescription, AlertIcon, AlertTitle, Icon, useMediaQuery } from '@chakra-ui/react'
 import {ArrowForwardIcon, AttachmentIcon} from '@chakra-ui/icons'
-import { login, logout } from '../Features/currentUserSlice';
-import { useAppSelector, useAppDispatch } from '../app/hooks'
+import { login, logout } from '../../../../Features/currentUserSlice';
+import { useAppSelector, useAppDispatch } from '../../../../app/hooks'
 import { useNavigate } from 'react-router-dom';
 import { CheckCircleIcon } from '@chakra-ui/icons'
-import FriendAction from './Buttons/FriendAction';
+import FriendAction from '../../../Buttons/FriendAction';
 import { useFormik } from 'formik';
 import UploadAvatar from './ProfileComponents/UploadAvatar';
-import { UserType } from '../Types/SchemaTypes';
+import { UserType } from '../../../../Types/SchemaTypes';
 import UploadAvatarModal from './ProfileComponents/UploadAvatarModal';
 import { FaUserFriends } from 'react-icons/fa';
 import FriendsDrawer from './ProfileComponents/FriendsDrawer';

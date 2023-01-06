@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react'
 import { ChatIcon } from '@chakra-ui/icons';
 import UploadAvatar from './UploadAvatar';
-import { UserType } from '../../Types/SchemaTypes';
+import { UserType } from '../../../../../Types/SchemaTypes';
 import { AiOutlinePicture } from 'react-icons/ai';
 
 const UploadAvatarModal = (props: {

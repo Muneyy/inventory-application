@@ -7,11 +7,11 @@ import { Formik, Form, Field, useFormik } from "formik";
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
 import persistStore from 'redux-persist/es/persistStore';
-import store from '../app/store';
+import store from '../../../app/store';
 
 // import dispatch actions for logging out user in Redux
-import { login, logout } from '../Features/currentUserSlice';
-import LoadingPage from './LoadingPage';
+import { login, logout } from '../../../Features/currentUserSlice';
+import LoadingPage from '../Loading/LoadingPage';
 
 function CreateUser () {
     const [loading, setLoading] = useState(0);

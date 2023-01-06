@@ -1,11 +1,11 @@
 import { Flex, FormControl, FormLabel, Button, Spinner, Box, Text } from '@chakra-ui/react';
 import { useFormik } from 'formik';
-import { useAppSelector, useAppDispatch } from '../../app/hooks'
-import { login, logout } from '../../Features/currentUserSlice';
+import { useAppSelector, useAppDispatch } from '../../../../../app/hooks'
+import { login, logout } from '../../../../../Features/currentUserSlice';
 import Dropzone from "react-dropzone";
 import axios from 'axios';
 import React, { useState } from 'react'
-import { UserType } from '../../Types/SchemaTypes';
+import { UserType } from '../../../../../Types/SchemaTypes';
 
 // need loggedinuser as props
 function UploadAvatar(props: {

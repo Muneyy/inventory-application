@@ -20,6 +20,9 @@ router.get('/users/handles', user_controller.users_handles);
 
 router.get('/users/:userId', user_controller.user);
 
+// Get user's created collections
+router.get('/:userId/collections', collection_controller.user_collections);
+
 router.post('/users/post', user_controller.post_user);
 
 module.exports = router;

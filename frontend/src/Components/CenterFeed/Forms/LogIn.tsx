@@ -4,9 +4,9 @@ import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
 import { FormControl, FormLabel, FormErrorMessage, FormHelperText, Input } from '@chakra-ui/react';
 import { useFormik } from "formik";
-import { login, logout } from '../Features/currentUserSlice';
-import { setToken, removeToken } from '../Features/currentTokenSlice';
-import { useAppSelector, useAppDispatch } from '../app/hooks'
+import { login, logout } from '../../../Features/currentUserSlice';
+import { setToken, removeToken } from '../../../Features/currentTokenSlice';
+import { useAppSelector, useAppDispatch } from '../../../app/hooks'
 
 function LogIn () {
     const [currentUser, setCurrentUser] = useState<any>()
