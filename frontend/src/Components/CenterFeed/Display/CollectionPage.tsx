@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom'
 import { v4 } from 'uuid';
 import { useAppSelector } from '../../../app/hooks';
 import CollectionType from '../../../Types/CollectionType';
+import ItemType from '../../../Types/ItemType';
 import ItemCard from '../CardComponents/ItemCard';
 import LoadingPage from '../Loading/LoadingPage';
 
@@ -16,21 +17,6 @@ function CollectionPage() {
     const [fetchedCollection, setFetchedCollection] = useState<CollectionType>();
     const [fetchedCollectionItems, setFetchedCollectionItems] = useState<ItemType[]>([]);
 
-    type ItemType = {
-        name: string,
-        description: string,
-        tags: string[],
-        price: number,
-        images_urls: string[],
-        group: string,
-        user: {
-            avatarURL: string,
-            username: string,
-            handle: string,
-            _id: string,
-        },
-    }
-
     // Retrieve logged in user state and JWT token from Redux
     const currentUser = useAppSelector(state => state.currentUser);
     let loggedinUser: any = {};
@@ -39,7 +25,6 @@ function CollectionPage() {
     if (currentUser.returned.length === 1) {
         loggedinUser = currentUser.returned[0];
     }
-
 
     useEffect(() => {
         const fetchCollectionData = async () => {
@@ -71,6 +56,10 @@ function CollectionPage() {
         setWidth(isSmallScreen ? "100vw" : "570px");
         setPictureWidth(isSmallScreen ? "100vw" : "570px")
     }, [isSmallScreen]);
+
+    // useEffect(() => {
+    //     console.log(fetchedCollectionItems);
+    // }, [fetchedCollectionItems])
     
     return (
         (loadingDone)

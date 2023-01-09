@@ -69,12 +69,14 @@ exports.unlike_an_item = async (req: Request, res: Response, next: any) => {
         { _id: req.params.itemId },
         { 
             $inc: { likeCounter: -1 },
+            // Note that likeUsers pertain to the like document, not the user itself
             $pull: { likeUsers: deleteLikeDocument._id },
         },
     ).exec((err, updatedItem) => {
         if (err) {
             return next(err);
         }
+        // updatedItem is actually not updated yet
         return res.send(updatedItem);
     });
 

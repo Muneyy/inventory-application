@@ -27,6 +27,8 @@ router.get('/users/:userId', user_controller.user);
 // Get user's created collections
 router.get('/:userId/collections', collection_controller.user_collections);
 
+router.get('/items/:itemId/likes', like_controller.item_likes);
+
 router.post('/users/post', user_controller.post_user);
 
 router.post('/items/:itemId/like', like_controller.like_an_item);
