@@ -10,7 +10,7 @@ import { UserType } from '../../../../../Types/SchemaTypes';
 // need loggedinuser as props
 function UploadAvatar(props: {
     userId: string,
-    setLoggedinUser: React.Dispatch<React.SetStateAction<UserType>>,
+    // setLoggedinUser: Reacts.Dispatch<React.SetStateAction<UserType>>,
     onClose: () => void,
 }) {
     // Formik to handle form submit for changing profile picture
@@ -28,8 +28,8 @@ function UploadAvatar(props: {
             .then(async (res) => {
                 console.log(res);
                 await dispatch(login(res.data.user));
-                const updateUser = useAppSelector(state => state.currentUser);
-                await props.setLoggedinUser(updateUser.returned[0])
+                // const updateUser = useAppSelector(state => state.currentUser);
+                // await props.setLoggedinUser(updateUser.returned[0])
             })
             .catch(err => {
                 console.log(err);

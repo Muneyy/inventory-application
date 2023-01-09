@@ -43,6 +43,13 @@ const itemSchema = new Schema(
             ref: 'User',
             required: true,
         },
+        likeCounter: {
+            type: Number,
+        },
+        likeUsers: [{
+            type: Schema.Types.ObjectId,
+            ref: 'Like',
+        }],
     },
     { timestamps: true },
 );

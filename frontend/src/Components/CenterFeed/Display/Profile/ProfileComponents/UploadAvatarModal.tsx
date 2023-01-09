@@ -19,7 +19,7 @@ import { AiOutlinePicture } from 'react-icons/ai';
 
 const UploadAvatarModal = (props: {
     userId: string,
-    setLoggedinUser: React.Dispatch<React.SetStateAction<UserType>>
+    // setLoggedinUser: React.Dispatch<React.SetStateAction<UserType>>
 }) => {
 
     const { isOpen, onOpen, onClose } = useDisclosure()
@@ -36,7 +36,9 @@ const UploadAvatarModal = (props: {
                     <ModalHeader>Change Profile Picture</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
-                        <UploadAvatar userId={props.userId} setLoggedinUser={props.setLoggedinUser} onClose={onClose} />
+                        <UploadAvatar userId={props.userId} 
+                        // setLoggedinUser={props.setLoggedinUser} 
+                            onClose={onClose} />
                     </ModalBody>
                     <ModalFooter>
                         <Button size="md" colorScheme='blue' mr={3} onClick={onClose}>

@@ -47,7 +47,7 @@ function LeftLinks() {
                         </Show>
                     </Button>
                 </RouteLink>
-                <RouteLink to={`/${loggedinUser._id}`}>
+                <RouteLink to={`/profile`}>
                     <Button colorScheme={"teal"} bottom="0" py={7} borderRadius={"3xl"} variant="ghost" display="grid" gap={3} justifyItems="start" gridTemplateColumns="20px 1fr" alignContent={"center"}>
                         <Avatar size="sm" src={loggedinUser.avatarURL} />
                         <Show above="900px">

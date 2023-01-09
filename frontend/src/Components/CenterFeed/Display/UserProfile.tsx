@@ -159,9 +159,6 @@ function UserProfile () {
         })
     }
 
-    // TODO: Fix bug/ Add functionality
-    // Frontend does not determine who sent/received friend request
-
     const [isSmallScreen] = useMediaQuery("(max-width: 570px)");
     const [width, setWidth] = useState(isSmallScreen ? "100vw" : "570px");
   
