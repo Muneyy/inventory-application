@@ -50,6 +50,13 @@ const itemSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: 'Like',
         }],
+        commentCounter: {
+            type: Number,
+        },
+        commentUsers: [{
+            type: Schema.Types.ObjectId,
+            ref: 'Comment',
+        }],
     },
     { timestamps: true },
 );

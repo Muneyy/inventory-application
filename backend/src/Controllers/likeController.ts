@@ -29,18 +29,13 @@ exports.like_an_item = async (req: Request, res: Response, next: any) => {
     const userRequester = req.body.liker;
     const itemLiked = req.params.itemId;
 
-    console.log(req.body.liker);
-    console.log(req.params.itemId);
-
     const createLikeDocument = await Like.findOneAndUpdate(
         { user: userRequester, item: itemLiked },
         { $set: { user: userRequester, item: itemLiked }},
         { upsert: true, new: true},
     );
 
-    console.log(createLikeDocument);
-    console.log("Does this execute?");
-    const updateItem = await Item.findOneAndUpdate(
+    const updateItemLike = await Item.findOneAndUpdate(
         { _id: req.params.itemId },
         { 
             $inc: { likeCounter: 1 },
