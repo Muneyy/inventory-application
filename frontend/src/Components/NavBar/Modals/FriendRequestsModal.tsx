@@ -21,26 +21,13 @@ import {
 import { PlusSquareIcon } from '@chakra-ui/icons';
 import { login } from '../../../Features/currentUserSlice';
 import FriendAction from '../../Buttons/FriendAction';
+import { getUserAndToken } from '../../../HelperFunctions/GetUserandToken';
 
 const FriendRequestsModal = () => {
 
     const { isOpen, onOpen, onClose } = useDisclosure();
-    // Retrieve logged in user state and JWT token from Redux
-    const currentUser = useAppSelector(state => state.currentUser);
-    let loggedinUser: any = {};
 
-    // Refactor code for convenience
-    if (currentUser.returned.length === 1) {
-        loggedinUser = currentUser.returned[0];
-    }
-
-    // Get token and refactor
-    const token: any = useAppSelector(state => state.currentToken);
-    let tokenJWT = ""
-
-    if (token.returned.length === 1) {
-        tokenJWT = token.returned[0];
-    }
+    const [loggedinUser, tokenJWT] = getUserAndToken();
 
     const JWTconfig = {
         headers: { Authorization: `Bearer ${tokenJWT}` }
@@ -97,12 +84,6 @@ const FriendRequestsModal = () => {
                 console.log(err);
             })
     }
-
-    // Update friends after the dispatch call in refreshUserState() 
-    // after accepting friend request. This is better than refreshing the page.
-    useEffect(() => {
-        loggedinUser = currentUser.returned[0]
-    }, [currentUser])
 
     return (
         <>

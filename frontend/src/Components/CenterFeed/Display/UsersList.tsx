@@ -14,6 +14,7 @@ import { userInfo } from 'os';
 import persistStore from 'redux-persist/es/persistStore';
 import store from '../../../app/store';
 import LoadingPage from '../Loading/LoadingPage';
+import { getUserAndToken } from '../../../HelperFunctions/GetUserandToken';
 
 
 
@@ -21,22 +22,8 @@ function UsersList() {
     const [loading, setLoading] = useState(0);
     const [reqUserData, setReqUserData] = useState<any>([]);
 
-    // Retrieve logged in user state and JWT token from Redux
-    const currentUser = useAppSelector(state => state.currentUser);
-    let loggedinUser: any = {};
+    const [loggedinUser, tokenJWT] = getUserAndToken();
 
-    // Refactor code for convenience
-    if (currentUser.returned.length === 1) {
-        loggedinUser = currentUser.returned[0];
-    }
-
-    // Get token and refactor
-    const token = useAppSelector(state => state.currentToken);
-    let tokenJWT = ""
-
-    if (token.returned.length === 1) {
-        tokenJWT = token.returned[0];
-    }
 
     useEffect(() => {
         // At page mount, get users and collections to display them
@@ -73,7 +60,7 @@ function UsersList() {
                         <Grid templateColumns={"repeat(2, 1fr)"}>
                             {reqUserData.map((user:any) => {
                                 return (
-                                    (currentUser.returned.length === 1)
+                                    (loggedinUser._id)
                                         ? (
                                             // Check if user is the logged in User,
                                             // if it is, then return an empty Text container

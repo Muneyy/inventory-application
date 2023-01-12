@@ -11,6 +11,7 @@ import FriendAction from '../../Buttons/FriendAction';
 import LoadingPage from '../Loading/LoadingPage';
 import CollectionCard from '../CardComponents/CollectionCard';
 import CollectionType from '../../../Types/CollectionType';
+import { getUserAndToken } from '../../../HelperFunctions/GetUserandToken';
 
 function UserProfile () {
     const [loading, setLoading] = useState(0);
@@ -29,20 +30,7 @@ function UserProfile () {
         avatarURL: string,
     }
 
-    // Retrieve logged in user state and JWT token from Redux
-    const currentUser = useAppSelector(state => state.currentUser);
-    let loggedinUser: any = {};
-    // Get token and refactor
-    const token = useAppSelector(state => state.currentToken);
-    let tokenJWT = ""
-
-    // Refactor REDUX states
-    if (currentUser.returned.length === 1) {
-        loggedinUser = currentUser.returned[0];
-    }
-    if (token.returned.length === 1) {
-        tokenJWT = token.returned[0];
-    }
+    const [loggedinUser, tokenJWT] = getUserAndToken();
 
     // Setup Friends Drawer using Chakra UI
     const { isOpen, onOpen, onClose } = useDisclosure()
@@ -134,12 +122,6 @@ function UserProfile () {
                 console.log(err);
             })
     }
-
-    // Update friends after the dispatch call in refreshUserState() 
-    // after accepting friend request. This is better than refreshing the page.
-    useEffect(() => {
-        loggedinUser = currentUser.returned[0]
-    }, [currentUser])
 
     // Make array of loggedinUser's friends to check
     // Also check if loggedinUser has already added viewed user

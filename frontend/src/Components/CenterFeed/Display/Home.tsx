@@ -11,28 +11,14 @@ import store from '../../../app/store';
 import LoadingPage from '../Loading/LoadingPage';
 import CollectionType from '../../../Types/CollectionType';
 import CollectionCard from '../CardComponents/CollectionCard';
+import { getUserAndToken } from '../../../HelperFunctions/GetUserandToken';
 
 
 function Home() {
     const [loading, setLoading] = useState(0);
     const [reqCollectionData, setReqCollectionData] = useState<any>([]);
 
-    // Retrieve logged in user state and JWT token from Redux
-    const currentUser = useAppSelector(state => state.currentUser);
-    let loggedinUser: any = {};
-
-    // Refactor code for convenience
-    if (currentUser.returned.length === 1) {
-        loggedinUser = currentUser.returned[0];
-    }
-
-    // Get token and refactor
-    const token = useAppSelector(state => state.currentToken);
-    let tokenJWT = ""
-
-    if (token.returned.length === 1) {
-        tokenJWT = token.returned[0];
-    }
+    const [loggedinUser, tokenJWT] = getUserAndToken();
 
     // import dispatch to dispatch payloads to redux
     const dispatch = useAppDispatch();
@@ -71,17 +57,13 @@ function Home() {
                 console.log(err);
             })
     }
-
-
-
+    
     const [isSmallScreen] = useMediaQuery("(max-width: 570px)");
     const [width, setWidth] = useState(isSmallScreen ? "100vw" : "570px");
   
     useEffect(() => {
         setWidth(isSmallScreen ? "100vw" : "570px");
     }, [isSmallScreen]);
-
-
 
     return (
         (loading)

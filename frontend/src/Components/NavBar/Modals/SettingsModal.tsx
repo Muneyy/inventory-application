@@ -14,24 +14,11 @@ import { SettingsIcon } from '@chakra-ui/icons';
 import persistStore from 'redux-persist/es/persistStore';
 import store from '../../../app/store';
 import { useAppSelector } from '../../../app/hooks';
+import { getUserAndToken } from '../../../HelperFunctions/GetUserandToken';
 
 const SettingsModal = () => {
 
-    // Retrieve logged in user state and JWT token from Redux
-    const currentUser = useAppSelector(state => state.currentUser);
-    let loggedinUser: any = {};
-
-    // Refactor code for convenience
-    if (currentUser.returned.length === 1) {
-        loggedinUser = currentUser.returned[0];
-    }
-
-    // Subscribe to changes when loggedinUser changes in react redux
-    // Update friends after the dispatch call in refreshUserState() 
-    // after accepting friend request. This is better than refreshing the page.
-    useEffect(() => {
-        loggedinUser = currentUser.returned[0]
-    }, [currentUser])
+    const [loggedinUser, tokenJWT] = getUserAndToken();
 
     // Logout user and then reload
     const persistor = persistStore(store);

@@ -9,6 +9,7 @@ import * as Yup from 'yup';
 import Dropzone from "react-dropzone";
 import { useAppSelector } from '../../../app/hooks';
 import LoadingPage from '../Loading/LoadingPage';
+import { getUserAndToken } from '../../../HelperFunctions/GetUserandToken';
 
 function CreateCollection () {
     const [loading, setLoading] = useState<boolean>(true);
@@ -20,20 +21,7 @@ function CreateCollection () {
     // check if picture has been uploaded
     const [uploadedPicture, setUploadedPicture] = useState<boolean>(false);
 
-    // Retrieve logged in user state and JWT token from Redux
-    const currentUser = useAppSelector(state => state.currentUser);
-    let loggedinUser: any = {};
-    // Get token and refactor
-    const token = useAppSelector(state => state.currentToken);
-    let tokenJWT = ""
-
-    // Refactor REDUX states
-    if (currentUser.returned.length === 1) {
-        loggedinUser = currentUser.returned[0];
-    }
-    if (token.returned.length === 1) {
-        tokenJWT = token.returned[0];
-    }
+    const [loggedinUser, tokenJWT] = getUserAndToken();
 
     const availableTags = [
         "anime",
@@ -126,7 +114,7 @@ function CreateCollection () {
         // TODO: FIX: loading is not working as intended
         (loading)
             ? (
-                (currentUser.returned.length === 1)
+                (loggedinUser._id)
                     ? (
                         <Flex w={width} px={10}>
                             <form onSubmit={formik.handleSubmit}>
@@ -262,7 +250,7 @@ function CreateCollection () {
                                
                         </Flex>
                     ) : (
-                        <Center>
+                        <Center w={width}>
                             <Alert status='error' borderRadius={"3xl"}>
                                 <AlertIcon />
                                 <AlertTitle>Please log in first.</AlertTitle>

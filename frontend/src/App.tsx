@@ -20,7 +20,7 @@ import RightLinks from './Components/AppComponents/RightLinks';
 import CollectionPage from './Components/CenterFeed/Display/CollectionPage';
 import CreateItem from './Components/CenterFeed/Forms/CreateItem';
 import MobileMenu from './Components/MobileBar/MobileMenu';
-import ScrollToTop from './Components/ScrollToTop';
+import ScrollToTop from './HelperFunctions/ScrollToTop';
 import { useMediaQuery } from 'react-responsive'
 
 function App() {
@@ -37,8 +37,6 @@ function App() {
                 <PersistGate loading={null} persistor={persistor}>
                     <BrowserRouter>
                         <ScrollToTop />
-                        {/* prevent scrollbar from messing up width of the page */}
-                        {/* TODO: find alternatives for scrollbar since this does not work well for mobiile viewports */}
                         <Box position="relative" overflowX={"clip"} maxW={isDesktopOrLaptop ? "calc(100vw - 1em)" : "100%"} >
                             <NavBar />
                             <Center>

@@ -1,24 +1,13 @@
-import { Flex, useMediaQuery, Button, Icon, Heading, Show, Text, Avatar, Wrap, Box } from '@chakra-ui/react'
+import { Flex, Button, Icon, Heading, Show, Avatar } from '@chakra-ui/react'
 import React from 'react'
 import { AiOutlineHome } from 'react-icons/ai'
 import { FaUserFriends } from 'react-icons/fa'
 import {Link as RouteLink} from "react-router-dom";
 import { ImProfile } from 'react-icons/im'
-import { useAppSelector } from '../../app/hooks';
+import { getUserAndToken } from '../../HelperFunctions/GetUserandToken';
 
 function LeftLinks() {
-
-    // Breakpoints for media queries
-    const firstBreakpoint = useMediaQuery("(min-width: 1200px)");
-
-    // Retrieve logged in user state and JWT token from Redux
-    const currentUser = useAppSelector(state => state.currentUser);
-    let loggedinUser: any = {};
-    
-    // Refactor REDUX states
-    if (currentUser.returned.length === 1) {
-        loggedinUser = currentUser.returned[0];
-    }
+    const [loggedinUser] = getUserAndToken();
 
     return (
         <Show above="700px">

@@ -21,6 +21,7 @@ import { useAppSelector } from '../../../app/hooks';
 import { motion } from 'framer-motion';
 
 import { useFormik } from "formik";
+import { getUserAndToken } from '../../../HelperFunctions/GetUserandToken';
 
 
 function ItemCard(props: {
@@ -28,20 +29,7 @@ function ItemCard(props: {
     pictureWidth: string
 }) {
 
-    // Retrieve logged in user state and JWT token from Redux
-    const currentUser = useAppSelector(state => state.currentUser);
-    let loggedinUser: any = {};
-    // Get token and refactor
-    const token = useAppSelector(state => state.currentToken);
-    let tokenJWT = ""
-    
-    // Refactor REDUX states
-    if (currentUser.returned.length === 1) {
-        loggedinUser = currentUser.returned[0];
-    }
-    if (token.returned.length === 1) {
-        tokenJWT = token.returned[0];
-    }
+    const [loggedinUser, tokenJWT] = getUserAndToken();
     
     const item = props.item;
 

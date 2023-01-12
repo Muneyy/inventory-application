@@ -6,6 +6,7 @@ import { Link as RouteLink } from 'react-router-dom';
 import { useParams } from 'react-router-dom'
 import { v4 } from 'uuid';
 import { useAppSelector } from '../../../app/hooks';
+import { getUserAndToken } from '../../../HelperFunctions/GetUserandToken';
 import CollectionType from '../../../Types/CollectionType';
 import ItemType from '../../../Types/ItemType';
 import ItemCard from '../CardComponents/ItemCard';
@@ -17,14 +18,7 @@ function CollectionPage() {
     const [fetchedCollection, setFetchedCollection] = useState<CollectionType>();
     const [fetchedCollectionItems, setFetchedCollectionItems] = useState<ItemType[]>([]);
 
-    // Retrieve logged in user state and JWT token from Redux
-    const currentUser = useAppSelector(state => state.currentUser);
-    let loggedinUser: any = {};
-    
-    // Refactor code for convenience
-    if (currentUser.returned.length === 1) {
-        loggedinUser = currentUser.returned[0];
-    }
+    const [loggedinUser] = getUserAndToken();
 
     useEffect(() => {
         const fetchCollectionData = async () => {

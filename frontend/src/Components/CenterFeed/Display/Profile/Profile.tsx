@@ -16,35 +16,14 @@ import { FaUserFriends } from 'react-icons/fa';
 import FriendsDrawer from './ProfileComponents/FriendsDrawer';
 import CollectionCard from '../../CardComponents/CollectionCard';
 import CollectionType from '../../../../Types/CollectionType';
+import { getUserAndToken } from '../../../../HelperFunctions/GetUserandToken';
 
 
 function Profile () {
-    // const [currentUser, setCurrentUser] = useState<any>({returned: []});
-
-
-    // Retrieve logged in user state and JWT token from Redux
-    const currentUser = useAppSelector(state => state.currentUser);
     const [fetchedUserCollections, setFetchedUserCollections] = useState([]);
     const [loaded, setLoaded] = useState(0);
-    let loggedinUser: any = {};
-    // Refactor REDUX states
-    if (currentUser.returned.length === 1) {
-        loggedinUser = currentUser.returned[0];
-    }
-    // Get token and refactor
-    const token = useAppSelector(state => state.currentToken);
-    let tokenJWT = "";
 
-    // useEffect(() => {
-    //     if (currentUser.returned.length === 1) {
-    //         setLoggedinUser(currentUser.returned[0]);
-    //     }
-    // }, [currentUser])
-
-    // Refactor REDUX states
-    if (token.returned.length === 1) {
-        tokenJWT = token.returned[0];
-    }
+    const [loggedinUser, tokenJWT] = getUserAndToken();
 
     // Retrieve collections of loggedinUser
     useEffect(() => {
