@@ -8,14 +8,14 @@ import CreateModal from './MobileModals/CreateModal';
 import {Link as RouteLink} from "react-router-dom";
 import { useAppSelector } from '../../app/hooks';
 import { useNavigate } from 'react-router-dom';
-import { getUserAndToken } from '../../HelperFunctions/GetUserandToken';
+import { useGetUserAndToken } from '../../HelperFunctions/useGetUserandToken';
 
 function MobileMenu() {
     // navigate to other routers in react-router
     const navigate = useNavigate();
     const currentUser = useAppSelector<any>(state => state.currentUser);
 
-    const [loggedinUser] = getUserAndToken();
+    const [loggedinUser] = useGetUserAndToken();
 
     return (
         <Show below="700px">

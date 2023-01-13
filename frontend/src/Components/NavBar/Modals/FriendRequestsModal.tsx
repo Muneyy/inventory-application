@@ -21,17 +21,13 @@ import {
 import { PlusSquareIcon } from '@chakra-ui/icons';
 import { login } from '../../../Features/currentUserSlice';
 import FriendAction from '../../Buttons/FriendAction';
-import { getUserAndToken } from '../../../HelperFunctions/GetUserandToken';
+import { useGetUserAndToken } from '../../../HelperFunctions/useGetUserandToken';
 
 const FriendRequestsModal = () => {
 
     const { isOpen, onOpen, onClose } = useDisclosure();
 
-    const [loggedinUser, tokenJWT] = getUserAndToken();
-
-    const JWTconfig = {
-        headers: { Authorization: `Bearer ${tokenJWT}` }
-    };
+    const [loggedinUser, tokenJWT] = useGetUserAndToken();
 
     const dispatch = useAppDispatch();
 
@@ -42,7 +38,7 @@ const FriendRequestsModal = () => {
             recipient,
         }
   
-        await axios.post('http://localhost:3000/friends/acceptFriendRequest', friendRequest, JWTconfig)
+        await axios.post('http://localhost:3000/friends/acceptFriendRequest', friendRequest, tokenJWT)
             .then(res => {
                 console.log(res);
             })
@@ -61,7 +57,7 @@ const FriendRequestsModal = () => {
             recipient,
         }
   
-        await axios.post('http://localhost:3000/friends/rejectFriendRequest', friendRequest, JWTconfig)
+        await axios.post('http://localhost:3000/friends/rejectFriendRequest', friendRequest, tokenJWT)
             .then(res => {
                 console.log(res);
             })
@@ -74,7 +70,7 @@ const FriendRequestsModal = () => {
 
     // GET request to get updated attributes of updated logged in user
     async function refreshUserState () {
-        await axios.get(`http://localhost:3000/users/${loggedinUser._id}`, JWTconfig)
+        await axios.get(`http://localhost:3000/users/${loggedinUser._id}`, tokenJWT)
             .then(async (res) => {
                 console.log(res);
                 await dispatch(login(res.data.user));

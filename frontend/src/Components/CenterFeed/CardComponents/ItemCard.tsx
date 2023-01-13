@@ -9,7 +9,7 @@ import "swiper/css/pagination";
 // import required modules
 import { Pagination } from "swiper";
 
-import { Link as RouteLink } from 'react-router-dom';
+import { Link as RouteLink, useNavigate, useParams } from 'react-router-dom';
 import {v4} from 'uuid';
 import {SlLike} from 'react-icons/sl'
 import { AiOutlineComment } from 'react-icons/ai';
@@ -21,17 +21,20 @@ import { useAppSelector } from '../../../app/hooks';
 import { motion } from 'framer-motion';
 
 import { useFormik } from "formik";
-import { getUserAndToken } from '../../../HelperFunctions/GetUserandToken';
+import { useGetUserAndToken } from '../../../HelperFunctions/useGetUserandToken';
 
 
 function ItemCard(props: {
-    item: ItemType
-    pictureWidth: string
+    item: ItemType,
+    pictureWidth: string,
+    setFetchedCollectionItems: React.Dispatch<React.SetStateAction<ItemType[]>>
 }) {
 
-    const [loggedinUser, tokenJWT] = getUserAndToken();
-    
+    const [loggedinUser, tokenJWT] = useGetUserAndToken();
+    const navigate = useNavigate();
     const item = props.item;
+
+    const {collectionId} = useParams();
 
     // make this dependent on fetched item attributes
     const [liked, setLiked] = useState<boolean>(false);
@@ -39,6 +42,7 @@ function ItemCard(props: {
     // For Comment Modal
     const { isOpen, onToggle } = useDisclosure()
 
+    // Check if user has already liked the item.
     useEffect(() => {
         item.likeUsers.forEach(likedUser => {
             if (likedUser.user._id === loggedinUser._id) {
@@ -55,7 +59,8 @@ function ItemCard(props: {
         await axios.post(`http://localhost:3000/items/${item._id}/like`,
             {
                 liker: loggedinUser._id,
-            }
+            },
+            tokenJWT
         ).then(res => {
             console.log(res.data);
         });
@@ -69,7 +74,8 @@ function ItemCard(props: {
         await axios.post(`http://localhost:3000/items/${item._id}/unlike`,
             {
                 liker: loggedinUser._id,
-            }
+            },
+            tokenJWT
         ).then(res => {
             console.log(res.data);
         });
@@ -94,15 +100,32 @@ function ItemCard(props: {
         onSubmit: async (values) => {
             setSubmitting(true);
             const submitComment = {
-                user: loggedinUser._id,
+                commenter: loggedinUser._id,
                 item: item._id,
-                text: "",
+                text: values.text,
             }
 
-            await axios.post(`http://localhost:3000/items/${item._id}/comment/add`, submitComment)
+            await axios.post(`http://localhost:3000/items/${item._id}/comment/add`, submitComment, tokenJWT)
                 .then(async res => {
                     console.log(res.data)
+                    await axios.get(`http://localhost:3000/items/${item._id}`)
+                        .then(async res => {
+                            props.setFetchedCollectionItems(prevCollectionItems => 
+                                prevCollectionItems.map(prevItem => {
+                                    if(prevItem._id === res.data.item._id){
+                                        return res.data.item;
+                                    }
+                                    return prevItem;
+                                })
+                            )
+                        })
                 })
+
+
+
+            
+            setSubmitting(false);
+            values.text = "";
         }
     })
     
@@ -163,6 +186,14 @@ function ItemCard(props: {
                 <Button onClick={onToggle} flex="1"><Icon as={AiOutlineComment} mr={3} />Comment</Button>
                 <Button flex="1"><Icon as={FaShare} mr={3} />Share</Button>
             </Flex>
+            {item.commentUsers.map((comment: any) => {
+                return (
+                    <Flex key={v4()} p={1} pl={5} pb={2}>
+                        <Avatar onClick={() => navigate(`/${comment.user._id}`)} mr={3} size="xs" src={comment.user.avatarURL}/>
+                        <Text>{comment.text}</Text>
+                    </Flex>
+                )
+            })}
             <Collapse in={isOpen} animateOpacity>
                 {/* Make the forms here */}
                 <Box
@@ -183,10 +214,10 @@ function ItemCard(props: {
                                 />
                             </FormControl>
                             <Flex mt={2} justifyContent={"space-between"} alignItems="center">
-                                <RouteLink to={`/${item.user._id}`}  style={{ textDecoration: 'none' }}>
+                                <RouteLink to={`/profile`}  style={{ textDecoration: 'none' }}>
                                     <Box alignItems="center" borderRadius={"lg"} display="flex" gap={2}>
-                                        <Avatar size="xs" src={item.user.avatarURL} />
-                                        <Text fontSize="md">{item.user.username}</Text>
+                                        <Avatar size="xs" src={loggedinUser.avatarURL} />
+                                        <Text fontSize="md">{loggedinUser.username}</Text>
                                     </Box>
                                 </RouteLink>
                                 <Button size="sm" alignSelf={"flex-end"} disabled={submitting} type='submit' colorScheme="teal">

@@ -1,6 +1,10 @@
-import express from 'express';
-const router = express.Router();
-
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const router = express_1.default.Router();
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const collection_controller = require('../Controllers/collectionController');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -11,26 +15,15 @@ const user_controller = require('../Controllers/userController');
 const like_controller = require('../Controllers/likeController');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const comment_controller = require('../Controllers/commentController');
-
 router.get('/collections/', collection_controller.collections);
-
 router.get('/collections/:groupId', collection_controller.collection);
-
 router.get('/collections/:groupId/items', item_controller.items);
-
 router.get('/items/:itemId', item_controller.get_item);
-
 router.get('/users/', user_controller.users);
-
 router.get('/users/handles', user_controller.users_handles);
-
 router.get('/users/:userId', user_controller.user);
-
 // Get user's created collections
 router.get('/:userId/collections', collection_controller.user_collections);
-
 router.get('/items/:itemId/likes', like_controller.item_likes);
-
 router.post('/users/post', user_controller.post_user);
-
 module.exports = router;

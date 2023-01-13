@@ -9,7 +9,7 @@ import * as Yup from 'yup';
 import Dropzone from "react-dropzone";
 import { useAppSelector } from '../../../app/hooks';
 import LoadingPage from '../Loading/LoadingPage';
-import { getUserAndToken } from '../../../HelperFunctions/GetUserandToken';
+import { useGetUserAndToken } from '../../../HelperFunctions/useGetUserandToken';
 
 function CreateCollection () {
     const [loading, setLoadingDone] = useState<boolean>(false);
@@ -33,7 +33,7 @@ function CreateCollection () {
     // check if picture has been uploaded
     const [uploadedPicture, setUploadedPicture] = useState<boolean>(false);
 
-    const [loggedinUser, tokenJWT] = getUserAndToken();
+    const [loggedinUser, tokenJWT] = useGetUserAndToken();
 
     useEffect(() => {
         const fetchCollectionData = async () => {
@@ -86,10 +86,6 @@ function CreateCollection () {
             .required("Required")
     })
 
-    const JWTconfig = {
-        headers: { Authorization: `Bearer ${tokenJWT}` }
-    };
-
     const formik = useFormik({
         enableReinitialize: true,
         initialValues: {
@@ -115,14 +111,14 @@ function CreateCollection () {
 
             console.log(submitItem);
 
-            await axios.post('http://localhost:3000/items/post', submitItem, JWTconfig)
+            await axios.post('http://localhost:3000/items/post', submitItem, tokenJWT)
                 .then(async res => {
                     for (const image of values.imageArray) {
                         const imageUploadForm = new FormData();
                         imageUploadForm.append("image", image);
                         imageUploadForm.append("itemId", res.data._id);
                         console.log(values.imageArray);
-                        await axios.post('http://localhost:3000/uploadAvatar', imageUploadForm, JWTconfig)
+                        await axios.post('http://localhost:3000/uploadAvatar', imageUploadForm, tokenJWT)
                             .then(res => {
                                 console.log(res.data.msg);
                             })

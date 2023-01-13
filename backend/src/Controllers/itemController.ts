@@ -4,6 +4,7 @@ import async = require('async');
 import { Request, Response } from "express";
 import User from '../Models/user';
 import Like from '../Models/like';
+import Comment from '../Models/comment';
 import { body, validationResult } from 'express-validator';
 
 const router = express.Router();
@@ -25,6 +26,15 @@ exports.items = (req: Request, res: Response, next: any) => {
                 select: ['username', 'avatarURL', 'handle'],
             },
         })
+        .populate({
+            path: 'commentUsers',
+            model: Comment,
+            populate: {
+                path: 'user',
+                model: User,
+                select: ['username', 'avatarURL', 'handle'],
+            },
+        })
         .sort([['createdAt', 'descending']])
         .exec((err, list_item) => {
             if (err) {
@@ -34,29 +44,48 @@ exports.items = (req: Request, res: Response, next: any) => {
         });
 };
 
-exports.item = (req: Request, res: Response, next: any) => {
-    async.parallel(
-        {
-            item(callback) {
-                Item.findById(req.params.itemId)
-                    .exec(callback);
+exports.get_item = (req: Request, res: Response, next: any) => {
+    console.log('please work');
+    console.log(req.params.itemId);
+    Item.findById(req.params.itemId)
+        .populate('group')
+        .populate({
+            path: 'user',
+            model: User,
+            select: ['username', 'handle', 'avatarURL'],
+        })
+        .populate({
+            path: 'likeUsers',
+            model: Like,
+            populate: {
+                path: 'user',
+                model: User,
+                select: ['username', 'avatarURL', 'handle'],
             },
-        },
-        (err, results) => {
+        })
+        .populate({
+            path: 'commentUsers',
+            model: Comment,
+            populate: {
+                path: 'user',
+                model: User,
+                select: ['username', 'avatarURL', 'handle'],
+            },
+        })
+        .exec((err, result) => {
             if (err) {
                 return next(err);
             }
-
-            if (results.item == null) {
+            
+            if (result == null) {
                 const err:any = new Error('Item not found');
                 err.status = 404;
                 return next(err);
             }
             res.send({
-                item: results.item,
+                item: result,
             });
-        },
-    );
+        });
 };
 
 const availableTags = [

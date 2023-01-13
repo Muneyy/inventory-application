@@ -14,12 +14,24 @@ type ItemType = {
     _id: string,
     likeCounter: number,
     likeUsers: LikedUserType[],
+    commentCounter: number,
+    commentUsers: CommentUserType[],
 }
 
 type LikedUserType = {
     user: {
         _id: string,
     }
+}
+
+type CommentUserType = {
+    user: {
+        _id: string,
+        username: string,
+        handle: string,
+        avatarURL: string,
+    },
+    text: string,
 }
 
 export default ItemType;

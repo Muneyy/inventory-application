@@ -14,7 +14,7 @@ import { userInfo } from 'os';
 import persistStore from 'redux-persist/es/persistStore';
 import store from '../../../app/store';
 import LoadingPage from '../Loading/LoadingPage';
-import { getUserAndToken } from '../../../HelperFunctions/GetUserandToken';
+import { useGetUserAndToken } from '../../../HelperFunctions/useGetUserandToken';
 
 
 
@@ -22,7 +22,7 @@ function UsersList() {
     const [loading, setLoading] = useState(0);
     const [reqUserData, setReqUserData] = useState<any>([]);
 
-    const [loggedinUser, tokenJWT] = getUserAndToken();
+    const [loggedinUser, tokenJWT] = useGetUserAndToken();
 
 
     useEffect(() => {

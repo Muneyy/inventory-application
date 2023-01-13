@@ -6,7 +6,7 @@ import { Link as RouteLink } from 'react-router-dom';
 import { useParams } from 'react-router-dom'
 import { v4 } from 'uuid';
 import { useAppSelector } from '../../../app/hooks';
-import { getUserAndToken } from '../../../HelperFunctions/GetUserandToken';
+import { useGetUserAndToken } from '../../../HelperFunctions/useGetUserandToken';
 import CollectionType from '../../../Types/CollectionType';
 import ItemType from '../../../Types/ItemType';
 import ItemCard from '../CardComponents/ItemCard';
@@ -18,7 +18,7 @@ function CollectionPage() {
     const [fetchedCollection, setFetchedCollection] = useState<CollectionType>();
     const [fetchedCollectionItems, setFetchedCollectionItems] = useState<ItemType[]>([]);
 
-    const [loggedinUser] = getUserAndToken();
+    const [loggedinUser] = useGetUserAndToken();
 
     useEffect(() => {
         const fetchCollectionData = async () => {
@@ -93,11 +93,11 @@ function CollectionPage() {
                                     )
                                 }
                             </Flex>
-                            {(fetchedCollectionItems)
+                            {(fetchedCollectionItems.length != 0)
                                 ? (
                                     fetchedCollectionItems.map((item: ItemType) => {
                                         return (
-                                            <ItemCard pictureWidth={pictureWidth} key={v4()} item={item} />
+                                            <ItemCard pictureWidth={pictureWidth} key={v4()} item={item} setFetchedCollectionItems={setFetchedCollectionItems} />
                                         )
                                     })
                                 )

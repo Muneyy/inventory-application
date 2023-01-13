@@ -5,7 +5,7 @@ import { login, logout } from '../../../../../Features/currentUserSlice';
 import Dropzone from "react-dropzone";
 import axios from 'axios';
 import React, { useState } from 'react'
-import { UserType } from '../../../../../Types/SchemaTypes';
+import { UserType } from '../../../../../Types/UserType';
 
 // need loggedinuser as props
 function UploadAvatar(props: {

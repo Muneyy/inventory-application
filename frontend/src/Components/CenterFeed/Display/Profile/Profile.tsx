@@ -10,20 +10,20 @@ import { CheckCircleIcon } from '@chakra-ui/icons'
 import FriendAction from '../../../Buttons/FriendAction';
 import { useFormik } from 'formik';
 import UploadAvatar from './ProfileComponents/UploadAvatar';
-import { UserType } from '../../../../Types/SchemaTypes';
+import { UserType } from '../../../../Types/UserType';
 import UploadAvatarModal from './ProfileComponents/UploadAvatarModal';
 import { FaUserFriends } from 'react-icons/fa';
 import FriendsDrawer from './ProfileComponents/FriendsDrawer';
 import CollectionCard from '../../CardComponents/CollectionCard';
 import CollectionType from '../../../../Types/CollectionType';
-import { getUserAndToken } from '../../../../HelperFunctions/GetUserandToken';
+import { useGetUserAndToken } from '../../../../HelperFunctions/useGetUserandToken';
 
 
 function Profile () {
     const [fetchedUserCollections, setFetchedUserCollections] = useState([]);
     const [loaded, setLoaded] = useState(0);
 
-    const [loggedinUser, tokenJWT] = getUserAndToken();
+    const [loggedinUser, tokenJWT] = useGetUserAndToken();
 
     // Retrieve collections of loggedinUser
     useEffect(() => {

@@ -9,7 +9,7 @@ import * as Yup from 'yup';
 import Dropzone from "react-dropzone";
 import { useAppSelector } from '../../../app/hooks';
 import LoadingPage from '../Loading/LoadingPage';
-import { getUserAndToken } from '../../../HelperFunctions/GetUserandToken';
+import { useGetUserAndToken } from '../../../HelperFunctions/useGetUserandToken';
 
 function CreateCollection () {
     const [loading, setLoading] = useState<boolean>(true);
@@ -21,7 +21,7 @@ function CreateCollection () {
     // check if picture has been uploaded
     const [uploadedPicture, setUploadedPicture] = useState<boolean>(false);
 
-    const [loggedinUser, tokenJWT] = getUserAndToken();
+    const [loggedinUser, tokenJWT] = useGetUserAndToken();
 
     const availableTags = [
         "anime",
@@ -52,10 +52,6 @@ function CreateCollection () {
             .required("Please select at least one tag")
     })
 
-    const JWTconfig = {
-        headers: { Authorization: `Bearer ${tokenJWT}` }
-    };
-
     const formik = useFormik({
         enableReinitialize: true,
         initialValues: {
@@ -76,13 +72,13 @@ function CreateCollection () {
                 user: loggedinUser._id,
             }
 
-            await axios.post('http://localhost:3000/collections/post', submitCollection, JWTconfig)
+            await axios.post('http://localhost:3000/collections/post', submitCollection, tokenJWT)
                 .then(async res => {
                     const imageUploadForm = new FormData();
                     imageUploadForm.append("image", values.image);
                     imageUploadForm.append("collectionId", res.data._id)
 
-                    await axios.post('http://localhost:3000/uploadAvatar', imageUploadForm, JWTconfig)
+                    await axios.post('http://localhost:3000/uploadAvatar', imageUploadForm, tokenJWT)
                         .then(res => {
                             console.log(res.data.msg);
                             navigate('/');

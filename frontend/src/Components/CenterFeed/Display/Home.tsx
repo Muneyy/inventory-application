@@ -11,14 +11,14 @@ import store from '../../../app/store';
 import LoadingPage from '../Loading/LoadingPage';
 import CollectionType from '../../../Types/CollectionType';
 import CollectionCard from '../CardComponents/CollectionCard';
-import { getUserAndToken } from '../../../HelperFunctions/GetUserandToken';
+import { useGetUserAndToken } from '../../../HelperFunctions/useGetUserandToken';
 
 
 function Home() {
     const [loading, setLoading] = useState(0);
     const [reqCollectionData, setReqCollectionData] = useState<any>([]);
 
-    const [loggedinUser, tokenJWT] = getUserAndToken();
+    const [loggedinUser, tokenJWT] = useGetUserAndToken();
 
     // import dispatch to dispatch payloads to redux
     const dispatch = useAppDispatch();

@@ -11,7 +11,7 @@ import FriendAction from '../../Buttons/FriendAction';
 import LoadingPage from '../Loading/LoadingPage';
 import CollectionCard from '../CardComponents/CollectionCard';
 import CollectionType from '../../../Types/CollectionType';
-import { getUserAndToken } from '../../../HelperFunctions/GetUserandToken';
+import { useGetUserAndToken } from '../../../HelperFunctions/useGetUserandToken';
 
 function UserProfile () {
     const [loading, setLoading] = useState(0);
@@ -30,7 +30,7 @@ function UserProfile () {
         avatarURL: string,
     }
 
-    const [loggedinUser, tokenJWT] = getUserAndToken();
+    const [loggedinUser, tokenJWT] = useGetUserAndToken();
 
     // Setup Friends Drawer using Chakra UI
     const { isOpen, onOpen, onClose } = useDisclosure()
@@ -64,11 +64,6 @@ function UserProfile () {
         console.log(fetchedUserCollections);
     }, [fetchedUserCollections])
 
-
-    const JWTconfig = {
-        headers: { Authorization: `Bearer ${tokenJWT}` }
-    };
-
     // Sends a friend request to backend
     async function sendFriendRequest (recipient: string) {
         setFriendRequestSent(true);
@@ -76,7 +71,7 @@ function UserProfile () {
             requester: loggedinUser._id,
             recipient,
         }
-        await axios.post('http://localhost:3000/friends/sendFriendRequest', friendRequest, JWTconfig)
+        await axios.post('http://localhost:3000/friends/sendFriendRequest', friendRequest, tokenJWT)
             .then(res => {
                 console.log(res);
             })
@@ -95,7 +90,7 @@ function UserProfile () {
             recipient,
         }
       
-        await axios.post('http://localhost:3000/friends/acceptFriendRequest', friendRequest, JWTconfig)
+        await axios.post('http://localhost:3000/friends/acceptFriendRequest', friendRequest, tokenJWT)
             .then(res => {
                 console.log(res);
             })
@@ -128,8 +123,8 @@ function UserProfile () {
     const userFriends: string[] = []
     const addedFriends: string[] = []
     const incomingFriends: string[] = []
-    if (loggedinUser._id) {
-        loggedinUser.friends.map((friend: {status: number,recipient: {_id: string}}) => {
+    if (loggedinUser._id && loggedinUser.friends) {
+        loggedinUser.friends.map(friend => {
             if (friend.status === 3) {
                 userFriends.push(friend.recipient._id);
                 // TODO: separate 2 from 1 to determine who sent friend request

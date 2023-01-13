@@ -4,10 +4,10 @@ import { AiOutlineHome } from 'react-icons/ai'
 import { FaUserFriends } from 'react-icons/fa'
 import {Link as RouteLink} from "react-router-dom";
 import { ImProfile } from 'react-icons/im'
-import { getUserAndToken } from '../../HelperFunctions/GetUserandToken';
+import { useGetUserAndToken } from '../../HelperFunctions/useGetUserandToken';
 
 function LeftLinks() {
-    const [loggedinUser] = getUserAndToken();
+    const [loggedinUser] = useGetUserAndToken();
 
     return (
         <Show above="700px">
@@ -37,12 +37,17 @@ function LeftLinks() {
                     </Button>
                 </RouteLink>
                 <RouteLink to={`/profile`}>
-                    <Button colorScheme={"teal"} bottom="0" py={7} borderRadius={"3xl"} variant="ghost" display="grid" gap={3} justifyItems="start" gridTemplateColumns="20px 1fr" alignContent={"center"}>
-                        <Avatar size="sm" src={loggedinUser.avatarURL} />
-                        <Show above="900px">
-                            <Heading flex="1" width="120px" size="md">{loggedinUser.username}</Heading>
-                        </Show>
-                    </Button>
+                    {(loggedinUser._id)
+                        ? (
+                            <Button colorScheme={"teal"} bottom="0" py={7} borderRadius={"3xl"} variant="ghost" display="grid" gap={3} justifyItems="start" gridTemplateColumns="20px 1fr" alignContent={"center"}>
+                                <Avatar size="sm" src={loggedinUser.avatarURL} />
+                                <Show above="900px">
+                                    <Heading flex="1" width="120px" size="md">{loggedinUser.username}</Heading>
+                                </Show>
+                            </Button>
+                        ) : (
+                            null
+                        )}
                 </RouteLink>
             </Flex>
         </Show>

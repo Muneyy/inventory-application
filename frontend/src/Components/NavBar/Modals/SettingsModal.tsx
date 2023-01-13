@@ -14,11 +14,11 @@ import { SettingsIcon } from '@chakra-ui/icons';
 import persistStore from 'redux-persist/es/persistStore';
 import store from '../../../app/store';
 import { useAppSelector } from '../../../app/hooks';
-import { getUserAndToken } from '../../../HelperFunctions/GetUserandToken';
+import { useGetUserAndToken } from '../../../HelperFunctions/useGetUserandToken';
 
 const SettingsModal = () => {
 
-    const [loggedinUser, tokenJWT] = getUserAndToken();
+    const [loggedinUser, tokenJWT] = useGetUserAndToken();
 
     // Logout user and then reload
     const persistor = persistStore(store);
