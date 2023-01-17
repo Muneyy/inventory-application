@@ -23,13 +23,17 @@ function UpdateUser () {
     const [submitting, setSubmitting] = useState<boolean>(false);
     const {userId} = useParams();
     const [loggedinUser, tokenJWT] = useGetUserAndToken();
+    const [handleChecker, setHandleChecker] = useState<string>();
     const [usersHandles, setUsersHandles] = useState<string[]>([]);
 
     useEffect(() => {
+        setHandleChecker(loggedinUser.handle);
         const fetchData = async () => {
             try {
                 const res = await axios.get('http://localhost:3000/users/handles');
-                setUsersHandles(res.data.map((user: any) => user.handle));
+                setUsersHandles(res.data
+                    .filter((user: any) => user.handle !== undefined && user.handle !== loggedinUser.handle)
+                    .map((user: any) => user.handle));
                 setLoaded(1);
             } catch (error) {
                 console.error(error);
@@ -57,6 +61,7 @@ function UpdateUser () {
             })
             .required('Required'),
     })
+
 
     const formik = useFormik({
         enableReinitialize: true,
@@ -86,7 +91,7 @@ function UpdateUser () {
                     console.log(res);
                     await refreshUserState();
                     setSubmitting(false);
-                    // navigate(`/profile`);
+                    navigate(`/profile`);
                 })
         }, 
     })

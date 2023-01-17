@@ -183,7 +183,8 @@ exports.update_user = [
                     if (err) {
                         return next(err);
                     }
-                    if (found_user) {
+                    // If different user has the same handle, then reject request
+                    if (found_user && found_user._id.toString() != req.params.userId) {
                         res.send("Handle already exists, please use another one.");
                     } else {
                         User.findByIdAndUpdate(
