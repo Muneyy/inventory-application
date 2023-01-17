@@ -153,3 +153,65 @@ exports.post_user = [
     },
 
 ];
+
+exports.update_user = [
+    body('username', 'Username invalid.')
+        .trim()
+        .isLength( {min: 2, max: 20})
+        .escape(),
+    body('handle', 'Handle invalid or not unique.')
+        .trim()
+        .isLength( {min: 6, max: 12})
+        .escape(),
+    body('bio', 'Bio must be specfiied.')
+        .trim()
+        .escape(),
+    async (req: Request, res: Response, next:any) => {
+        const errors = validationResult(req);
+
+        const user = new User({
+            username: req.body.username,
+            handle: req.body.handle,
+            bio: req.body.bio,
+        });
+        
+        if (!errors.isEmpty()) {
+            res.send(errors.array());
+        } else {
+            User.findOne( {handle: req.body.handle})
+                .exec((err, found_user) => {
+                    if (err) {
+                        return next(err);
+                    }
+                    if (found_user) {
+                        res.send("Handle already exists, please use another one.");
+                    } else {
+                        User.findByIdAndUpdate(
+                            req.params.userId,
+                            { $set: {
+                                username: req.body.username,
+                                handle: req.body.handle,
+                                bio: req.body.bio,
+                            }},
+                            {upsert: false},
+                        ).exec((err, updatedUser) => {
+                            if (err) return next(err);
+                            if (!updatedUser) return res.status(404).json({ message: "User does not exist" });
+                            else {
+                                if (req.body.requesterId === updatedUser._id.toString()) {
+                                    return res.send({user: updatedUser});
+                                } else {
+                                    console.log(req.body.requesterId);
+                                    console.log(updatedUser._id.toString());
+                                    return res.status(401).json({
+                                        message: "Unauthorized User",
+                                    });
+                                }
+                            }
+                        });
+                    }
+                });
+        }
+    },
+
+];

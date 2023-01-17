@@ -23,6 +23,8 @@ const comment_controller = require('../Controllers/commentController');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const upload_image_controller = require('../Controllers/uploadImageController');
 
+router.put('/users/:userId/update', user_controller.update_user);
+
 router.post('/collections/post', collection_controller.post_collection);
 
 router.put('/collections/:collectionId/update', collection_controller.update_collection);

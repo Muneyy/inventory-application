@@ -48,6 +48,12 @@ function Profile () {
     const [isSmallScreen] = useMediaQuery("(max-width: 570px)");
     const [width, setWidth] = useState(isSmallScreen ? "100vw" : "570px");
   
+    const navigate = useNavigate();
+
+    function handleUpdateProfileClick () {
+        navigate(`/users/${loggedinUser._id}/update`)
+    }
+
     useEffect(() => {
         setWidth(isSmallScreen ? "100vw" : "570px");
     }, [isSmallScreen]);
@@ -82,6 +88,7 @@ function Profile () {
                             <UploadAvatarModal userId={loggedinUser._id} 
                             // setLoggedinUser={setLoggedinUser} 
                             />
+                            <Button mt={1} colorScheme="pink" ref={btnRef} onClick={handleUpdateProfileClick} size="xs"><Icon as={FaUserFriends} mr={2} />Update Profile</Button>
                             
                             {/* TODO: put Drawer in separate component */}
                             <FriendsDrawer isOpen={isOpen} onClose={onClose} btnRef={btnRef} friendsArray={loggedinUser.friends} />
