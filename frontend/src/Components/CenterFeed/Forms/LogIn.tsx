@@ -20,6 +20,9 @@ function LogIn () {
             username: "",
             password: "",
         },
+        // username is still the value being passed for the 'handle'
+        // since passport.js automatically assumes username as the input
+        // for its LocalStrategy
         onSubmit: async (values) => {
             const submitUser = {
                 username: values.username,
@@ -64,7 +67,7 @@ function LogIn () {
                     <form onSubmit={formik.handleSubmit}>
                         <Flex flexDir={"column"}>
                             <FormControl isRequired>
-                                <FormLabel>Username:</FormLabel>
+                                <FormLabel>Handle:</FormLabel>
                                 <Input
                                     type="text"
                                     name="username"
@@ -89,7 +92,7 @@ function LogIn () {
                                 ? (
                                     <Alert mt={1} p={2} size="sm" borderRadius="3xl" status="warning">
                                         <AlertIcon />
-                                        Incorrect username or password. Please try again.
+                                        Incorrect handle or password. Please try again.
                                     </Alert>
 
                                 ) : (

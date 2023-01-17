@@ -99,11 +99,11 @@ type UserReq = {
 exports.post_user = [
     body('username', 'Username invalid.')
         .trim()
-        .isLength( {min : 2, max: 20})
+        .isLength( {min: 2, max: 20})
         .escape(),
     body('handle', 'Handle invalid or not unique.')
         .trim()
-        .isLength( {min : 6, max:12})
+        .isLength( {min: 6, max: 12})
         .escape(),
     body('password', 'Password invalid.')
         .trim()

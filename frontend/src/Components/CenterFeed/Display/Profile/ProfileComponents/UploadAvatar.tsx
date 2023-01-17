@@ -6,6 +6,7 @@ import Dropzone from "react-dropzone";
 import axios from 'axios';
 import React, { useState } from 'react'
 import { UserType } from '../../../../../Types/UserType';
+import { useGetUserAndToken } from '../../../../../HelperFunctions/useGetUserandToken';
 
 // need loggedinuser as props
 function UploadAvatar(props: {
@@ -26,7 +27,7 @@ function UploadAvatar(props: {
     async function refreshUserState () {
         await axios.get(`http://localhost:3000/users/${props.userId}`)
             .then(async (res) => {
-                console.log(res);
+                // console.log(res);
                 await dispatch(login(res.data.user));
                 // const updateUser = useAppSelector(state => state.currentUser);
                 // await props.setLoggedinUser(updateUser.returned[0])
@@ -35,6 +36,8 @@ function UploadAvatar(props: {
                 console.log(err);
             })
     }
+
+    const [loggedinUser, tokenJWT] = useGetUserAndToken();
 
     const formik = useFormik({
         initialValues: {
@@ -48,10 +51,10 @@ function UploadAvatar(props: {
             formData.append("image", values.image);
             formData.append("userId", props.userId)
 
-            console.log(values.image);
-            await axios.post('http://localhost:3000/uploadAvatar', formData)
+            // console.log(values.image);
+            await axios.post('http://localhost:3000/uploadAvatar', formData, tokenJWT)
                 .then(res => {
-                    console.log(res);
+                    // console.log(res);
                 })
 
             await refreshUserState();
@@ -68,7 +71,7 @@ function UploadAvatar(props: {
                     <Dropzone
                         onDrop={(acceptedFiles) => {
                             formik.setFieldValue('image', acceptedFiles[0]);
-                            console.log(acceptedFiles[0]);
+                            // console.log(acceptedFiles[0]);
                             setUploadedPicture(true);
                             setFileName(acceptedFiles[0].name)
                         }}

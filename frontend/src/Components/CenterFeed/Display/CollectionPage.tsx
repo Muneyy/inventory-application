@@ -102,7 +102,7 @@ function CollectionPage() {
                                     })
                                 )
                                 : (
-                                    <Heading>No items have been added to this collection yet.</Heading>
+                                    <Heading size="sm">No items have been added to this collection yet.</Heading>
                                 )}
                         </Flex>
                     )

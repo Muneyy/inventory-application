@@ -41,19 +41,22 @@ function CreateUser () {
 
     const SignupSchema = Yup.object().shape({
         username: Yup.string()
-            .min(2, "Username must be between 8-20 characters")
-            .max(20, "Username must be between 8-20 characters")
+            .min(2, "Username must be between 2-20 characters")
+            .max(20, "Username must be between 2-20 characters")
             .required('Required'),
         handle: Yup.string()
-            .min(4, "Handle must be between 4-12 characters")
-            .max(12, "Handle must be between 4-12 characters")
+            .min(6, "Handle must be between 6-12 characters")
+            .max(12, "Handle must be between 6-12 characters")
+            .matches(/^[a-zA-Z0-9]+$/, "Handle must not contain spaces or special characters")
             .test('handle-not-taken', 'This handle is already taken.', (handle: any) => {
                 // Check if the handle is already taken
                 return !usersHandles.includes(handle);
             })
             .required('Required'),
         password: Yup.string()
-            .min(8, "Password must be a minimum of 8 characters"),
+            .min(8, "Password must be a minimum of 8 characters")
+            .matches(/^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9!@#$%^&*]/, 
+                "Password must contain at least 1 number, 1 special character, 1 uppercase, and 1 lowercase letter"),
         email: Yup.string()
             .email('Invalid email')
             .required('Required'),
@@ -118,7 +121,7 @@ function CreateUser () {
                                     {formik.errors.username}
                                 </Alert>
                             ) : (
-                                <FormHelperText>Username must be 8-20 characters.</FormHelperText>
+                                <FormHelperText>Username must be 2-20 characters.</FormHelperText>
                             )}
                         </FormControl>
                         <Divider my="1rem"/>
@@ -137,7 +140,7 @@ function CreateUser () {
                                     {formik.errors.handle}
                                 </Alert>
                             ) : (
-                                <FormHelperText>Handle must be 4-12 characters and unique.</FormHelperText>
+                                <FormHelperText>Handle must be 6-12 characters and unique.</FormHelperText>
                             )}
                         </FormControl>
                         <Divider my="1rem"/>
