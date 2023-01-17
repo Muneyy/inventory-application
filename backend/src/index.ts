@@ -46,6 +46,7 @@ passport.use(
                 return done(null, false, { message: "Incorrect password" });
             }
             // return done(null, user);
+        // Populate friends of the loggedinUser
         }).populate({
             path: 'friends',
             model: 'Friend',
@@ -73,10 +74,12 @@ function (jwtPayload, done) {
         if (err) {
             return done(err, false);
         }
-        if (!user) {
+        else if (!user) {
             return done(null, false);
+        } 
+        else {
+            return done(null, user);
         }
-        return done(null, user);
     });
 },
 ));
@@ -187,8 +190,9 @@ app.post(
         passport.authenticate("local", {session: false},
             (err: any, user: any, info: any) => {
                 if (err || !user) {
+                    // This is what is being returned when wrong password is sent
                     return res.status(400).json({
-                        message: 'Something is not right',
+                        message: 'Wrong Username or Password',
                         user : user,
                     });
                 }
@@ -196,7 +200,7 @@ app.post(
                     if (err) {
                         res.send(err);
                     }
-                    // sign JSON web token with entire user object
+                    // sign JSON web token with id of user
                     // do not know if this is great practice
                     const token = jwt.sign({id: user._id.toJSON()}, `${process.env.SESSION_SECRET}`, {
                         // expires in seven days
@@ -209,7 +213,7 @@ app.post(
 );
 
 app.get('/', (req, res) => {
-    res.send('Hello');
+    res.send('Pop Pop Pop Ooh Ahh');
 });
 
 app.post("/sign-up", (req, res, next) => {

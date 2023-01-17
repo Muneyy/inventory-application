@@ -1,4 +1,4 @@
-import { Spinner, Divider, Container, Heading, Center, Text, Button, Stack, Link, Flex, useMediaQuery, Box } from '@chakra-ui/react'
+import { Spinner, Divider, Container, Heading, Center, Text, Button, Stack, Link, Flex, useMediaQuery, Box, Alert, AlertIcon } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
@@ -12,6 +12,7 @@ function LogIn () {
     const [currentUser, setCurrentUser] = useState<any>()
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+    const [wrongPassword, setWrongPassword] = useState<boolean>(false);
 
     // Formik to handle form
     const formik = useFormik({
@@ -33,6 +34,12 @@ function LogIn () {
                     dispatch(setToken(res.data.token));
                     setCurrentUser(res.data.user);
                     navigate("/profile");
+                })
+                .catch(err => {
+                    console.log(err);
+                    if (err.response.status === 400){
+                        setWrongPassword(true);
+                    }
                 })
         }
     })
@@ -78,6 +85,16 @@ function LogIn () {
                                     minLength={8}
                                 />
                             </FormControl>
+                            {(wrongPassword) 
+                                ? (
+                                    <Alert mt={1} p={2} size="sm" borderRadius="3xl" status="warning">
+                                        <AlertIcon />
+                                        Incorrect username or password. Please try again.
+                                    </Alert>
+
+                                ) : (
+                                    null
+                                )}
                             <Button alignSelf="flex-end" justifySelf="flex-end" mt={5} type='submit' colorScheme="teal">Login</Button>
                         </Flex>
                     </form>
