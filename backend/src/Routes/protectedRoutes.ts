@@ -25,6 +25,8 @@ const upload_image_controller = require('../Controllers/uploadImageController');
 
 router.post('/collections/post', collection_controller.post_collection);
 
+router.put('/collections/:collectionId/update', collection_controller.update_collection);
+
 router.post('/items/post', item_controller.post_item);
 
 router.post('/friends/sendFriendRequest', friend_controller.send_friend_request);
