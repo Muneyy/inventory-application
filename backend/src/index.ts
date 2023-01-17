@@ -6,8 +6,8 @@ import mongoose, { Collection } from 'mongoose';
 import bcrypt = require('bcrypt');
 
 // import Routes
-const unprotectedRoutes = require("./Routes/unprotectedRoutes.ts");
-const protectedRoutes = require("./Routes/protectedRoutes.ts");
+const unprotectedRoutes = require("./Routes/unprotectedRoutes");
+const protectedRoutes = require("./Routes/protectedRoutes");
 
 import session = require("express-session");
 import passport = require("passport");
@@ -38,17 +38,14 @@ passport.use(
             if (!user) {
                 return done(null, false, { message: "Incorrect username" });
             }
-            await bcrypt.compare(password, user.password, (err, res) => {
-                if (err) {
-                    // passwords do not match!
-                    return done(null, false, { message: "Incorrect password" });
-                } 
-                // else {
-                //     // passwords match! log user in
-                //     return done(null, user);
-                // }
-            });
-            return done(null, user);
+            const passwordMatch = await (bcrypt.compare(password, user.password));
+            // await bcrypt.compare(password, user.password, (err, res) => {
+            if (passwordMatch) {
+                return done(null, user);
+            } else {
+                return done(null, false, { message: "Incorrect password" });
+            }
+            // return done(null, user);
         }).populate({
             path: 'friends',
             model: 'Friend',

@@ -4,7 +4,7 @@ const router = express.Router();
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const collection_controller = require('../Controllers/collectionController');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const item_controller = require('../Controllers/itemController.ts');
+const item_controller = require('../Controllers/itemController');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const user_controller = require('../Controllers/userController');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
