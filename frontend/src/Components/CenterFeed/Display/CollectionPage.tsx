@@ -2,7 +2,7 @@ import { ArrowForwardIcon, PlusSquareIcon } from '@chakra-ui/icons';
 import { Flex, Image, Center, Spinner, Text, Alert, AlertDescription, AlertIcon, AlertTitle, Avatar, Wrap, Heading, Box, Button, useMediaQuery } from '@chakra-ui/react';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import { Link as RouteLink } from 'react-router-dom';
+import { Link as RouteLink, useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom'
 import { v4 } from 'uuid';
 import { useAppSelector } from '../../../app/hooks';
@@ -11,6 +11,17 @@ import CollectionType from '../../../Types/CollectionType';
 import ItemType from '../../../Types/ItemType';
 import ItemCard from '../CardComponents/ItemCard';
 import LoadingPage from '../Loading/LoadingPage';
+import {
+    Popover,
+    PopoverTrigger,
+    PopoverContent,
+    PopoverHeader,
+    PopoverBody,
+    PopoverFooter,
+    PopoverArrow,
+    PopoverCloseButton,
+    PopoverAnchor,
+} from '@chakra-ui/react'
 
 function CollectionPage() {
     const { collectionId } = useParams();
@@ -19,6 +30,7 @@ function CollectionPage() {
     const [fetchedCollectionItems, setFetchedCollectionItems] = useState<ItemType[]>([]);
 
     const [loggedinUser] = useGetUserAndToken();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchCollectionData = async () => {
@@ -55,6 +67,14 @@ function CollectionPage() {
     //     console.log(fetchedCollectionItems);
     // }, [fetchedCollectionItems])
     
+    function handleAddItemClick (collectionId: string) {
+        navigate(`/collections/${collectionId}/createitem`)
+    }
+
+    function handleUpdateCollectionClick (collectionId: string) {
+        navigate(`/collections/${collectionId}/update`)
+    }
+
     return (
         (loadingDone)
             ? (
@@ -82,16 +102,20 @@ function CollectionPage() {
                                 <Text size="sm">{fetchedCollection.summary}</Text>
                                 {(fetchedCollection.user._id === loggedinUser._id)
                                     ? (
-                                        <RouteLink to={`/collections/${fetchedCollection._id}/createitem`} style={{ textDecoration: 'none' }}>
-                                            <Button borderRadius="3xl" size="sm" rightIcon={<PlusSquareIcon />} colorScheme="teal">
-                                                Add Item
+                                        <Flex gap={2}>
+                                            <Button fontSize="sm" onClick={() => handleAddItemClick(fetchedCollection._id)} borderRadius="3xl" rightIcon={<PlusSquareIcon />} colorScheme="teal">
+                                                    Add Item
                                             </Button>
-                                        </RouteLink>
+                                            <Button fontSize="sm" onClick={() => handleUpdateCollectionClick(fetchedCollection._id)} borderRadius="3xl" rightIcon={<PlusSquareIcon />} colorScheme="teal">
+                                                    Update Item
+                                            </Button>
+                                        </Flex>
                                     )
                                     : (
                                         null
                                     )
                                 }
+                                
                             </Flex>
                             {(fetchedCollectionItems.length != 0)
                                 ? (

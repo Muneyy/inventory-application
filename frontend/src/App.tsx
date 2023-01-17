@@ -22,6 +22,7 @@ import CreateItem from './Components/CenterFeed/Forms/CreateItem';
 import MobileMenu from './Components/MobileBar/MobileMenu';
 import ScrollToTop from './HelperFunctions/ScrollToTop';
 import { useMediaQuery } from 'react-responsive'
+import UpdateCollection from './Components/CenterFeed/Forms/UpdateCollection';
 
 function App() {
 
@@ -54,6 +55,8 @@ function App() {
                                             <Route path='/:userId' element={<UserProfile/>} />
                                             <Route path="/users" element={<UsersList/>}/>
                                             <Route path="/collections/:collectionId" element={<CollectionPage/>} />
+                                            <Route path="/collections/:collectionId/update" element={<UpdateCollection/>} />
+
                                         </Routes>
                                     </Center>
                                     <RightLinks />
