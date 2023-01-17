@@ -140,3 +140,65 @@ exports.post_user = [
         }
     }),
 ];
+exports.update_user = [
+    (0, express_validator_1.body)('username', 'Username invalid.')
+        .trim()
+        .isLength({ min: 2, max: 20 })
+        .escape(),
+    (0, express_validator_1.body)('handle', 'Handle invalid or not unique.')
+        .trim()
+        .isLength({ min: 6, max: 12 })
+        .escape(),
+    (0, express_validator_1.body)('bio', 'Bio must be specfiied.')
+        .trim()
+        .escape(),
+    (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+        const errors = (0, express_validator_1.validationResult)(req);
+        const user = new user_1.default({
+            username: req.body.username,
+            handle: req.body.handle,
+            bio: req.body.bio,
+        });
+        if (!errors.isEmpty()) {
+            res.send(errors.array());
+        }
+        else {
+            user_1.default.findOne({ handle: req.body.handle })
+                .exec((err, found_user) => {
+                if (err)
+                    return next(err);
+                // If different user has the same handle, then reject request
+                else if (found_user && found_user._id.toString() !== req.params.userId) {
+                    res.send("Handle already exists, please use another one.");
+                }
+                else if (req.params.userId !== req.body.requesterId) {
+                    res.status(401).send("Unauthorized User.");
+                }
+                else {
+                    user_1.default.findByIdAndUpdate(req.params.userId, { $set: {
+                            username: req.body.username,
+                            handle: req.body.handle,
+                            bio: req.body.bio,
+                        } }, { upsert: false }).exec((err, updatedUser) => {
+                        if (err)
+                            return next(err);
+                        if (!updatedUser)
+                            return res.status(404).json({ message: "User does not exist" });
+                        else {
+                            if (req.body.requesterId === updatedUser._id.toString()) {
+                                return res.send({ user: updatedUser });
+                            }
+                            else {
+                                console.log(req.body.requesterId);
+                                console.log(updatedUser._id.toString());
+                                return res.status(401).json({
+                                    message: "Unauthorized User",
+                                });
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    }),
+];

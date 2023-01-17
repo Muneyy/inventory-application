@@ -107,7 +107,7 @@ function CollectionPage() {
                                                     Add Item
                                             </Button>
                                             <Button fontSize="sm" onClick={() => handleUpdateCollectionClick(fetchedCollection._id)} borderRadius="3xl" rightIcon={<PlusSquareIcon />} colorScheme="teal">
-                                                    Update Item
+                                                    Update Collection
                                             </Button>
                                         </Flex>
                                     )

@@ -19,7 +19,9 @@ require("dotenv/config");
 const mongoose_1 = __importDefault(require("mongoose"));
 const bcrypt = require("bcrypt");
 // import Routes
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const unprotectedRoutes = require("./Routes/unprotectedRoutes");
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const protectedRoutes = require("./Routes/protectedRoutes");
 const session = require("express-session");
 const passport = require("passport");
@@ -36,12 +38,12 @@ const app = express();
 app.use(session({ secret: `${process.env.SESSION_SECRET}`, resave: false, saveUninitialized: true }));
 // This is route used when logging in
 passport.use(new LocalStrategy((username, password, done) => {
-    user_1.default.findOne({ username: username }, (err, user) => __awaiter(void 0, void 0, void 0, function* () {
+    user_1.default.findOne({ handle: username }, (err, user) => __awaiter(void 0, void 0, void 0, function* () {
         if (err) {
             return done(err);
         }
         if (!user) {
-            return done(null, false, { message: "Incorrect username" });
+            return done(null, false, { message: "Incorrect handle" });
         }
         const passwordMatch = yield (bcrypt.compare(password, user.password));
         // await bcrypt.compare(password, user.password, (err, res) => {
@@ -52,6 +54,7 @@ passport.use(new LocalStrategy((username, password, done) => {
             return done(null, false, { message: "Incorrect password" });
         }
         // return done(null, user);
+        // Populate friends of the loggedinUser
     })).populate({
         path: 'friends',
         model: 'Friend',
@@ -76,10 +79,12 @@ passport.use(new JWTStrategy({
         if (err) {
             return done(err, false);
         }
-        if (!user) {
+        else if (!user) {
             return done(null, false);
         }
-        return done(null, user);
+        else {
+            return done(null, user);
+        }
     });
 }));
 passport.serializeUser(function (user, done) {
@@ -101,73 +106,12 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// Config for Cloudinary
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const cloudinary = require('cloudinary').v2;
-cloudinary.config({
-    cloud_name: `${process.env.CLOUDINARY_CLOUD_NAME}`,
-    api_key: `${process.env.CLOUDINARY_API_KEY}`,
-    api_secret: `${process.env.CLOUDINARY_API_SECRET}`,
-});
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
-const multer_1 = __importDefault(require("multer"));
-const uuid_1 = require("uuid");
-const collection_1 = __importDefault(require("./Models/collection"));
-const item_1 = __importDefault(require("./Models/item"));
-const cloudStorage = new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
-        folder: 'user-avatars',
-        format: (req, file) => __awaiter(void 0, void 0, void 0, function* () { return 'png'; }),
-        public_id: (req, file) => `${(0, uuid_1.v4)()}`,
-    },
-});
-const parser = (0, multer_1.default)({ storage: cloudStorage });
-app.post('/uploadAvatar', parser.single('image'), function (req, res, next) {
-    // ROUTE FOR USER PROFILE PICTURE/AVATAR
-    if (req.file && req.body.userId) {
-        user_1.default.findByIdAndUpdate(req.body.userId, { $set: { avatarURL: `${req.file.path}` } }, {}, (err, user) => {
-            if (err) {
-                return next(err);
-            }
-            if (user === null) {
-                return res.send("Error. User not found.");
-            }
-            return res.send({ msg: "Avatar successfully updated", user: user });
-        });
-        // ROUTE FOR POSTING A GROUP/COLLECTION IMAGE
-    }
-    else if (req.file && req.body.collectionId) {
-        collection_1.default.findByIdAndUpdate(req.body.collectionId, { $set: { image_url: `${req.file.path}` } }, {}, (err, collection) => {
-            if (err) {
-                return next(err);
-            }
-            if (collection === null) {
-                return res.send("Error. Collection not found.");
-            }
-            return res.send({ msg: "Image successfully uploaded", collection: collection });
-        });
-        // ROUTE FOR POSTING AN ITEM IMAGE
-    }
-    else if (req.file && req.body.itemId) {
-        item_1.default.findByIdAndUpdate(req.body.itemId, { $push: { images_urls: `${req.file.path}` } }, {}, (err, collection) => {
-            if (err) {
-                return next(err);
-            }
-            if (collection === null) {
-                return res.send("Error. Collection not found.");
-            }
-            return res.send({ msg: "Item image successfully uploaded", collection: collection });
-        });
-    }
-});
-// Cloudinary Config END
 app.post("/log-in", (req, res, next) => {
     passport.authenticate("local", { session: false }, (err, user, info) => {
         if (err || !user) {
+            // This is what is being returned when wrong handle or password is sent
             return res.status(400).json({
-                message: 'Something is not right',
+                message: 'Incorrect Handle or Password',
                 user: user,
             });
         }
@@ -175,7 +119,7 @@ app.post("/log-in", (req, res, next) => {
             if (err) {
                 res.send(err);
             }
-            // sign JSON web token with entire user object
+            // sign JSON web token with id of user
             // do not know if this is great practice
             const token = jwt.sign({ id: user._id.toJSON() }, `${process.env.SESSION_SECRET}`, {
                 // expires in seven days
@@ -186,7 +130,7 @@ app.post("/log-in", (req, res, next) => {
     })(req, res);
 });
 app.get('/', (req, res) => {
-    res.send('Hello');
+    res.send('Pop Pop Pop Ooh Ahh');
 });
 app.post("/sign-up", (req, res, next) => {
     const user = new user_1.default({

@@ -180,42 +180,57 @@ exports.update_collection = [
         .isLength( {min: 1})
         .isMongoId()
         .escape(),
-    (req: Request, res: Response, next:any) => {
+    async (req: Request, res: Response, next:any) => {
         const errors = validationResult(req);
         console.log(req.body);
 
         if (!errors.isEmpty()) {
             res.send(errors.array());
-        } 
+        }
         else {
-            const updatedCollection = Group.findByIdAndUpdate(
-                req.params.collectionId,
-                { $set: {
-                    name: req.body.name,
-                    summary: req.body.summary,
-                    tags: req.body.tags,
-                }},
-                {upsert: false},
-            ).exec((err, updatedCollection) => {
-                if (err) {
-                    return next(err);
-                }
-                if (!updatedCollection) {
-                    return res.status(404).json({
-                        message: "Collection does not exist",
-                    });
-                } else {
-                    if (req.body.requesterId === updatedCollection.user.toString()) {
-                        return res.send(updatedCollection);
-                    } else {
-                        console.log(req.body.requesterId);
-                        console.log(updatedCollection.user.toString());
-                        return res.status(401).json({
-                            message: "Unauthorized User",
+            console.log("YOYOYO");
+            console.log(req.body.requesterId);
+            await Group.findByIdAndUpdate(req.params.collectionId)
+                .exec((err, found_collection) => {
+                    console.log(found_collection?.user.toString());
+                    console.log("heyhehey");
+                    if (err) return next(err);
+                    if (found_collection && found_collection.user.toString() !== req.body.requesterId) {
+                        return res.status(401).send("Unauthorized User.");
+                    }
+                    else {
+                        Group.findByIdAndUpdate(
+                            req.params.collectionId,
+                            { $set: {
+                                name: req.body.name,
+                                summary: req.body.summary,
+                                tags: req.body.tags,
+                            }},
+                            {upsert: false},
+                        ).exec((err, updatedCollection) => {
+                            if (err) {
+                                return next(err);
+                            }
+                            if (!updatedCollection) {
+                                return res.status(404).json({
+                                    message: "Collection does not exist",
+                                });
+                            } else {
+                                if (req.body.requesterId === updatedCollection.user.toString()) {
+                                    return res.send(updatedCollection);
+                                } else {
+                                    console.log(req.body.requesterId);
+                                    console.log(updatedCollection.user.toString());
+                                    return res.status(401).json({
+                                        message: "Unauthorized User",
+                                    });
+                                }
+                            }
                         });
                     }
-                }
-            });
+                });
+
+
 
 
         }

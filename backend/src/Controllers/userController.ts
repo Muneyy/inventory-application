@@ -180,13 +180,15 @@ exports.update_user = [
         } else {
             User.findOne( {handle: req.body.handle})
                 .exec((err, found_user) => {
-                    if (err) {
-                        return next(err);
-                    }
+                    if (err) return next(err);
                     // If different user has the same handle, then reject request
-                    if (found_user && found_user._id.toString() != req.params.userId) {
+                    else if (found_user && found_user._id.toString() !== req.params.userId) {
                         res.send("Handle already exists, please use another one.");
-                    } else {
+                    } 
+                    else if (req.params.userId !== req.body.requesterId) {
+                        res.status(401).send("Unauthorized User.");
+                    }
+                    else {
                         User.findByIdAndUpdate(
                             req.params.userId,
                             { $set: {
