@@ -5,12 +5,12 @@ import React, { useEffect, useState } from 'react'
 import { Link as RouteLink, useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom'
 import { v4 } from 'uuid';
-import { useAppSelector } from '../../../app/hooks';
-import { useGetUserAndToken } from '../../../HelperFunctions/useGetUserandToken';
-import CollectionType from '../../../Types/CollectionType';
-import ItemType from '../../../Types/ItemType';
-import ItemCard from '../CardComponents/ItemCard';
-import LoadingPage from '../Loading/LoadingPage';
+import { useAppSelector } from '../../../../app/hooks';
+import { useGetUserAndToken } from '../../../../HelperFunctions/useGetUserandToken';
+import CollectionType from '../../../../Types/CollectionType';
+import ItemType from '../../../../Types/ItemType';
+import ItemCard from '../../CardComponents/ItemCard';
+import LoadingPage from '../../Loading/LoadingPage';
 import {
     Popover,
     PopoverTrigger,
@@ -22,6 +22,7 @@ import {
     PopoverCloseButton,
     PopoverAnchor,
 } from '@chakra-ui/react'
+import DeleteCollectionModal from './Components/DeleteCollectionModal';
 
 function CollectionPage() {
     const { collectionId } = useParams();
@@ -103,12 +104,13 @@ function CollectionPage() {
                                 {(fetchedCollection.user._id === loggedinUser._id)
                                     ? (
                                         <Flex gap={2}>
-                                            <Button fontSize="sm" onClick={() => handleAddItemClick(fetchedCollection._id)} borderRadius="3xl" rightIcon={<PlusSquareIcon />} colorScheme="teal">
+                                            <Button size="sm" fontSize="sm" onClick={() => handleAddItemClick(fetchedCollection._id)} borderRadius="3xl" rightIcon={<PlusSquareIcon />} colorScheme="teal">
                                                     Add Item
                                             </Button>
-                                            <Button fontSize="sm" onClick={() => handleUpdateCollectionClick(fetchedCollection._id)} borderRadius="3xl" rightIcon={<PlusSquareIcon />} colorScheme="teal">
+                                            <Button size="sm" fontSize="sm" onClick={() => handleUpdateCollectionClick(fetchedCollection._id)} borderRadius="3xl" rightIcon={<PlusSquareIcon />} colorScheme="teal">
                                                     Update Collection
                                             </Button>
+                                            <DeleteCollectionModal collectionId={collectionId} />
                                         </Flex>
                                     )
                                     : (

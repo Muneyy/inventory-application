@@ -71,6 +71,12 @@ itemSchema
         return `/items/${this._id}`;
     });
 
+itemSchema.pre('save', function (next) {
+    if (!this.isDeleted) {
+        this.isDeleted = false;
+    }
+});
+
 const Item = mongoose.model('Item', itemSchema);
 
 export default Item;

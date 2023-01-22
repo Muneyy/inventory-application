@@ -43,6 +43,12 @@ groupSchema
         return `/collections/${this._id}`;
     });
 
+groupSchema.pre('save', function (next) {
+    if (!this.isDeleted) {
+        this.isDeleted = false;
+    }
+});
+
 // When this collection is deleted, all items including their 
 // comments and likes are soft deleted.
 groupSchema.pre('validate', { document: true }, async function (next) {

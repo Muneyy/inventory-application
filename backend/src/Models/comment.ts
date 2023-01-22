@@ -24,6 +24,12 @@ const commentSchema = new Schema(
     { timestamps: true },
 );
 
+commentSchema.pre('save', function (next) {
+    if (!this.isDeleted) {
+        this.isDeleted = false;
+    }
+});
+
 const Comment = mongoose.model('Comment', commentSchema);
 
 export default Comment;

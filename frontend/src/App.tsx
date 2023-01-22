@@ -17,7 +17,7 @@ import theme from "./theme"
 import NavBar from './Components/NavBar/Navbar';
 import LeftLinks from './Components/AppComponents/LeftLinks';
 import RightLinks from './Components/AppComponents/RightLinks';
-import CollectionPage from './Components/CenterFeed/Display/CollectionPage';
+import CollectionPage from './Components/CenterFeed/Display/CollectionPage/CollectionPage';
 import CreateItem from './Components/CenterFeed/Forms/CreateItem';
 import MobileMenu from './Components/MobileBar/MobileMenu';
 import ScrollToTop from './HelperFunctions/ScrollToTop';

@@ -26,6 +26,12 @@ likeSchema
         return `/likes/${this._id}`;
     });
 
+likeSchema.pre('save', function (next) {
+    if (!this.isDeleted) {
+        this.isDeleted = false;
+    }
+});
+
 const Like = mongoose.model('Like', likeSchema);
 
 export default Like;
