@@ -9,7 +9,7 @@ import Like from '../Models/like';
 const router = express.Router();
 
 exports.item_likes = (req: Request, res: Response, next: any) => {
-    Like.find( {item: req.params.itemId} )
+    Like.find( {item: req.params.itemId, isDeleted: 0} )
         .populate({
             path: 'user',
             model: User,

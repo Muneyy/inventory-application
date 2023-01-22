@@ -10,7 +10,7 @@ import { existsSync } from 'fs';
 const router = express.Router();
 
 exports.collections = (req: Request, res: Response, next: any) => {
-    Group.find()
+    Group.find({$or: [{isDeleted: {$exists: false}}, {isDeleted: false}]})
         .sort([['createdAt', 'descending']])
         .populate({
             path: 'user',
@@ -30,6 +30,7 @@ exports.user_collections = (req: Request, res: Response, next: any) => {
     Group.find( 
         {
             user: req.params.userId,
+            $or: [{isDeleted: {$exists: false}}, {isDeleted: false}],
         })
         .sort([['createdAt', 'descending']])
         .populate({
@@ -50,7 +51,7 @@ exports.collection = (req: Request, res: Response, next: any) => {
         {
             group(callback) {
                 Group
-                    .findById(req.params.groupId)
+                    .findById(req.params.groupId, {isDeleted: false})
                     .populate({
                         path: 'user',
                         model: User,
@@ -60,7 +61,7 @@ exports.collection = (req: Request, res: Response, next: any) => {
             },
             group_items(callback) {
                 Item
-                    .find({ group: req.params.groupId})
+                    .find({ group: req.params.groupId, isDeleted: false})
                     .exec(callback);
             },
         },
@@ -229,11 +230,26 @@ exports.update_collection = [
                         });
                     }
                 });
-
-
-
-
         }
 
     },
 ];
+
+// TEST route for deleting collections
+exports.delete_collection = async (req: Request, res: Response, next: any) => {
+    const requesterId = req.body.requesterId;
+    const group_document = await Group.findOne({ _id: req.params.groupId })
+        .exec((err, group) => {
+            if (err) return next(err);
+            if (group && requesterId === group.user.toString()) {
+                // Validate actually calls the cascading soft delete for the item
+                // Validate is a placeholder callback in this case such that I just needed
+                // something to call on the fetched group to execute the cascading soft delete
+                group.validate();
+                return res.send('done');
+            }
+            else if (group && requesterId !== group.user.toString()) {
+                return res.status(401).send("Unauthorized User.");
+            }
+        });
+};

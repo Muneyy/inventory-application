@@ -33,4 +33,6 @@ router.get('/items/:itemId/likes', like_controller.item_likes);
 
 router.post('/users/post', user_controller.post_user);
 
+router.post('/collections/:groupId/delete', collection_controller.delete_collection);
+
 module.exports = router;

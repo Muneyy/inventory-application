@@ -8,7 +8,7 @@ import Like from '../Models/like';
 import Comment from '../Models/comment';
 
 exports.item_comments = (req: Request, res: Response, next: any) => {
-    Comment.find( {item: req.params.itemId} )
+    Comment.find( {item: req.params.itemId, isDeleted: false} )
         .populate({
             path: 'user',
             model: User,

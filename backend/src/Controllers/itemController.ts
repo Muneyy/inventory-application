@@ -6,11 +6,13 @@ import User from '../Models/user';
 import Like from '../Models/like';
 import Comment from '../Models/comment';
 import { body, validationResult } from 'express-validator';
+import Group from '../Models/collection';
 
 const router = express.Router();
 
+// Added validation for Soft Delete for comments and likes
 exports.items = (req: Request, res: Response, next: any) => {
-    Item.find({group: req.params.groupId})
+    Item.find({group: req.params.groupId, isDeleted: false })
         .populate('group')
         .populate({
             path: 'user',
@@ -19,6 +21,7 @@ exports.items = (req: Request, res: Response, next: any) => {
         })
         .populate({
             path: 'likeUsers',
+            match: {isDeleted: false},
             model: Like,
             populate: {
                 path: 'user',
@@ -28,6 +31,7 @@ exports.items = (req: Request, res: Response, next: any) => {
         })
         .populate({
             path: 'commentUsers',
+            match: {isDeleted: false},
             model: Comment,
             populate: {
                 path: 'user',
@@ -56,6 +60,7 @@ exports.get_item = (req: Request, res: Response, next: any) => {
         })
         .populate({
             path: 'likeUsers',
+            match: {isDeleted: false},
             model: Like,
             populate: {
                 path: 'user',
@@ -65,6 +70,7 @@ exports.get_item = (req: Request, res: Response, next: any) => {
         })
         .populate({
             path: 'commentUsers',
+            match: {isDeleted: false},
             model: Comment,
             populate: {
                 path: 'user',
