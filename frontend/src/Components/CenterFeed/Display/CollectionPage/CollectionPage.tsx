@@ -1,5 +1,5 @@
 import { ArrowForwardIcon, PlusSquareIcon } from '@chakra-ui/icons';
-import { Flex, Image, Center, Spinner, Text, Alert, AlertDescription, AlertIcon, AlertTitle, Avatar, Wrap, Heading, Box, Button, useMediaQuery } from '@chakra-ui/react';
+import { Flex, Image, Center, Spinner, Text, Alert, AlertDescription, AlertIcon, AlertTitle, Avatar, Wrap, Heading, Box, Button, useMediaQuery, Badge } from '@chakra-ui/react';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Link as RouteLink, useNavigate } from 'react-router-dom';
@@ -11,6 +11,7 @@ import CollectionType from '../../../../Types/CollectionType';
 import ItemType from '../../../../Types/ItemType';
 import ItemCard from '../../CardComponents/ItemCard';
 import LoadingPage from '../../Loading/LoadingPage';
+import { purpleTags, yellowTags } from '../../../../Types/AvailableTags';
 import {
     Popover,
     PopoverTrigger,
@@ -113,38 +114,54 @@ function CollectionPage() {
                                         </RouteLink>
                                     </Wrap>
                                     <Flex flexDir={"column"} p={10}>
-                                        <Heading size="lg">{fetchedCollection.name}</Heading>
-                                        <Text size="sm">{fetchedCollection.summary}</Text>
-                                        {(fetchedCollection.user._id === loggedinUser._id)
-                                            ? (
-                                                <Popover>
-                                                    <PopoverTrigger>
-                                                        <Button colorScheme={"yellow"} size="sm" w="100px">Edit</Button>
-                                                    </PopoverTrigger>
-                                                    <PopoverContent>
-                                                        <PopoverArrow />
-                                                        <PopoverCloseButton />
-                                                        <PopoverHeader>Edit your collection.</PopoverHeader>
-                                                        <PopoverBody>
-                                                            <Flex flexDir={"column"} gap={2}>
-                                                                <Button size="sm" fontSize="sm" onClick={() => handleAddItemClick(fetchedCollection._id)} borderRadius="3xl" rightIcon={<PlusSquareIcon />} colorScheme="teal">
+                                        <Flex justifyContent={"space-between"}>
+                                            <Heading size="lg">{fetchedCollection.name}</Heading>
+                                            {/* Edit Component!
+                                            TODO: Move this to a separate component */}
+                                            {(fetchedCollection.user._id === loggedinUser._id)
+                                                ? (
+                                                    <Popover>
+                                                        <PopoverTrigger>
+                                                            <Button colorScheme={"yellow"} size="sm" w="50px">Edit</Button>
+                                                        </PopoverTrigger>
+                                                        <PopoverContent>
+                                                            <PopoverArrow />
+                                                            <PopoverCloseButton />
+                                                            <PopoverHeader>Edit your collection.</PopoverHeader>
+                                                            <PopoverBody>
+                                                                <Flex flexDir={"column"} gap={2}>
+                                                                    <Button size="sm" fontSize="sm" onClick={() => handleAddItemClick(fetchedCollection._id)} borderRadius="3xl" rightIcon={<PlusSquareIcon />} colorScheme="teal">
                                                                     Add Item
-                                                                </Button>
-                                                                <Button size="sm" fontSize="sm" onClick={() => handleUpdateCollectionClick(fetchedCollection._id)} borderRadius="3xl" rightIcon={<PlusSquareIcon />} colorScheme="teal">
+                                                                    </Button>
+                                                                    <Button size="sm" fontSize="sm" onClick={() => handleUpdateCollectionClick(fetchedCollection._id)} borderRadius="3xl" rightIcon={<PlusSquareIcon />} colorScheme="teal">
                                                                     Update Collection
-                                                                </Button>
-                                                                <DeleteCollectionModal collectionId={collectionId} />
-                                                            </Flex>
-                                                        </PopoverBody>
-                                                    </PopoverContent>
-                                                </Popover>
+                                                                    </Button>
+                                                                    <DeleteCollectionModal collectionId={collectionId} />
+                                                                </Flex>
+                                                            </PopoverBody>
+                                                        </PopoverContent>
+                                                    </Popover>
 
-                                            )
-                                            : (
-                                                null
-                                            )
-                                        }
-                                
+                                                )
+                                                : (
+                                                    null
+                                                )
+                                            }
+                                        </Flex>
+                                        <Text size="sm">{fetchedCollection.summary}</Text>
+                                        <Wrap>
+                                            {fetchedCollection.tags?.map((tag: string) => {
+                                                if (yellowTags.includes(tag)) {
+                                                    return (
+                                                        <Badge borderRadius={"lg"} colorScheme={"yellow"} mr={2} key={v4()}>{tag}</Badge>
+                                                    )
+                                                } else if (purpleTags.includes(tag)) {
+                                                    return (
+                                                        <Badge borderRadius={"lg"} colorScheme={"purple"} mr={2} key={v4()}>{tag}</Badge>
+                                                    )
+                                                }
+                                            })}
+                                        </Wrap>
                                     </Flex>
                                     {(fetchedCollectionItems.length != 0)
                                         ? (

@@ -2,6 +2,7 @@ import { Spinner, Wrap, Image, Container, Heading, useMediaQuery, Center, Text, 
 import {Link as RouteLink, useNavigate} from "react-router-dom";
 import { v4 } from 'uuid';
 import React from 'react';
+import { purpleTags, yellowTags } from '../../../Types/AvailableTags';
 import CollectionType from '../../../Types/CollectionType'
 
 function CollectionCard(props: {
@@ -9,21 +10,6 @@ function CollectionCard(props: {
     isDisplayedInProfile?: boolean
 }) {
     const collection = props.collection;
-    const yellowTags = [
-        "anime",
-        "comics",
-        "cartoon",
-        "series",
-        "movie",
-    ];
-    const purpleTags = [
-        "k-pop",
-        "j-pop",
-        "p-pop",
-        "soloist",
-        "boy-group",
-        "girl-group",
-    ];
 
     const navigate = useNavigate();
 

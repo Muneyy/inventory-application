@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import { useAppSelector, useAppDispatch } from '../../../app/hooks'
@@ -22,12 +22,17 @@ import { PlusSquareIcon } from '@chakra-ui/icons';
 import { login } from '../../../Features/currentUserSlice';
 import FriendAction from '../../Buttons/FriendAction';
 import { useGetUserAndToken } from '../../../HelperFunctions/useGetUserandToken';
+import NotificationBadge from './NotificationBadge';
 
 const FriendRequestsModal = () => {
-
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const [notificationNumber, setNotificationNumber] = useState<any>(0);
 
     const [loggedinUser, tokenJWT] = useGetUserAndToken();
+
+    useEffect(() => {
+        setNotificationNumber(loggedinUser?.friends?.filter(friend => friend.status === 2).length)
+    }, [])
 
     const dispatch = useAppDispatch();
 
@@ -41,6 +46,7 @@ const FriendRequestsModal = () => {
         await axios.post('http://localhost:3000/friends/acceptFriendRequest', friendRequest, tokenJWT)
             .then(res => {
                 console.log(res);
+                setNotificationNumber((prevNumber: any) => {return prevNumber - 1});
             })
             .catch(err => {
                 console.log(err);
@@ -60,6 +66,7 @@ const FriendRequestsModal = () => {
         await axios.post('http://localhost:3000/friends/rejectFriendRequest', friendRequest, tokenJWT)
             .then(res => {
                 console.log(res);
+                setNotificationNumber((prevNumber: any) => {return prevNumber - 1});
             })
             .catch(err => {
                 console.log(err);
@@ -73,8 +80,8 @@ const FriendRequestsModal = () => {
         await axios.get(`http://localhost:3000/users/${loggedinUser._id}`, tokenJWT)
             .then(async (res) => {
                 console.log(res);
+                // update state of loggedinUser
                 await dispatch(login(res.data.user));
-                // useEffect is then called because currentUser is subscribed to react store
             })
             .catch(err => {
                 console.log(err);
@@ -83,8 +90,9 @@ const FriendRequestsModal = () => {
 
     return (
         <>
-            <Button size="sm" onClick={onOpen}>
+            <Button position="relative" size="sm" onClick={onOpen}>
                 <PlusSquareIcon />
+                {notificationNumber > 0 && <NotificationBadge numberOfNotification={notificationNumber} />}
             </Button>
       
             <Modal isOpen={isOpen} onClose={onClose}>

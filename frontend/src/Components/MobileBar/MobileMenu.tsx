@@ -18,7 +18,7 @@ function MobileMenu() {
     const [loggedinUser] = useGetUserAndToken();
 
     return (
-        <Show below="700px">
+        <Show below="800px">
             <Flex position="sticky" bottom={0} height="60px" w="100vw" 
                 zIndex={"2"} borderWidth="1px" backgroundColor={"blackAlpha.900"} alignItems="center" justifyContent="center">
                 <Button onClick={() => navigate("/")} h="100%" flex="1" display={"flex"} justifyContent="center" alignItems={"center"}>

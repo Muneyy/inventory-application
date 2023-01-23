@@ -15,7 +15,7 @@ import {
 import {Link as RouteLink} from "react-router-dom";
 import { ArrowForwardIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
-import { FiFeather } from 'react-icons/fi';
+import { FiFeather, FiPlus, FiPlusCircle } from 'react-icons/fi';
 
 function CreateModal() {
     const navigate = useNavigate();
@@ -28,7 +28,7 @@ function CreateModal() {
     
     return (
         <Button h="100%" flex="1" display="flex" justifyContent="center" alignItems="center" onClick={onOpen}>
-            <Icon boxSize={"22px"} as={FiFeather} />
+            <Icon boxSize={"22px"} as={FiPlusCircle} />
 
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
@@ -45,9 +45,9 @@ function CreateModal() {
                         <Button width="150px" onClick={() => navigateTo('/createCollection')} borderRadius="3xl" size="sm" leftIcon={<ArrowForwardIcon />} variant="outline" colorScheme="teal">
                             Collection
                         </Button>
-                        <Button width="150px" onClick={() => navigateTo('/')} borderRadius="3xl" size="sm" leftIcon={<ArrowForwardIcon />} variant="outline" colorScheme="teal">
+                        {/* <Button width="150px" onClick={() => navigateTo('/')} borderRadius="3xl" size="sm" leftIcon={<ArrowForwardIcon />} variant="outline" colorScheme="teal">
                             Item
-                        </Button>
+                        </Button> */}
                         
                     </ModalBody>
 

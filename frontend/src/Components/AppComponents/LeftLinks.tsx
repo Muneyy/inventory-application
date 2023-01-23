@@ -10,7 +10,7 @@ function LeftLinks() {
     const [loggedinUser] = useGetUserAndToken();
 
     return (
-        <Show above="700px">
+        <Show above="800px">
             <Flex justifyContent="flex-start" flexDirection="column" alignItems={"flex-end"} gap={2} position={"sticky"} top={"80px"} w={"100%"} h={"100%"}>
                 <RouteLink to="/">
                     <Button py={7} borderRadius={"3xl"} variant="ghost" display="grid" gap={3} justifyItems="start" gridTemplateColumns="20px 1fr" alignContent={"center"}>

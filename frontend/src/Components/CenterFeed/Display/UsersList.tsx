@@ -57,7 +57,7 @@ function UsersList() {
                     </Heading>
                     {/* Displays current users */}
                     <Center flexDirection="column">
-                        <Grid templateColumns={"repeat(2, 1fr)"}>
+                        <Grid templateColumns={isSmallScreen ? "repeat(1, 1fr)" : "repeat(2, 1fr)"}>
                             {reqUserData.map((user:any) => {
                                 return (
                                     (loggedinUser._id)
