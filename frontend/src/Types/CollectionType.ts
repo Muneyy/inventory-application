@@ -9,6 +9,7 @@ type CollectionType = {
         avatarURL: string,
     },
     _id: string,
+    isDeleted: boolean,
 }
 
 export default CollectionType

@@ -63,7 +63,7 @@ function LogIn () {
             )
             : (
                 <Box p={5} width={width} display="flex" flexDir={"column"}>
-                    <Heading size='xl' fontWeight="extrabold">Log In</Heading>
+                    <Heading mb={3} size='xl' fontWeight="extrabold">Log In</Heading>
                     <form onSubmit={formik.handleSubmit}>
                         <Flex flexDir={"column"}>
                             <FormControl isRequired>
@@ -75,6 +75,7 @@ function LogIn () {
                                     onChange={formik.handleChange}
                                     value={formik.values.username}
                                 />
+                                <FormHelperText>Please use your unique handle to log in.</FormHelperText>
                             </FormControl>
                             <Divider my="1rem"/>
                             <FormControl isRequired>

@@ -64,9 +64,13 @@ function CollectionPage() {
         setPictureWidth(isSmallScreen ? "100vw" : "570px")
     }, [isSmallScreen]);
 
+    useEffect(() => {
+        console.log(fetchedCollectionItems);
+    }, [fetchedCollectionItems])
+
     // useEffect(() => {
-    //     console.log(fetchedCollectionItems);
-    // }, [fetchedCollectionItems])
+    //     console.log(fetchedCollection);
+    // }, [fetchedCollection])
     
     function handleAddItemClick (collectionId: string) {
         navigate(`/collections/${collectionId}/createitem`)
@@ -81,56 +85,66 @@ function CollectionPage() {
             ? (
                 (fetchedCollection)
                     ? (
+                        (fetchedCollection.isDeleted)
+                            ? (
+                                <Flex w={width}>
+                                    <Text>This collection has been deleted.</Text>
+                                </Flex>
+                            )
+                            : (
                         // top = -10 to counteract padding from parent component
-                        <Flex top={-10} position={"relative"} w={width} flexDirection={"column"}>
-                            <Image
-                                w="100%"
-                                h="250px"
-                                objectFit='cover'
-                                src={fetchedCollection.image_url}
-                                alt='Collection'
-                            />
-                            <Wrap top="170px" right="20px" position={"absolute"} bottom="5" mt={3} alignSelf={"flex-end"}>
-                                <RouteLink to={`/${fetchedCollection.user._id}`}  style={{ textDecoration: 'none' }}>
-                                    <Box backgroundColor={"blackAlpha.800"} alignItems="center" borderRadius={"lg"} px={5} py={2} display="flex" gap={3}>
-                                        <Avatar size="sm" src={fetchedCollection.user.avatarURL} />
-                                        <Text fontSize="xl">{fetchedCollection.user.username}</Text>
-                                    </Box>
-                                </RouteLink>
-                            </Wrap>
-                            <Flex flexDir={"column"} p={10}>
-                                <Heading size="lg">{fetchedCollection.name}</Heading>
-                                <Text size="sm">{fetchedCollection.summary}</Text>
-                                {(fetchedCollection.user._id === loggedinUser._id)
-                                    ? (
-                                        <Flex gap={2}>
-                                            <Button size="sm" fontSize="sm" onClick={() => handleAddItemClick(fetchedCollection._id)} borderRadius="3xl" rightIcon={<PlusSquareIcon />} colorScheme="teal">
+                                <Flex top={-10} position={"relative"} w={width} flexDirection={"column"}>
+                                    <Image
+                                        w="100%"
+                                        h="250px"
+                                        objectFit='cover'
+                                        src={fetchedCollection.image_url}
+                                        fallbackSrc={`https://res.cloudinary.com/dxnmxxph1/image/upload/v1674458770/placeholderreal_rdowcr.png`}
+                                        alt='Collection'
+                                    />
+                                    <Wrap top="170px" right="20px" position={"absolute"} bottom="5" mt={3} alignSelf={"flex-end"}>
+                                        <RouteLink to={`/${fetchedCollection.user._id}`}  style={{ textDecoration: 'none' }}>
+                                            <Box backgroundColor={"blackAlpha.800"} alignItems="center" borderRadius={"lg"} px={5} py={2} display="flex" gap={3}>
+                                                <Avatar size="sm" src={fetchedCollection.user.avatarURL} />
+                                                <Text fontSize="xl">{fetchedCollection.user.username}</Text>
+                                            </Box>
+                                        </RouteLink>
+                                    </Wrap>
+                                    <Flex flexDir={"column"} p={10}>
+                                        <Heading size="lg">{fetchedCollection.name}</Heading>
+                                        <Text size="sm">{fetchedCollection.summary}</Text>
+                                        {(fetchedCollection.user._id === loggedinUser._id)
+                                            ? (
+                                                <Flex gap={2}>
+                                                    <Button size="sm" fontSize="sm" onClick={() => handleAddItemClick(fetchedCollection._id)} borderRadius="3xl" rightIcon={<PlusSquareIcon />} colorScheme="teal">
                                                     Add Item
-                                            </Button>
-                                            <Button size="sm" fontSize="sm" onClick={() => handleUpdateCollectionClick(fetchedCollection._id)} borderRadius="3xl" rightIcon={<PlusSquareIcon />} colorScheme="teal">
+                                                    </Button>
+                                                    <Button size="sm" fontSize="sm" onClick={() => handleUpdateCollectionClick(fetchedCollection._id)} borderRadius="3xl" rightIcon={<PlusSquareIcon />} colorScheme="teal">
                                                     Update Collection
-                                            </Button>
-                                            <DeleteCollectionModal collectionId={collectionId} />
-                                        </Flex>
-                                    )
-                                    : (
-                                        null
-                                    )
-                                }
+                                                    </Button>
+                                                    <DeleteCollectionModal collectionId={collectionId} />
+                                                </Flex>
+                                            )
+                                            : (
+                                                null
+                                            )
+                                        }
                                 
-                            </Flex>
-                            {(fetchedCollectionItems.length != 0)
-                                ? (
-                                    fetchedCollectionItems.map((item: ItemType) => {
-                                        return (
-                                            <ItemCard pictureWidth={pictureWidth} key={v4()} item={item} setFetchedCollectionItems={setFetchedCollectionItems} />
+                                    </Flex>
+                                    {(fetchedCollectionItems.length != 0)
+                                        ? (
+                                            fetchedCollectionItems.map((item: ItemType) => {
+                                                return (
+                                                    <ItemCard pictureWidth={pictureWidth} key={v4()} item={item} setFetchedCollectionItems={setFetchedCollectionItems} />
+                                                )
+                                            })
                                         )
-                                    })
-                                )
-                                : (
-                                    <Heading size="sm">No items have been added to this collection yet.</Heading>
-                                )}
-                        </Flex>
+                                        : (
+                                            <Heading size="sm">No items have been added to this collection yet.</Heading>
+                                        )}
+                                </Flex>
+
+                            )
                     )
                     : (
                         <Alert status='error'>

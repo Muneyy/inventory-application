@@ -38,6 +38,7 @@ function CollectionCard(props: {
                 h="200px"
                 objectFit='cover'
                 src={collection.image_url}
+                fallbackSrc={`https://res.cloudinary.com/dxnmxxph1/image/upload/v1674458770/placeholderreal_rdowcr.png`}
                 alt='Collection'
                 onClick={handleCardClick}
                 _hover={{

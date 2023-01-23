@@ -118,10 +118,12 @@ function CreateCollection () {
                         imageUploadForm.append("image", image);
                         imageUploadForm.append("itemId", res.data._id);
                         console.log(values.imageArray);
-                        await axios.post('http://localhost:3000/uploadAvatar', imageUploadForm, tokenJWT)
-                            .then(res => {
-                                console.log(res.data.msg);
-                            })
+                        if (uploadedPicture) {
+                            await axios.post('http://localhost:3000/uploadAvatar', imageUploadForm, tokenJWT)
+                                .then(res => {
+                                    console.log(res.data.msg);
+                                })
+                        }
                     }
                 })
             setSubmitting(false);

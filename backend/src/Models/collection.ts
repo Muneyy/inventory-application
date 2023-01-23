@@ -47,12 +47,13 @@ groupSchema.pre('save', function (next) {
     if (!this.isDeleted) {
         this.isDeleted = false;
     }
+    next();
 });
 
 // When this collection is deleted, all items including their 
 // comments and likes are soft deleted.
+// This deletes collection and everything else referenced to it.
 groupSchema.pre('validate', { document: true }, async function (next) {
-    console.log(this._id.toString());
     const groupId = this._id.toString();
     try {
         const item_list = await mongoose.model('Item').find({ group: groupId });
@@ -71,6 +72,7 @@ groupSchema.pre('validate', { document: true }, async function (next) {
                 return next(err as any);
             }
         });
+        await mongoose.model('Group').updateOne({ _id: groupId }, { $set: { isDeleted: true } });
         next();
     } catch (err) {
         return next(err as any);

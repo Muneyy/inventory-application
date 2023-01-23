@@ -146,22 +146,37 @@ function ItemCard(props: {
             </Box>
             <Swiper pagination={true} modules={[Pagination]} className="mySwiper">
                 {
-                    item.images_urls.map((image_url) => {
-                        return (
-                            <SwiperSlide key={v4()}>
-                                {/* Import chakra ui Image as ChakraImage to avoid overlap with Image() */}
-                                <ChakraImage
-                                    // Size of the image
-                                    // TODO: make image size dynamic
-                                    w="570px"
-                                    h={props.pictureWidth}
-                                    objectFit='cover'
-                                    src={image_url}
-                                    alt={`Item from ${image_url}`}
-                                />
-                            </SwiperSlide>
+                    (item.images_urls.length !== 0)
+                        ? (
+                            item.images_urls.map((image_url) => {
+                                return (
+                                    <SwiperSlide key={v4()}>
+                                        {/* Import chakra ui Image component as ChakraImage to avoid overlap with Image() */}
+                                        <ChakraImage
+                                        // Size of the image
+                                        // TODO: make image size dynamic
+                                            w="570px"
+                                            h={props.pictureWidth}
+                                            objectFit='cover'
+                                            src={image_url}
+                                            alt={`Item from ${image_url}`}
+                                        />
+                                    </SwiperSlide>
+                                )
+                            })
                         )
-                    })}
+                        : (
+                            <ChakraImage
+                                // Size of the image
+                                // TODO: make image size dynamic
+                                w="570px"
+                                h={props.pictureWidth}
+                                objectFit='cover'
+                                src={`https://res.cloudinary.com/dxnmxxph1/image/upload/v1674458770/placeholderreal_rdowcr.png`}
+                                fallbackSrc={`https://res.cloudinary.com/dxnmxxph1/image/upload/v1674457629/placeholder_u9grid.png`}
+                                alt={`There are no available pictures for this item.`}
+                            />
+                        )}
             </Swiper>
             <Box p={5}>
                 <RouteLink to={`/${item.user._id}`}  style={{ textDecoration: 'none' }}>

@@ -10,7 +10,8 @@ import {
     Button,
     useDisclosure,
     Text,
-    Icon
+    Icon,
+    Flex,
 } from '@chakra-ui/react'
 import { AiOutlineDelete } from 'react-icons/ai';
 import { useGetUserAndToken } from '../../../../../HelperFunctions/useGetUserandToken';
@@ -41,7 +42,7 @@ function DeleteCollectionModal(props: {
         <>
             <Button colorScheme={"pink"} mt={2} size="xs" onClick={onOpen}>
                 <Icon mr={2} as={AiOutlineDelete} />
-                <Text>Delete Collection Contents</Text>
+                <Text>Delete Collection</Text>
             </Button>
             
             <Modal isOpen={isOpen} onClose={onClose}>
@@ -50,14 +51,16 @@ function DeleteCollectionModal(props: {
                     <ModalHeader>Are you sure you want to delete this collection?</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
-                        <Button colorScheme="red" size="lg" onClick={() => handleDeleteClick()}>
-                            Delete
-                        </Button>
                     </ModalBody>
                     <ModalFooter>
-                        <Button size="md" colorScheme='blue' mr={3} onClick={onClose}>
-                            Close
-                        </Button>
+                        <Flex gap={2}>
+                            <Button colorScheme="red" size="md" onClick={() => handleDeleteClick()}>
+                                Delete
+                            </Button>
+                            <Button size="md" colorScheme='blue' mr={3} onClick={onClose}>
+                                Close
+                            </Button>
+                        </Flex>
                     </ModalFooter>
                 </ModalContent>
             </Modal>

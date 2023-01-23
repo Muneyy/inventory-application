@@ -75,6 +75,7 @@ itemSchema.pre('save', function (next) {
     if (!this.isDeleted) {
         this.isDeleted = false;
     }
+    next();
 });
 
 const Item = mongoose.model('Item', itemSchema);

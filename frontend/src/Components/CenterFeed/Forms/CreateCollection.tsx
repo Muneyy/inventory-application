@@ -78,11 +78,15 @@ function CreateCollection () {
                     imageUploadForm.append("image", values.image);
                     imageUploadForm.append("collectionId", res.data._id)
 
-                    await axios.post('http://localhost:3000/uploadAvatar', imageUploadForm, tokenJWT)
-                        .then(res => {
-                            console.log(res.data.msg);
-                            navigate('/');
-                        })
+                    if (uploadedPicture) {
+                        await axios.post('http://localhost:3000/uploadAvatar', imageUploadForm, tokenJWT)
+                            .then(res => {
+                                console.log(res.data.msg);
+                                navigate('/');
+                            })
+                    } else {
+                        navigate('/');
+                    }
                 })
         }
     })
@@ -192,6 +196,7 @@ function CreateCollection () {
                                 </FormControl>
                                 <Divider my="1rem"/>
                                 <FormControl isRequired>
+                                    {/* This handles image upload or dropzone */}
                                     <FormLabel>Upload image for your collection here</FormLabel>
                                     <Dropzone
                                         onDrop={(acceptedFiles) => {

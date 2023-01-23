@@ -30,6 +30,7 @@ likeSchema.pre('save', function (next) {
     if (!this.isDeleted) {
         this.isDeleted = false;
     }
+    next();
 });
 
 const Like = mongoose.model('Like', likeSchema);

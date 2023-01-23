@@ -23,9 +23,9 @@ export default function RightLinks() {
                     </Button>
                 </RouteLink>
                 {/* <RouteLink to='/createItem' style={{ textDecoration: 'none' }}> */}
-                <Button borderRadius="3xl" size="sm" leftIcon={<ArrowForwardIcon />} variant="outline" colorScheme="teal">
+                {/* <Button borderRadius="3xl" size="sm" leftIcon={<ArrowForwardIcon />} variant="outline" colorScheme="teal">
                             Item
-                </Button>
+                </Button> */}
                 {/* </RouteLink> */}
             </Flex>
         </Show>

@@ -10,7 +10,7 @@ import { existsSync } from 'fs';
 const router = express.Router();
 
 exports.collections = (req: Request, res: Response, next: any) => {
-    Group.find({$or: [{isDeleted: {$exists: false}}, {isDeleted: false}]})
+    Group.find({ isDeleted: false })
         .sort([['createdAt', 'descending']])
         .populate({
             path: 'user',
@@ -30,7 +30,7 @@ exports.user_collections = (req: Request, res: Response, next: any) => {
     Group.find( 
         {
             user: req.params.userId,
-            $or: [{isDeleted: {$exists: false}}, {isDeleted: false}],
+            isDeleted: false,
         })
         .sort([['createdAt', 'descending']])
         .populate({
@@ -51,7 +51,7 @@ exports.collection = (req: Request, res: Response, next: any) => {
         {
             group(callback) {
                 Group
-                    .findById(req.params.groupId, {isDeleted: false})
+                    .findById(req.params.groupId)
                     .populate({
                         path: 'user',
                         model: User,
