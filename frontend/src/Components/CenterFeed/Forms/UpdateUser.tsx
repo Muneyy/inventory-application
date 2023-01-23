@@ -69,7 +69,7 @@ function UpdateUser () {
             ? {
                 username: loggedinUser.username,
                 handle: loggedinUser.handle,
-                bio: loggedinUser.bio
+                bio: loggedinUser.bio,
             }
             : {
                 username: "",

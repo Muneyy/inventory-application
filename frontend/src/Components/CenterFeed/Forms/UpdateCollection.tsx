@@ -77,11 +77,13 @@ function UpdateCollection () {
                 summary: fetchedCollection.summary,
                 tags: fetchedCollection.tags,
                 user: "",
+                image: "",
             } : {
                 name: "",
                 summary: "",
                 tags: [],
                 user: "",
+                image: "",
             },
         validationSchema: CollectionSchema,
         onSubmit: async (values) => {
@@ -96,17 +98,21 @@ function UpdateCollection () {
             await axios.put(`http://localhost:3000/collections/${collectionId}/update`, submitCollection, tokenJWT)
                 .then(async res => {
                     console.log(res.data)
-                    // const imageUploadForm = new FormData();
-                    // imageUploadForm.append("image", values.image);
-                    // imageUploadForm.append("collectionId", res.data._id)
-    
-                    // await axios.post('http://localhost:3000/uploadAvatar', imageUploadForm, tokenJWT)
-                    //     .then(res => {
-                    //         console.log(res.data.msg);
-                    //         navigate('/');
-                    //     })
-                    setSubmitting(false);
-                    navigate(`/collections/${collectionId}`);
+                    if (uploadedPicture) {
+                        const imageUploadForm = new FormData();
+                        imageUploadForm.append("image", values.image);
+                        imageUploadForm.append("collectionId", res.data._id)
+                        
+                        await axios.post('http://localhost:3000/uploadAvatar', imageUploadForm, tokenJWT)
+                            .then(res => {
+                                setSubmitting(false);
+                                console.log(res.data.msg);
+                                navigate(`/collections/${collectionId}`);
+                            })
+                    } else {
+                        setSubmitting(false);
+                        navigate(`/collections/${collectionId}`);
+                    }
                 })
         }
     })
@@ -214,7 +220,7 @@ function UpdateCollection () {
                                     )}
                                 </FormControl>
                                 <Divider my="1rem"/>
-                                {/* <FormControl isRequired>
+                                <FormControl>
                                     <FormLabel>Upload image for your collection here</FormLabel>
                                     <Dropzone
                                         onDrop={(acceptedFiles) => {
@@ -248,7 +254,7 @@ function UpdateCollection () {
                                             </Box>
                                         )}
                                     </Dropzone>
-                                </FormControl> */}
+                                </FormControl>
                                 <Divider my="1rem"/>
                                 <Select 
                                     id ="user" 

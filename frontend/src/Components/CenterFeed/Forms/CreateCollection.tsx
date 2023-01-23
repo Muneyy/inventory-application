@@ -74,11 +74,11 @@ function CreateCollection () {
 
             await axios.post('http://localhost:3000/collections/post', submitCollection, tokenJWT)
                 .then(async res => {
-                    const imageUploadForm = new FormData();
-                    imageUploadForm.append("image", values.image);
-                    imageUploadForm.append("collectionId", res.data._id)
-
                     if (uploadedPicture) {
+                        const imageUploadForm = new FormData();
+                        imageUploadForm.append("image", values.image);
+                        imageUploadForm.append("collectionId", res.data._id)
+
                         await axios.post('http://localhost:3000/uploadAvatar', imageUploadForm, tokenJWT)
                             .then(res => {
                                 console.log(res.data.msg);
@@ -195,7 +195,7 @@ function CreateCollection () {
                                     )}
                                 </FormControl>
                                 <Divider my="1rem"/>
-                                <FormControl isRequired>
+                                <FormControl>
                                     {/* This handles image upload or dropzone */}
                                     <FormLabel>Upload image for your collection here</FormLabel>
                                     <Dropzone

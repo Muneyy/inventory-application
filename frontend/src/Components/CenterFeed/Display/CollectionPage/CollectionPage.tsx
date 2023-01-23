@@ -115,15 +115,28 @@ function CollectionPage() {
                                         <Text size="sm">{fetchedCollection.summary}</Text>
                                         {(fetchedCollection.user._id === loggedinUser._id)
                                             ? (
-                                                <Flex gap={2}>
-                                                    <Button size="sm" fontSize="sm" onClick={() => handleAddItemClick(fetchedCollection._id)} borderRadius="3xl" rightIcon={<PlusSquareIcon />} colorScheme="teal">
-                                                    Add Item
-                                                    </Button>
-                                                    <Button size="sm" fontSize="sm" onClick={() => handleUpdateCollectionClick(fetchedCollection._id)} borderRadius="3xl" rightIcon={<PlusSquareIcon />} colorScheme="teal">
-                                                    Update Collection
-                                                    </Button>
-                                                    <DeleteCollectionModal collectionId={collectionId} />
-                                                </Flex>
+                                                <Popover>
+                                                    <PopoverTrigger>
+                                                        <Button colorScheme={"yellow"} size="sm" w="100px">Edit</Button>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent>
+                                                        <PopoverArrow />
+                                                        <PopoverCloseButton />
+                                                        <PopoverHeader>Edit your collection.</PopoverHeader>
+                                                        <PopoverBody>
+                                                            <Flex flexDir={"column"} gap={2}>
+                                                                <Button size="sm" fontSize="sm" onClick={() => handleAddItemClick(fetchedCollection._id)} borderRadius="3xl" rightIcon={<PlusSquareIcon />} colorScheme="teal">
+                                                                    Add Item
+                                                                </Button>
+                                                                <Button size="sm" fontSize="sm" onClick={() => handleUpdateCollectionClick(fetchedCollection._id)} borderRadius="3xl" rightIcon={<PlusSquareIcon />} colorScheme="teal">
+                                                                    Update Collection
+                                                                </Button>
+                                                                <DeleteCollectionModal collectionId={collectionId} />
+                                                            </Flex>
+                                                        </PopoverBody>
+                                                    </PopoverContent>
+                                                </Popover>
+
                                             )
                                             : (
                                                 null

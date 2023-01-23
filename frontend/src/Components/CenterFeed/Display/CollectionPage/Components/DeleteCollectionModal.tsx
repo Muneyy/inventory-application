@@ -40,7 +40,7 @@ function DeleteCollectionModal(props: {
 
     return (
         <>
-            <Button colorScheme={"pink"} mt={2} size="xs" onClick={onOpen}>
+            <Button borderRadius={"3xl"} size="sm" fontSize="sm" colorScheme={"red"} mt={2} onClick={onOpen}>
                 <Icon mr={2} as={AiOutlineDelete} />
                 <Text>Delete Collection</Text>
             </Button>
