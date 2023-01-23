@@ -87,9 +87,11 @@ function CollectionPage() {
                     ? (
                         (fetchedCollection.isDeleted)
                             ? (
-                                <Flex w={width}>
-                                    <Text>This collection has been deleted.</Text>
-                                </Flex>
+                                <Alert status='success' w={width}>
+                                    <AlertIcon />
+                                    <AlertTitle>Success!</AlertTitle>
+                                    <AlertDescription>You have deleted your collection.</AlertDescription>
+                                </Alert>
                             )
                             : (
                         // top = -10 to counteract padding from parent component

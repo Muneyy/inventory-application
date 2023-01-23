@@ -196,6 +196,7 @@ exports.update_collection = [
                     console.log(found_collection?.user.toString());
                     console.log("heyhehey");
                     if (err) return next(err);
+                    // Check whether user that is attempting to edit is indeed the collection's owner
                     if (found_collection && found_collection.user.toString() !== req.body.requesterId) {
                         return res.status(401).send("Unauthorized User.");
                     }
@@ -205,9 +206,9 @@ exports.update_collection = [
                             { $set: {
                                 name: req.body.name,
                                 summary: req.body.summary,
-                                tags: req.body.tags,
+                            }, $addToSet: {
+                                tags: { $each: req.body.tags },
                             }},
-                            {upsert: false},
                         ).exec((err, updatedCollection) => {
                             if (err) {
                                 return next(err);

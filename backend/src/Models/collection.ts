@@ -12,7 +12,8 @@ const groupSchema = new Schema(
         },
         tags: [{
             type: String,
-            enums: [
+            unique: true,
+            enum: [
                 "k-pop",
                 "j-pop",
                 "p-pop",
