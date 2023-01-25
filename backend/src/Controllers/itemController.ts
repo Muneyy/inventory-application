@@ -50,7 +50,11 @@ exports.items = (req: Request, res: Response, next: any) => {
 
 exports.get_item = (req: Request, res: Response, next: any) => {
     Item.findById(req.params.itemId, { isDeleted: false })
-        .populate('group')
+        .populate({
+            path: 'group',
+            model: Group,
+            select: ['name', 'summary'],
+        })
         .populate({
             path: 'user',
             model: User,

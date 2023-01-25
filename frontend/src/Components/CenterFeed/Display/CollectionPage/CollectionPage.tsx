@@ -122,7 +122,7 @@ function CollectionPage() {
                                                 ? (
                                                     <Popover>
                                                         <PopoverTrigger>
-                                                            <Button colorScheme={"yellow"} size="sm" w="50px">Edit</Button>
+                                                            <Button colorScheme="teal" variant="ghost" size="sm" w="50px">Edit</Button>
                                                         </PopoverTrigger>
                                                         <PopoverContent>
                                                             <PopoverArrow />

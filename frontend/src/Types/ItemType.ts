@@ -4,7 +4,11 @@ type ItemType = {
     tags: string[],
     price: number,
     images_urls: string[],
-    group: string,
+    group: {
+        name: string,
+        summary: string,
+        _id: string,
+    },
     user: {
         avatarURL: string,
         username: string,
@@ -16,7 +20,7 @@ type ItemType = {
     likeUsers: LikedUserType[],
     commentCounter: number,
     commentUsers: CommentUserType[],
-}
+};
 
 type LikedUserType = {
     user: {

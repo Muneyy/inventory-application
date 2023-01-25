@@ -19,9 +19,20 @@ import axios from 'axios';
 import { FcLike, FcDislike } from 'react-icons/fc';
 import { useAppSelector } from '../../../app/hooks';
 import { motion } from 'framer-motion';
-
+import {
+    Popover,
+    PopoverTrigger,
+    PopoverContent,
+    PopoverHeader,
+    PopoverBody,
+    PopoverFooter,
+    PopoverArrow,
+    PopoverCloseButton,
+    PopoverAnchor,
+} from '@chakra-ui/react'
 import { useFormik } from "formik";
 import { useGetUserAndToken } from '../../../HelperFunctions/useGetUserandToken';
+import { PlusSquareIcon } from '@chakra-ui/icons';
 
 
 function ItemCard(props: {
@@ -132,7 +143,34 @@ function ItemCard(props: {
     return (
         <Box position="relative" flexDir={"column"} borderWidth="1px" borderX="none">
             <Box p={5} pb={2}>
-                <Heading>{item.name}</Heading>
+                <Flex justifyContent={"space-between"}>
+                    <Heading>{item.name}</Heading>
+                    {(item.user._id === loggedinUser._id)
+                        ? (
+                            <Popover>
+                                <PopoverTrigger>
+                                    <Button colorScheme={"teal"} variant="ghost" size="sm" w="50px">Edit</Button>
+                                </PopoverTrigger>
+                                <PopoverContent>
+                                    <PopoverArrow />
+                                    <PopoverCloseButton />
+                                    <PopoverHeader>Edit item.</PopoverHeader>
+                                    <PopoverBody>
+                                        <Flex flexDir={"column"} gap={2}>
+                                            <Button size="sm" fontSize="sm" onClick={() => navigate(`items/${item._id}/update`)} borderRadius="3xl" rightIcon={<PlusSquareIcon />} colorScheme="teal">
+                                                Update Item
+                                            </Button>
+                                            {/* <Button size="sm" fontSize="sm" onClick={() => handleUpdateCollectionClick(fetchedCollection._id)} borderRadius="3xl" rightIcon={<PlusSquareIcon />} colorScheme="teal">
+                                                Update Collection
+                                            </Button> */}
+                                        </Flex>
+                                    </PopoverBody>
+                                </PopoverContent>
+                            </Popover>
+                        ) : (
+                            null
+                        )}
+                </Flex>
                 <Wrap>
                     {item.tags?.map((tag: string) => {
                         return (

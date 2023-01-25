@@ -24,6 +24,7 @@ import ScrollToTop from './HelperFunctions/ScrollToTop';
 import { useMediaQuery } from 'react-responsive'
 import UpdateCollection from './Components/CenterFeed/Forms/UpdateCollection';
 import UpdateUser from './Components/CenterFeed/Forms/UpdateUser';
+import UpdateItem from './Components/CenterFeed/Forms/UpdateItem';
 
 function App() {
 
@@ -58,7 +59,7 @@ function App() {
                                             <Route path="/users" element={<UsersList/>}/>
                                             <Route path="/collections/:collectionId" element={<CollectionPage/>} />
                                             <Route path="/collections/:collectionId/update" element={<UpdateCollection/>} />
-
+                                            <Route path="/items/:itemId/update" element={<UpdateItem/>} />
                                         </Routes>
                                     </Center>
                                     <RightLinks />
