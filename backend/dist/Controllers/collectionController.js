@@ -20,7 +20,7 @@ const express_validator_1 = require("express-validator");
 const user_1 = __importDefault(require("../Models/user"));
 const router = express.Router();
 exports.collections = (req, res, next) => {
-    collection_1.default.find()
+    collection_1.default.find({ isDeleted: false })
         .sort([['createdAt', 'descending']])
         .populate({
         path: 'user',
@@ -38,6 +38,7 @@ exports.collections = (req, res, next) => {
 exports.user_collections = (req, res, next) => {
     collection_1.default.find({
         user: req.params.userId,
+        isDeleted: false,
     })
         .sort([['createdAt', 'descending']])
         .populate({
@@ -66,7 +67,7 @@ exports.collection = (req, res, next) => {
         },
         group_items(callback) {
             item_1.default
-                .find({ group: req.params.groupId })
+                .find({ group: req.params.groupId, isDeleted: false })
                 .exec(callback);
         },
     }, (err, results) => {
@@ -186,6 +187,7 @@ exports.update_collection = [
                 console.log("heyhehey");
                 if (err)
                     return next(err);
+                // Check whether user that is attempting to edit is indeed the collection's owner
                 if (found_collection && found_collection.user.toString() !== req.body.requesterId) {
                     return res.status(401).send("Unauthorized User.");
                 }
@@ -193,8 +195,9 @@ exports.update_collection = [
                     collection_1.default.findByIdAndUpdate(req.params.collectionId, { $set: {
                             name: req.body.name,
                             summary: req.body.summary,
-                            tags: req.body.tags,
-                        } }, { upsert: false }).exec((err, updatedCollection) => {
+                        }, $addToSet: {
+                            tags: { $each: req.body.tags },
+                        } }).exec((err, updatedCollection) => {
                         if (err) {
                             return next(err);
                         }
@@ -221,3 +224,22 @@ exports.update_collection = [
         }
     }),
 ];
+// TEST route for deleting collections
+exports.delete_collection = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const requesterId = req.body.requesterId;
+    const group_document = yield collection_1.default.findOne({ _id: req.params.groupId })
+        .exec((err, group) => {
+        if (err)
+            return next(err);
+        if (group && requesterId === group.user.toString()) {
+            // Validate actually calls the cascading soft delete for the item
+            // Validate is a placeholder callback in this case such that I just needed
+            // something to call on the fetched group to execute the cascading soft delete
+            group.validate();
+            return res.send('done');
+        }
+        else if (group && requesterId !== group.user.toString()) {
+            return res.status(401).send("Unauthorized User.");
+        }
+    });
+});

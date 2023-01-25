@@ -18,7 +18,7 @@ const user_1 = __importDefault(require("../Models/user"));
 const like_1 = __importDefault(require("../Models/like"));
 const router = express.Router();
 exports.item_likes = (req, res, next) => {
-    like_1.default.find({ item: req.params.itemId })
+    like_1.default.find({ item: req.params.itemId, isDeleted: 0 })
         .populate({
         path: 'user',
         model: user_1.default,

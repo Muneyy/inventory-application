@@ -16,7 +16,7 @@ const item_1 = __importDefault(require("../Models/item"));
 const user_1 = __importDefault(require("../Models/user"));
 const comment_1 = __importDefault(require("../Models/comment"));
 exports.item_comments = (req, res, next) => {
-    comment_1.default.find({ item: req.params.itemId })
+    comment_1.default.find({ item: req.params.itemId, isDeleted: false })
         .populate({
         path: 'user',
         model: user_1.default,

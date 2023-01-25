@@ -10,8 +10,9 @@ const like_1 = __importDefault(require("../Models/like"));
 const comment_1 = __importDefault(require("../Models/comment"));
 const express_validator_1 = require("express-validator");
 const router = express.Router();
+// Added validation for Soft Delete for comments and likes
 exports.items = (req, res, next) => {
-    item_1.default.find({ group: req.params.groupId })
+    item_1.default.find({ group: req.params.groupId, isDeleted: false })
         .populate('group')
         .populate({
         path: 'user',
@@ -20,6 +21,7 @@ exports.items = (req, res, next) => {
     })
         .populate({
         path: 'likeUsers',
+        match: { isDeleted: false },
         model: like_1.default,
         populate: {
             path: 'user',
@@ -29,6 +31,7 @@ exports.items = (req, res, next) => {
     })
         .populate({
         path: 'commentUsers',
+        match: { isDeleted: false },
         model: comment_1.default,
         populate: {
             path: 'user',
@@ -56,6 +59,7 @@ exports.get_item = (req, res, next) => {
     })
         .populate({
         path: 'likeUsers',
+        match: { isDeleted: false },
         model: like_1.default,
         populate: {
             path: 'user',
@@ -65,6 +69,7 @@ exports.get_item = (req, res, next) => {
     })
         .populate({
         path: 'commentUsers',
+        match: { isDeleted: false },
         model: comment_1.default,
         populate: {
             path: 'user',

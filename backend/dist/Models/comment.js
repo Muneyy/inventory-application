@@ -35,6 +35,16 @@ const commentSchema = new mongoose_1.Schema({
         type: String,
         required: true,
     },
+    isDeleted: {
+        type: Boolean,
+        default: false,
+    },
 }, { timestamps: true });
+commentSchema.pre('save', function (next) {
+    if (!this.isDeleted) {
+        this.isDeleted = false;
+    }
+    next();
+});
 const Comment = mongoose_1.default.model('Comment', commentSchema);
 exports.default = Comment;

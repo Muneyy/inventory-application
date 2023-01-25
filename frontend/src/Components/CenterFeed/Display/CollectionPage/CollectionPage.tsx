@@ -65,9 +65,9 @@ function CollectionPage() {
         setPictureWidth(isSmallScreen ? "100vw" : "570px")
     }, [isSmallScreen]);
 
-    useEffect(() => {
-        console.log(fetchedCollectionItems);
-    }, [fetchedCollectionItems])
+    // useEffect(() => {
+    //     console.log(fetchedCollectionItems);
+    // }, [fetchedCollectionItems])
 
     // useEffect(() => {
     //     console.log(fetchedCollection);

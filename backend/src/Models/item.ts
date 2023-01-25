@@ -59,7 +59,15 @@ const itemSchema = new Schema(
         }],
         isDeleted: {
             type: Boolean,
-            defualt: false,
+            default: false,
+        },
+        forSale: {
+            type: Boolean,
+            default: false,
+        },
+        forDisplay: {
+            type: Boolean,
+            default: false,
         },
     },
     { timestamps: true },

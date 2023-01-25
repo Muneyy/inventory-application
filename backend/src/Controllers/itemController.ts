@@ -49,9 +49,7 @@ exports.items = (req: Request, res: Response, next: any) => {
 };
 
 exports.get_item = (req: Request, res: Response, next: any) => {
-    console.log('please work');
-    console.log(req.params.itemId);
-    Item.findById(req.params.itemId)
+    Item.findById(req.params.itemId, { isDeleted: false })
         .populate('group')
         .populate({
             path: 'user',
@@ -161,6 +159,67 @@ exports.post_item = [
                 }
                 res.send(item);
             });
+        }
+    },
+];
+
+exports.update_item = [
+    body('name', 'Name must be specified.')
+        .trim()
+        .isLength( {min: 1, max: 20})
+        .escape(),
+    body('description', 'Description must be specified.')
+        .trim()
+        .isLength( {min: 1, max: 200})
+        .escape(),
+    body('tags', 'Tags must not be empty and valid.')
+        .isArray()
+        .notEmpty()
+        // This validation returns a CastError: Cast to ObjectId failed for 
+        // value "undefined" (type string) at path "_id" for model "Group"
+        .isIn(availableTags),
+    body('price', "Invalid Price.")
+        .isNumeric()
+        .isInt({ gt: 0 }),
+    body('images_urls', 'Invalid url for image.')
+        .optional({ checkFalsy: true }),
+    body('requesterId', 'User must be specified.')
+        .trim()
+        .isLength( {min: 1})
+        .isMongoId()
+        .escape(),
+    async (req: any, res: any, next:any) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {res.send(errors.array());}
+        else {
+            await Item.findById(req.params.itemId)
+                .exec((err, found_item) => {
+                    if (err) return next(err);
+                    if (found_item == null) return res.status(404).send("Item does not exist.");
+                    if (found_item && found_item.user.toString() !== req.body.requesterId) {
+                        res.status(401).send("Unauthorized User.");
+                    }
+                    else {
+                        Item.findByIdAndUpdate(
+                            req.params.itemId,
+                            { $set: {
+                                name: req.body.name,
+                                description: req.body.description,
+                                price: req.body.price,
+                                forSale: req.body.forSale,
+                                forDisplay: req.body.forDisplay,
+                            }, $addToSet: {
+                                tags: { $each: req.body.tags },
+                            }},
+                        ).exec((err, updatedItem) => {
+                            if (err) return next(err);
+                            if (!updatedItem) return res.status(404).send("Item does not exist.");
+                            else {
+                                res.send(updatedItem);
+                            }
+                        });
+                    }
+                });
         }
     },
 

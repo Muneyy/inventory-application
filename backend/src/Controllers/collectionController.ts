@@ -189,13 +189,10 @@ exports.update_collection = [
             res.send(errors.array());
         }
         else {
-            console.log("YOYOYO");
-            console.log(req.body.requesterId);
-            await Group.findByIdAndUpdate(req.params.collectionId)
+            await Group.findById(req.params.collectionId)
                 .exec((err, found_collection) => {
-                    console.log(found_collection?.user.toString());
-                    console.log("heyhehey");
                     if (err) return next(err);
+                    if (found_collection == null) return res.status(404).send("Collection does not exist.");
                     // Check whether user that is attempting to edit is indeed the collection's owner
                     if (found_collection && found_collection.user.toString() !== req.body.requesterId) {
                         return res.status(401).send("Unauthorized User.");
@@ -221,8 +218,6 @@ exports.update_collection = [
                                 if (req.body.requesterId === updatedCollection.user.toString()) {
                                     return res.send(updatedCollection);
                                 } else {
-                                    console.log(req.body.requesterId);
-                                    console.log(updatedCollection.user.toString());
                                     return res.status(401).json({
                                         message: "Unauthorized User",
                                     });

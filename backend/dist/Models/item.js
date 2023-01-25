@@ -76,11 +76,21 @@ const itemSchema = new mongoose_1.Schema({
             type: mongoose_1.Schema.Types.ObjectId,
             ref: 'Comment',
         }],
+    isDeleted: {
+        type: Boolean,
+        defualt: false,
+    },
 }, { timestamps: true });
 itemSchema
     .virtual('url')
     .get(function () {
     return `/items/${this._id}`;
+});
+itemSchema.pre('save', function (next) {
+    if (!this.isDeleted) {
+        this.isDeleted = false;
+    }
+    next();
 });
 const Item = mongoose_1.default.model('Item', itemSchema);
 exports.default = Item;
