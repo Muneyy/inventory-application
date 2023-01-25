@@ -33,6 +33,7 @@ import {
 import { useFormik } from "formik";
 import { useGetUserAndToken } from '../../../HelperFunctions/useGetUserandToken';
 import { PlusSquareIcon } from '@chakra-ui/icons';
+import DeleteItemModal from './CardModals/DeleteItemModal';
 
 
 function ItemCard(props: {
@@ -163,6 +164,7 @@ function ItemCard(props: {
                                             {/* <Button size="sm" fontSize="sm" onClick={() => handleUpdateCollectionClick(fetchedCollection._id)} borderRadius="3xl" rightIcon={<PlusSquareIcon />} colorScheme="teal">
                                                 Update Collection
                                             </Button> */}
+                                            <DeleteItemModal itemId={item._id} />
                                         </Flex>
                                     </PopoverBody>
                                 </PopoverContent>
