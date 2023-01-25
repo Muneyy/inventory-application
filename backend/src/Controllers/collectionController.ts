@@ -237,15 +237,16 @@ exports.delete_collection = async (req: Request, res: Response, next: any) => {
     const group_document = await Group.findOne({ _id: req.params.groupId })
         .exec((err, group) => {
             if (err) return next(err);
-            if (group && requesterId === group.user.toString()) {
+            if (group === null) return res.status(404).send("Group not found.");
+            if (group && requesterId !== group.user.toString()) {
+                return res.status(401).send("Unauthorized User.");
+            }
+            else if (group && requesterId === group.user.toString()) {
                 // Validate actually calls the cascading soft delete for the item
                 // Validate is a placeholder callback in this case such that I just needed
                 // something to call on the fetched group to execute the cascading soft delete
                 group.validate();
-                return res.send('done');
-            }
-            else if (group && requesterId !== group.user.toString()) {
-                return res.status(401).send("Unauthorized User.");
+                return res.send('Collection deleted.');
             }
         });
 };

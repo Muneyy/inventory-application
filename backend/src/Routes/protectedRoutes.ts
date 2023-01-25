@@ -35,6 +35,8 @@ router.post('/items/post', item_controller.post_item);
 
 router.put('/items/:itemId/update', item_controller.update_item);
 
+router.put('/items/:itemId/delete', item_controller.delete_item);
+
 router.post('/friends/sendFriendRequest', friend_controller.send_friend_request);
 
 router.post('/friends/acceptFriendRequest', friend_controller.accept_friend_request);

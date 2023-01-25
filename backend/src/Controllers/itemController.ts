@@ -226,5 +226,20 @@ exports.update_item = [
                 });
         }
     },
-
 ];
+
+exports.delete_item = async (req: Request, res: Response, next: any) => {
+    const requesterId = req.body.requesterId;
+    await Item.findOne({ _id: req.params.itemId })
+        .exec((err, item) => {
+            if (err) return next(err);
+            if (item === null) return res.status(404).send("Item not found.");
+            if (item && requesterId !== item.user.toString()) {
+                return res.status(401).send("Unauthorized User.");
+            }
+            else if (item && requesterId === item.user.toString()) {
+                item.validate();
+                return res.send('Item deleted.');
+            }
+        });
+};
