@@ -7,6 +7,9 @@ import Like from '../Models/like';
 import Comment from '../Models/comment';
 import { body, validationResult } from 'express-validator';
 import Group from '../Models/collection';
+import he from 'he';
+import { unescape } from "querystring";
+import unescapeString from './unescapeString';
 
 const router = express.Router();
 
@@ -44,6 +47,9 @@ exports.items = (req: Request, res: Response, next: any) => {
             if (err) {
                 return next(err);
             }
+            list_item.forEach((item) => {
+                item.description = unescapeString(item.description);
+            });
             res.send(list_item);
         });
 };
@@ -90,6 +96,7 @@ exports.get_item = (req: Request, res: Response, next: any) => {
                 err.status = 404;
                 return next(err);
             }
+            result.description = unescapeString(result.description);
             res.send({
                 item: result,
             });

@@ -6,6 +6,7 @@ import Item from '../Models/item';
 import { body, validationResult } from 'express-validator';
 import User from '../Models/user';
 import { existsSync } from 'fs';
+import unescapeString from './unescapeString';
 
 const router = express.Router();
 
@@ -22,6 +23,9 @@ exports.collections = (req: Request, res: Response, next: any) => {
             if (err) {
                 return next(err);
             }
+            list_group.forEach((group) => {
+                group.summary = unescapeString(group.summary);
+            });
             res.send(list_group);
         });
 };
@@ -42,6 +46,9 @@ exports.user_collections = (req: Request, res: Response, next: any) => {
             if (err) {
                 return next(err);
             }
+            list_group.forEach((group) => {
+                group.summary = unescapeString(group.summary);
+            });
             res.send(list_group);
         });
 };
@@ -65,7 +72,7 @@ exports.collection = (req: Request, res: Response, next: any) => {
                     .exec(callback);
             },
         },
-        (err, results) => {
+        (err, results: any) => {
             if (err) {
                 return next(err);
             }
@@ -74,6 +81,7 @@ exports.collection = (req: Request, res: Response, next: any) => {
                 err.status = 404;
                 return next(err);
             }
+            results.group.summary = unescapeString(results.group.summary);
             res.send({
                 group: results.group,
                 group_items: results.group_items,
