@@ -133,17 +133,32 @@ function ItemCard(props: {
                         })
                 })
 
-
-
-            
             setSubmitting(false);
             values.text = "";
         }
     })
     
     return (
-        <Box position="relative" flexDir={"column"} borderWidth="1px" borderX="none">
-            <Box p={5} pb={2}>
+        <Box display="flex" position="relative" flexDir={"column"} borderWidth="1px" borderX="none">
+            {/* <Box flex="1" h="20px" backgroundColor="green"> */}
+            <Badge 
+                colorScheme={
+                    (item.category === "display") ? ('purple') : (
+                        (item.category === "buying") ? ('yellow') : (
+                            (item.category === "selling") ? ('pink') : (
+                                undefined
+                            )))} 
+                flex="1"
+                fontSize="md">
+                {
+                    (item.category === "display") ? ('DISPLAY') : (
+                        (item.category === "buying") ? ('WTB / LFS') : (
+                            (item.category === "selling") ? ('WTS / LFB') : (
+                                null
+                            )))} 
+            </Badge>
+            {/* </Box> */}
+            <Box px={5} pb={2} pt={2}>
                 <Flex justifyContent={"space-between"}>
                     <Heading>{item.name}</Heading>
                     {(item.user._id === loggedinUser._id)
