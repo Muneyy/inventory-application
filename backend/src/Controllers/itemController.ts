@@ -151,6 +151,7 @@ exports.post_item = [
             images_urls: req.body.images_urls,
             group: req.body.group,
             user: req.body.user,
+            category: req.body.category,
         });
 
         if (!errors.isEmpty()) {
@@ -210,8 +211,7 @@ exports.update_item = [
                                 name: req.body.name,
                                 description: req.body.description,
                                 price: req.body.price,
-                                forSale: req.body.forSale,
-                                forDisplay: req.body.forDisplay,
+                                category: req.body.category,
                             }, $addToSet: {
                                 tags: { $each: req.body.tags },
                             }},

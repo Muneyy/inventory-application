@@ -3,6 +3,7 @@ type ItemType = {
     description: string,
     tags: string[],
     price: number,
+    category: string,
     images_urls: string[],
     group: {
         name: string,

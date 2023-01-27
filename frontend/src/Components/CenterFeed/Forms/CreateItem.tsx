@@ -1,4 +1,4 @@
-import { Spinner, Box, Flex, Checkbox, Divider, Container, Heading, Center, Text, Button, Stack, Link, Select, Alert, AlertDescription, AlertIcon, AlertTitle, CheckboxGroup, Tag, Textarea, useMediaQuery } from '@chakra-ui/react'
+import { Spinner, Box, Flex, Checkbox, Divider, Container, Heading, Center, Text, Button, Stack, Link, Select, Alert, AlertDescription, AlertIcon, AlertTitle, CheckboxGroup, Tag, Textarea, useMediaQuery, RadioGroup, Radio } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
@@ -83,6 +83,9 @@ function CreateCollection () {
             .required("Please select at least one tag"),
         price: Yup.number()
             .moreThan(0, "Price must be a positive number")
+            .required("Required"),
+        category: Yup.string()
+            .oneOf(["display", "selling", "buying"], "Invalid Category")
             .required("Required")
     })
 
@@ -96,6 +99,7 @@ function CreateCollection () {
             imageArray: [],
             group: "",
             user: "",
+            category: "test",
         },
         validationSchema: ItemSchema,
         onSubmit: async (values) => {
@@ -107,6 +111,7 @@ function CreateCollection () {
                 price: values.price,
                 group: collectionId,
                 user: loggedinUser._id,
+                category: values.category,
             }
 
             console.log(submitItem);
@@ -117,7 +122,6 @@ function CreateCollection () {
                         const imageUploadForm = new FormData();
                         imageUploadForm.append("image", image);
                         imageUploadForm.append("itemId", res.data._id);
-                        console.log(values.imageArray);
                         if (uploadedPicture) {
                             await axios.post('http://localhost:3000/uploadAvatar', imageUploadForm, tokenJWT)
                                 .then(res => {
@@ -294,6 +298,28 @@ function CreateCollection () {
                                 </FormControl>
                                 <Divider my="1rem"/>
                                 <FormControl>
+                                    <FormLabel>Choose which category this item belongs to.</FormLabel>
+                                    <RadioGroup 
+                                        id="category" 
+                                        name="category"
+                                        value={formik.values.category}>
+                                        <Flex gap={3}>
+                                            <Radio onChange={formik.handleChange} id="display" value="display">Display</Radio>
+                                            <Radio onChange={formik.handleChange} id="buying" value="buying">Buying</Radio>
+                                            <Radio onChange={formik.handleChange} id="selling" value="selling">Selling</Radio>
+                                        </Flex>
+                                    </RadioGroup>
+                                    {formik.errors.category && formik.touched.category ? (
+                                        <Alert mt={1} p={2} size="sm" borderRadius="3xl" status="warning">
+                                            <AlertIcon />
+                                            {formik.errors.category}
+                                        </Alert>
+                                    ) : (
+                                        <FormHelperText>{'Are you displaying, looking to buy, or selling this item?'}</FormHelperText>
+                                    )}
+                                </FormControl>
+                                <Divider my="1rem"/>
+                                <FormControl>
                                     <FormLabel>User:</FormLabel>
                                     <Select
                                         id ="user"
@@ -335,6 +361,7 @@ function CreateCollection () {
                                     : (
                                         null
                                     )}
+
                             </form>
                                
                         </Flex>

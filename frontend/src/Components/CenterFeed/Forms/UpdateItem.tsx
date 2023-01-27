@@ -1,4 +1,4 @@
-import { Spinner, Box, Flex, Checkbox, Divider, Container, Heading, Center, Text, Button, Stack, Link, Select, Alert, AlertDescription, AlertIcon, AlertTitle, CheckboxGroup, Tag, Textarea, useMediaQuery } from '@chakra-ui/react'
+import { Spinner, Box, Flex, Checkbox, Divider, Container, Heading, Center, Text, Button, Stack, Link, Select, Alert, AlertDescription, AlertIcon, AlertTitle, CheckboxGroup, Tag, Textarea, useMediaQuery, RadioGroup, Radio } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
@@ -26,6 +26,8 @@ function UpdateItem () {
 
     const [loggedinUser, tokenJWT] = useGetUserAndToken();
 
+    // Collection is unnecessary to fetch since item already has reference
+    // to collection and can just be populated from the backend.
     // useEffect(() => {
     //     const fetchCollectionData = async () => {
     //         try {
@@ -103,12 +105,14 @@ function UpdateItem () {
                 description: fetchedItem.description,
                 tags: fetchedItem.tags,
                 price: fetchedItem.price,
+                category: fetchedItem.category,
                 imageArray: [],
             } : {
                 name: "",
                 description: "",
                 tags: [],
                 price: 0,
+                category: "",
                 imageArray: [],
             },
         validationSchema: ItemSchema,
@@ -119,6 +123,7 @@ function UpdateItem () {
                 description: values.description,
                 tags: values.tags,
                 price: values.price,
+                category: values.category,
                 requesterId: loggedinUser._id,
             };
 
@@ -266,8 +271,30 @@ function UpdateItem () {
                                     )}
                                 </FormControl>
                                 <Divider my="1rem"/>
+                                <FormControl>
+                                    <FormLabel>Choose which category this item belongs to.</FormLabel>
+                                    <RadioGroup 
+                                        id="category" 
+                                        name="category"
+                                        value={formik.values.category}>
+                                        <Flex gap={3}>
+                                            <Radio onChange={formik.handleChange} id="display" value="display">Display</Radio>
+                                            <Radio onChange={formik.handleChange} id="buying" value="buying">Buying</Radio>
+                                            <Radio onChange={formik.handleChange} id="selling" value="selling">Selling</Radio>
+                                        </Flex>
+                                    </RadioGroup>
+                                    {formik.errors.category && formik.touched.category ? (
+                                        <Alert mt={1} p={2} size="sm" borderRadius="3xl" status="warning">
+                                            <AlertIcon />
+                                            {formik.errors.category}
+                                        </Alert>
+                                    ) : (
+                                        <FormHelperText>{'Are you displaying, looking to buy, or selling this item?'}</FormHelperText>
+                                    )}
+                                </FormControl>
+                                <Divider my="1rem"/>
                                 <FormControl isRequired>
-                                    <FormLabel>Upload images for your item here:</FormLabel>
+                                    <FormLabel>Add images to your item here.</FormLabel>
                                     <Dropzone
                                         onDrop={ (acceptedFilesArray) => {
                                             const filenameArrayPlaceholder: string[] = [];

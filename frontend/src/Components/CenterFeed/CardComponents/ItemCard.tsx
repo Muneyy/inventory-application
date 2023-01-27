@@ -158,7 +158,7 @@ function ItemCard(props: {
                                     <PopoverHeader>Edit item.</PopoverHeader>
                                     <PopoverBody>
                                         <Flex flexDir={"column"} gap={2}>
-                                            <Button size="sm" fontSize="sm" onClick={() => navigate(`items/${item._id}/update`)} borderRadius="3xl" rightIcon={<PlusSquareIcon />} colorScheme="teal">
+                                            <Button size="sm" fontSize="sm" onClick={() => navigate(`/items/${item._id}/update`)} borderRadius="3xl" rightIcon={<PlusSquareIcon />} colorScheme="teal">
                                                 Update Item
                                             </Button>
                                             {/* <Button size="sm" fontSize="sm" onClick={() => handleUpdateCollectionClick(fetchedCollection._id)} borderRadius="3xl" rightIcon={<PlusSquareIcon />} colorScheme="teal">

@@ -61,13 +61,13 @@ const itemSchema = new Schema(
             type: Boolean,
             default: false,
         },
-        forSale: {
-            type: Boolean,
-            default: false,
-        },
-        forDisplay: {
-            type: Boolean,
-            default: false,
+        category: {
+            type: String,
+            enum: [
+                "display",
+                "selling",
+                "buying",
+            ],
         },
     },
     { timestamps: true },
