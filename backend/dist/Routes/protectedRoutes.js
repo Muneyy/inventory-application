@@ -36,6 +36,8 @@ router.post('/collections/post', collection_controller.post_collection);
 router.put('/collections/:collectionId/update', collection_controller.update_collection);
 router.post('/collections/:groupId/delete', collection_controller.delete_collection);
 router.post('/items/post', item_controller.post_item);
+router.put('/items/:itemId/update', item_controller.update_item);
+router.put('/items/:itemId/delete', item_controller.delete_item);
 router.post('/friends/sendFriendRequest', friend_controller.send_friend_request);
 router.post('/friends/acceptFriendRequest', friend_controller.accept_friend_request);
 router.post('/friends/rejectFriendRequest', friend_controller.reject_friend_request);

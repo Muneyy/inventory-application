@@ -86,25 +86,25 @@ itemSchema
 //     next();
 // });
 
-itemSchema.pre('validate', { document: true }, async function (next) {
-    const itemId = this._id.toString();
-    try {
-    // soft delete the comments
-        const comments = await mongoose.model('Comment')
-            .updateMany({ item: itemId }, { $set: { isDeleted: true } });
-        console.log(comments.modifiedCount + ' comments were soft deleted');
-        // soft delete the likes
-        const likes = await mongoose.model('Like')
-            .updateMany({ item: itemId }, { $set: { isDeleted: true } });
-        console.log(likes.modifiedCount + ' likes were soft deleted');
-        await mongoose.model('Item').findByIdAndUpdate(itemId, {
-            $set: { isDeleted: true},
-        });
-        next();
-    } catch (err) {
-        return next(err as any);
-    }
-});
+// itemSchema.pre('validate', { document: true }, async function (next) {
+//     const itemId = this._id.toString();
+//     try {
+//     // soft delete the comments
+//         const comments = await mongoose.model('Comment')
+//             .updateMany({ item: itemId }, { $set: { isDeleted: true } });
+//         console.log(comments.modifiedCount + ' comments were soft deleted');
+//         // soft delete the likes
+//         const likes = await mongoose.model('Like')
+//             .updateMany({ item: itemId }, { $set: { isDeleted: true } });
+//         console.log(likes.modifiedCount + ' likes were soft deleted');
+//         await mongoose.model('Item').findByIdAndUpdate(itemId, {
+//             $set: { isDeleted: true},
+//         });
+//         next();
+//     } catch (err) {
+//         return next(err as any);
+//     }
+// });
 
 const Item = mongoose.model('Item', itemSchema);
 

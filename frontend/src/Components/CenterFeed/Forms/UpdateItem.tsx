@@ -23,6 +23,7 @@ function UpdateItem () {
     const [fileName, setFileName] = useState<string[]>();
     // check if picture has been uploaded
     const [uploadedPicture, setUploadedPicture] = useState<boolean>(false);
+    const [clearPictures, setClearPictures] = useState<boolean>(false);
 
     const [loggedinUser, tokenJWT] = useGetUserAndToken();
 
@@ -129,10 +130,16 @@ function UpdateItem () {
 
             await axios.put(`http://localhost:3000/items/${itemId}/update`, submitItem, tokenJWT)
                 .then(async res => {
+                    if (clearPictures) {
+                        await axios.post(`http://localhost:3000/items/${itemId}/clear`, {requesterId: loggedinUser._id}, tokenJWT)
+                    }
                     if (uploadedPicture) {
                         for (const image of values.imageArray) {
                             const imageUploadForm = new FormData();
                             imageUploadForm.append("image", image);
+                            if (loggedinUser._id !== undefined) {
+                                imageUploadForm.append("requesterId", loggedinUser._id);
+                            }
                             imageUploadForm.append("itemId", res.data._id);
                             console.log(values.imageArray);
                             await axios.post('http://localhost:3000/uploadAvatar', imageUploadForm, tokenJWT)
@@ -165,6 +172,10 @@ function UpdateItem () {
     useEffect(() => {
         setWidth(isSmallScreen ? "100vw" : "570px");
     }, [isSmallScreen]);
+
+    function toggleClearPictures () {
+        setClearPictures((current) => !current)
+    }
 
     return(
         // TODO: FIX: loading is not working as intended
@@ -292,6 +303,10 @@ function UpdateItem () {
                                         <FormHelperText>{'Are you displaying, looking to buy, or selling this item?'}</FormHelperText>
                                     )}
                                 </FormControl>
+                                <Divider my="1rem"/>
+                                <Checkbox onChange={() => toggleClearPictures()}> 
+                                    Delete <b>all</b> previous images?
+                                </Checkbox>
                                 <Divider my="1rem"/>
                                 <FormControl isRequired>
                                     <FormLabel>Add images to your item here.</FormLabel>

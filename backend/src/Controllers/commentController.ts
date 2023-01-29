@@ -6,6 +6,7 @@ import User from '../Models/user';
 import { body, validationResult } from 'express-validator';
 import Like from '../Models/like';
 import Comment from '../Models/comment';
+import unescapeString from './unescapeString';
 
 exports.item_comments = (req: Request, res: Response, next: any) => {
     Comment.find( {item: req.params.itemId, isDeleted: false} )
@@ -19,6 +20,9 @@ exports.item_comments = (req: Request, res: Response, next: any) => {
             if (err) {
                 return next(err);
             }
+            list_comments.forEach((comment) => {
+                comment.text = unescapeString(comment.text);
+            });
             res.send(list_comments);
         });
 };

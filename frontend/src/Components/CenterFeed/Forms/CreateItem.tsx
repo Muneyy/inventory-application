@@ -121,6 +121,9 @@ function CreateCollection () {
                     for (const image of values.imageArray) {
                         const imageUploadForm = new FormData();
                         imageUploadForm.append("image", image);
+                        if (loggedinUser._id !== undefined) {
+                            imageUploadForm.append("requesterId", loggedinUser._id);
+                        }
                         imageUploadForm.append("itemId", res.data._id);
                         if (uploadedPicture) {
                             await axios.post('http://localhost:3000/uploadAvatar', imageUploadForm, tokenJWT)

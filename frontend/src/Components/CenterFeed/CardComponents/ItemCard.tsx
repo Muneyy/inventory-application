@@ -68,7 +68,7 @@ function ItemCard(props: {
   
         // TODO: make a change so that each individual item refreshes on
         // every successful like or comment
-        await axios.post(`http://localhost:3000/items/${item._id}/like`,
+        await axios.post(`https://popit-api.onrender.com/items/${item._id}/like`,
             {
                 liker: loggedinUser._id,
             },
@@ -83,7 +83,7 @@ function ItemCard(props: {
   
         // TODO: make a change so that each individual item refreshes on
         // every successful like or comment
-        await axios.post(`http://localhost:3000/items/${item._id}/unlike`,
+        await axios.post(`https://popit-api.onrender.com/items/${item._id}/unlike`,
             {
                 liker: loggedinUser._id,
             },
@@ -117,10 +117,10 @@ function ItemCard(props: {
                 text: values.text,
             }
 
-            await axios.post(`http://localhost:3000/items/${item._id}/comment/add`, submitComment, tokenJWT)
+            await axios.post(`https://popit-api.onrender.com/items/${item._id}/comment/add`, submitComment, tokenJWT)
                 .then(async res => {
                     console.log(res.data)
-                    await axios.get(`http://localhost:3000/items/${item._id}`)
+                    await axios.get(`https://popit-api.onrender.com/items/${item._id}`)
                         .then(async res => {
                             props.setFetchedCollectionItems(prevCollectionItems => 
                                 prevCollectionItems.map(prevItem => {
@@ -139,16 +139,15 @@ function ItemCard(props: {
     })
     
     return (
-        <Box display="flex" position="relative" flexDir={"column"} borderWidth="1px" borderX="none">
-            {/* <Box flex="1" h="20px" backgroundColor="green"> */}
+        <Box position="relative" flexDir={"column"} borderWidth="0" borderX="none">
             <Badge 
                 colorScheme={
-                    (item.category === "display") ? ('purple') : (
+                    (item.category === "display") ? ('orange') : (
                         (item.category === "buying") ? ('yellow') : (
                             (item.category === "selling") ? ('pink') : (
                                 undefined
                             )))} 
-                flex="1"
+                width = "100%"
                 fontSize="md">
                 {
                     (item.category === "display") ? ('DISPLAY') : (
@@ -157,7 +156,6 @@ function ItemCard(props: {
                                 null
                             )))} 
             </Badge>
-            {/* </Box> */}
             <Box px={5} pb={2} pt={2}>
                 <Flex justifyContent={"space-between"}>
                     <Heading>{item.name}</Heading>

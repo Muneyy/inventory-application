@@ -2,11 +2,13 @@ import express = require('express');
 import { Request, Response } from "express";
 import async = require('async');
 import Group from '../Models/collection';
+import Comment from '../Models/comment';
 import Item from '../Models/item';
 import { body, validationResult } from 'express-validator';
 import User from '../Models/user';
 import { existsSync } from 'fs';
 import unescapeString from './unescapeString';
+import Like from '../Models/like';
 
 const router = express.Router();
 
@@ -24,6 +26,7 @@ exports.collections = (req: Request, res: Response, next: any) => {
                 return next(err);
             }
             list_group.forEach((group) => {
+                group.name = unescapeString(group.name);
                 group.summary = unescapeString(group.summary);
             });
             res.send(list_group);
@@ -47,6 +50,7 @@ exports.user_collections = (req: Request, res: Response, next: any) => {
                 return next(err);
             }
             list_group.forEach((group) => {
+                group.name = unescapeString(group.name);
                 group.summary = unescapeString(group.summary);
             });
             res.send(list_group);
@@ -81,6 +85,7 @@ exports.collection = (req: Request, res: Response, next: any) => {
                 err.status = 404;
                 return next(err);
             }
+            results.group.name = unescapeString(results.group.name);
             results.group.summary = unescapeString(results.group.summary);
             res.send({
                 group: results.group,
@@ -243,18 +248,35 @@ exports.update_collection = [
 exports.delete_collection = async (req: Request, res: Response, next: any) => {
     const requesterId = req.body.requesterId;
     const group_document = await Group.findOne({ _id: req.params.groupId })
-        .exec((err, group) => {
+        .exec(async (err, group) => {
             if (err) return next(err);
             if (group === null) return res.status(404).send("Group not found.");
             if (group && requesterId !== group.user.toString()) {
                 return res.status(401).send("Unauthorized User.");
             }
             else if (group && requesterId === group.user.toString()) {
-                // Validate actually calls the cascading soft delete for the item
-                // Validate is a placeholder callback in this case such that I just needed
-                // something to call on the fetched group to execute the cascading soft delete
-                group.validate();
-                return res.send('Collection deleted.');
+                try {
+                    const item_list = await Item.find({ group: group._id });
+                    await Item.findByIdAndUpdate(group._id, {$set: {isDeleted: true}});
+                    item_list.forEach(async (item) => {
+                        try {
+                            // soft delete the comments
+                            const comments = await Comment
+                                .findByIdAndUpdate(item._id, { $set: { isDeleted: true } });
+                            // console.log(comments.count() + ' comments were soft deleted');
+                            // soft delete the likes
+                            const likes = await Like
+                                .findByIdAndUpdate(item._id, { $set: { isDeleted: true } });
+                            // console.log(likes.modifiedCount + ' likes were soft deleted');
+                        } catch (err) {
+                            return next(err as any);
+                        }
+                    });
+                    await Group.findByIdAndUpdate(group._id, { $set: { isDeleted: true } });
+                    return res.send({msg: "Collection deleted."});
+                } catch (err) {
+                    return next(err);
+                }
             }
         });
 };

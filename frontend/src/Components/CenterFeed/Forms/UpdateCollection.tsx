@@ -101,7 +101,10 @@ function UpdateCollection () {
                     if (uploadedPicture) {
                         const imageUploadForm = new FormData();
                         imageUploadForm.append("image", values.image);
-                        imageUploadForm.append("collectionId", res.data._id)
+                        if (loggedinUser._id !== undefined) {
+                            imageUploadForm.append("requesterId", loggedinUser._id);
+                        }
+                        imageUploadForm.append("collectionId", res.data._id);
                         
                         await axios.post('http://localhost:3000/uploadAvatar', imageUploadForm, tokenJWT)
                             .then(res => {

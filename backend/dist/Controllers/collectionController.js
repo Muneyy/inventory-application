@@ -18,6 +18,7 @@ const collection_1 = __importDefault(require("../Models/collection"));
 const item_1 = __importDefault(require("../Models/item"));
 const express_validator_1 = require("express-validator");
 const user_1 = __importDefault(require("../Models/user"));
+const unescapeString_1 = __importDefault(require("./unescapeString"));
 const router = express.Router();
 exports.collections = (req, res, next) => {
     collection_1.default.find({ isDeleted: false })
@@ -32,6 +33,9 @@ exports.collections = (req, res, next) => {
         if (err) {
             return next(err);
         }
+        list_group.forEach((group) => {
+            group.summary = (0, unescapeString_1.default)(group.summary);
+        });
         res.send(list_group);
     });
 };
@@ -50,6 +54,9 @@ exports.user_collections = (req, res, next) => {
         if (err) {
             return next(err);
         }
+        list_group.forEach((group) => {
+            group.summary = (0, unescapeString_1.default)(group.summary);
+        });
         res.send(list_group);
     });
 };
@@ -79,6 +86,7 @@ exports.collection = (req, res, next) => {
             err.status = 404;
             return next(err);
         }
+        results.group.summary = (0, unescapeString_1.default)(results.group.summary);
         res.send({
             group: results.group,
             group_items: results.group_items,
@@ -179,14 +187,12 @@ exports.update_collection = [
             res.send(errors.array());
         }
         else {
-            console.log("YOYOYO");
-            console.log(req.body.requesterId);
-            yield collection_1.default.findByIdAndUpdate(req.params.collectionId)
+            yield collection_1.default.findById(req.params.collectionId)
                 .exec((err, found_collection) => {
-                console.log(found_collection === null || found_collection === void 0 ? void 0 : found_collection.user.toString());
-                console.log("heyhehey");
                 if (err)
                     return next(err);
+                if (found_collection == null)
+                    return res.status(404).send("Collection does not exist.");
                 // Check whether user that is attempting to edit is indeed the collection's owner
                 if (found_collection && found_collection.user.toString() !== req.body.requesterId) {
                     return res.status(401).send("Unauthorized User.");
@@ -211,8 +217,6 @@ exports.update_collection = [
                                 return res.send(updatedCollection);
                             }
                             else {
-                                console.log(req.body.requesterId);
-                                console.log(updatedCollection.user.toString());
                                 return res.status(401).json({
                                     message: "Unauthorized User",
                                 });
@@ -231,15 +235,17 @@ exports.delete_collection = (req, res, next) => __awaiter(void 0, void 0, void 0
         .exec((err, group) => {
         if (err)
             return next(err);
-        if (group && requesterId === group.user.toString()) {
+        if (group === null)
+            return res.status(404).send("Group not found.");
+        if (group && requesterId !== group.user.toString()) {
+            return res.status(401).send("Unauthorized User.");
+        }
+        else if (group && requesterId === group.user.toString()) {
             // Validate actually calls the cascading soft delete for the item
             // Validate is a placeholder callback in this case such that I just needed
             // something to call on the fetched group to execute the cascading soft delete
             group.validate();
-            return res.send('done');
-        }
-        else if (group && requesterId !== group.user.toString()) {
-            return res.status(401).send("Unauthorized User.");
+            return res.send('Collection deleted.');
         }
     });
 });
