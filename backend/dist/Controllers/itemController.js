@@ -56,6 +56,7 @@ exports.items = (req, res, next) => {
             return next(err);
         }
         list_item.forEach((item) => {
+            item.name = (0, unescapeString_1.default)(item.name);
             item.description = (0, unescapeString_1.default)(item.description);
         });
         res.send(list_item);
@@ -102,6 +103,7 @@ exports.get_item = (req, res, next) => {
             err.status = 404;
             return next(err);
         }
+        result.name = (0, unescapeString_1.default)(result.name);
         result.description = (0, unescapeString_1.default)(result.description);
         res.send({
             item: result,
@@ -241,7 +243,7 @@ exports.update_item = [
 exports.delete_item = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const requesterId = req.body.requesterId;
     yield item_1.default.findOne({ _id: req.params.itemId })
-        .exec((err, item) => {
+        .exec((err, item) => __awaiter(void 0, void 0, void 0, function* () {
         if (err)
             return next(err);
         if (item === null)
@@ -250,8 +252,23 @@ exports.delete_item = (req, res, next) => __awaiter(void 0, void 0, void 0, func
             return res.status(401).send("Unauthorized User.");
         }
         else if (item && requesterId === item.user.toString()) {
-            item.validate();
-            return res.send('Item deleted.');
+            try {
+                // soft delete the comments
+                const comments = yield comment_1.default
+                    .findByIdAndUpdate(item._id, { $set: { isDeleted: true } });
+                // console.log(comments.modifiedCount + ' comments were soft deleted');
+                // soft delete the likes
+                const likes = yield like_1.default
+                    .findByIdAndUpdate(item._id, { $set: { isDeleted: true } });
+                // console.log(likes.modifiedCount + ' likes were soft deleted');
+                yield item_1.default.findByIdAndUpdate(item._id, {
+                    $set: { isDeleted: true },
+                });
+                return res.send({ msg: "Item deleted" });
+            }
+            catch (err) {
+                return next(err);
+            }
         }
-    });
+    }));
 });

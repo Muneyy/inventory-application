@@ -15,10 +15,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
 const async = require("async");
 const collection_1 = __importDefault(require("../Models/collection"));
+const comment_1 = __importDefault(require("../Models/comment"));
 const item_1 = __importDefault(require("../Models/item"));
 const express_validator_1 = require("express-validator");
 const user_1 = __importDefault(require("../Models/user"));
 const unescapeString_1 = __importDefault(require("./unescapeString"));
+const like_1 = __importDefault(require("../Models/like"));
 const router = express.Router();
 exports.collections = (req, res, next) => {
     collection_1.default.find({ isDeleted: false })
@@ -34,6 +36,7 @@ exports.collections = (req, res, next) => {
             return next(err);
         }
         list_group.forEach((group) => {
+            group.name = (0, unescapeString_1.default)(group.name);
             group.summary = (0, unescapeString_1.default)(group.summary);
         });
         res.send(list_group);
@@ -55,6 +58,7 @@ exports.user_collections = (req, res, next) => {
             return next(err);
         }
         list_group.forEach((group) => {
+            group.name = (0, unescapeString_1.default)(group.name);
             group.summary = (0, unescapeString_1.default)(group.summary);
         });
         res.send(list_group);
@@ -86,6 +90,7 @@ exports.collection = (req, res, next) => {
             err.status = 404;
             return next(err);
         }
+        results.group.name = (0, unescapeString_1.default)(results.group.name);
         results.group.summary = (0, unescapeString_1.default)(results.group.summary);
         res.send({
             group: results.group,
@@ -232,7 +237,7 @@ exports.update_collection = [
 exports.delete_collection = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const requesterId = req.body.requesterId;
     const group_document = yield collection_1.default.findOne({ _id: req.params.groupId })
-        .exec((err, group) => {
+        .exec((err, group) => __awaiter(void 0, void 0, void 0, function* () {
         if (err)
             return next(err);
         if (group === null)
@@ -241,11 +246,30 @@ exports.delete_collection = (req, res, next) => __awaiter(void 0, void 0, void 0
             return res.status(401).send("Unauthorized User.");
         }
         else if (group && requesterId === group.user.toString()) {
-            // Validate actually calls the cascading soft delete for the item
-            // Validate is a placeholder callback in this case such that I just needed
-            // something to call on the fetched group to execute the cascading soft delete
-            group.validate();
-            return res.send('Collection deleted.');
+            try {
+                const item_list = yield item_1.default.find({ group: group._id });
+                yield item_1.default.findByIdAndUpdate(group._id, { $set: { isDeleted: true } });
+                item_list.forEach((item) => __awaiter(void 0, void 0, void 0, function* () {
+                    try {
+                        // soft delete the comments
+                        const comments = yield comment_1.default
+                            .findByIdAndUpdate(item._id, { $set: { isDeleted: true } });
+                        // console.log(comments.count() + ' comments were soft deleted');
+                        // soft delete the likes
+                        const likes = yield like_1.default
+                            .findByIdAndUpdate(item._id, { $set: { isDeleted: true } });
+                        // console.log(likes.modifiedCount + ' likes were soft deleted');
+                    }
+                    catch (err) {
+                        return next(err);
+                    }
+                }));
+                yield collection_1.default.findByIdAndUpdate(group._id, { $set: { isDeleted: true } });
+                return res.send({ msg: "Collection deleted." });
+            }
+            catch (err) {
+                return next(err);
+            }
         }
-    });
+    }));
 });

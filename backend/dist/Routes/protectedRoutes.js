@@ -67,5 +67,6 @@ const cloudStorage = new CloudinaryStorage({
 });
 const parser = (0, multer_1.default)({ storage: cloudStorage });
 router.post('/uploadAvatar', parser.single('image'), upload_image_controller.upload_image);
+router.post('/items/:itemId/clear', upload_image_controller.clear_images);
 // Cloudinary Config END
 module.exports = router;

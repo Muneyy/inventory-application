@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const item_1 = __importDefault(require("../Models/item"));
 const user_1 = __importDefault(require("../Models/user"));
 const comment_1 = __importDefault(require("../Models/comment"));
+const unescapeString_1 = __importDefault(require("./unescapeString"));
 exports.item_comments = (req, res, next) => {
     comment_1.default.find({ item: req.params.itemId, isDeleted: false })
         .populate({
@@ -27,6 +28,9 @@ exports.item_comments = (req, res, next) => {
         if (err) {
             return next(err);
         }
+        list_comments.forEach((comment) => {
+            comment.text = (0, unescapeString_1.default)(comment.text);
+        });
         res.send(list_comments);
     });
 };

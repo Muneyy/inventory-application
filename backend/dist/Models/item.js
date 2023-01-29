@@ -18,15 +18,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const itemSchema = new mongoose_1.Schema({
@@ -109,27 +100,24 @@ itemSchema
 //     }
 //     next();
 // });
-itemSchema.pre('validate', { document: true }, function (next) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const itemId = this._id.toString();
-        try {
-            // soft delete the comments
-            const comments = yield mongoose_1.default.model('Comment')
-                .updateMany({ item: itemId }, { $set: { isDeleted: true } });
-            console.log(comments.modifiedCount + ' comments were soft deleted');
-            // soft delete the likes
-            const likes = yield mongoose_1.default.model('Like')
-                .updateMany({ item: itemId }, { $set: { isDeleted: true } });
-            console.log(likes.modifiedCount + ' likes were soft deleted');
-            yield mongoose_1.default.model('Item').findByIdAndUpdate(itemId, {
-                $set: { isDeleted: true },
-            });
-            next();
-        }
-        catch (err) {
-            return next(err);
-        }
-    });
-});
+// itemSchema.pre('validate', { document: true }, async function (next) {
+//     const itemId = this._id.toString();
+//     try {
+//     // soft delete the comments
+//         const comments = await mongoose.model('Comment')
+//             .updateMany({ item: itemId }, { $set: { isDeleted: true } });
+//         console.log(comments.modifiedCount + ' comments were soft deleted');
+//         // soft delete the likes
+//         const likes = await mongoose.model('Like')
+//             .updateMany({ item: itemId }, { $set: { isDeleted: true } });
+//         console.log(likes.modifiedCount + ' likes were soft deleted');
+//         await mongoose.model('Item').findByIdAndUpdate(itemId, {
+//             $set: { isDeleted: true},
+//         });
+//         next();
+//     } catch (err) {
+//         return next(err as any);
+//     }
+// });
 const Item = mongoose_1.default.model('Item', itemSchema);
 exports.default = Item;
