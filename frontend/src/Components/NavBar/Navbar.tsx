@@ -12,7 +12,7 @@ function NavBar () {
     const { colorMode, toggleColorMode } = useColorMode()
 
     return (
-        <Box backgroundColor={colorMode === "light" ? "white" : "gray.800"} zIndex={2} top={0} position={"sticky"} w="100vw" borderWidth={"1px"} borderLeftWidth="0" borderRightWidth={"0"} py={3}>
+        <Box backgroundColor={colorMode === "light" ? "white" : "gray.800"} zIndex={2} top={0} position={"sticky"} w="100vw" borderBottomWidth={"1px"} py={3}>
             <Flex justifyContent={"space-evenly"} alignItems="center">
                 <RouteLink to="/">
                     <Heading fontSize={"xl"}>POP IT</Heading>
