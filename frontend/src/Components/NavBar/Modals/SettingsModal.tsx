@@ -9,6 +9,7 @@ import {
     ModalCloseButton,
     Button,
     useDisclosure,
+    Spinner,
 } from "@chakra-ui/react";
 import { SettingsIcon } from "@chakra-ui/icons";
 import persistStore from "redux-persist/es/persistStore";
@@ -37,6 +38,7 @@ const SettingsModal = () => {
     const dispatch = useAppDispatch();
 
     const [testUserAccount, setTestUserAccount] = useState<UserType>();
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
     // Logout user and then reload
     const persistor = persistStore(store);
@@ -48,6 +50,7 @@ const SettingsModal = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     async function createTestAccount() {
+        setIsSubmitting(true);
         const testUserHandle = 'Test' + randTextRange({ min: 4, max: 8 }).replace(/\s/g,'');
         const testUserPassword = `$1` + randPassword();
         const testUser = {
@@ -78,6 +81,7 @@ const SettingsModal = () => {
                 dispatch(setToken(res.data.token));
                 onClose();
                 navigate("/profile");
+                setIsSubmitting(false);
             })
             .catch(err => {
                 console.error(err);
@@ -98,9 +102,14 @@ const SettingsModal = () => {
                     <ModalHeader>Settings</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
-                        <Button colorScheme={"yellow"} onClick={createTestAccount}>
-                            {"Test drive an existing account"}
-                        </Button>
+                        {loggedinUser._id ? (
+                            null
+                        ) : (
+                            <Button disabled={isSubmitting} colorScheme={"yellow"} onClick={createTestAccount}>
+                                {isSubmitting ? <Spinner /> : "Test drive a test account"}
+                            </Button>
+                        )}
+
                     </ModalBody>
                     {loggedinUser._id ? (
                         <ModalFooter>
