@@ -98,7 +98,7 @@ const SettingsModal = () => {
                     <ModalHeader>Settings</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
-                        <Button onClick={createTestAccount}>
+                        <Button colorScheme={"yellow"} onClick={createTestAccount}>
                             {"Test drive an existing account"}
                         </Button>
                     </ModalBody>
@@ -113,7 +113,16 @@ const SettingsModal = () => {
                                 Log Out{" "}
                             </Button>
                         </ModalFooter>
-                    ) : null}
+                    ) :                         <ModalFooter>
+                        <Button
+                            size="md"
+                            onClick={onClose}
+                            colorScheme="red"
+                        >
+                            {" "}
+                        Close{" "}
+                        </Button>
+                    </ModalFooter>}
                 </ModalContent>
             </Modal>
         </>
