@@ -42,7 +42,11 @@ function LeftLinks() {
                             <Button colorScheme={"teal"} bottom="0" py={7} borderRadius={"3xl"} variant="ghost" display="grid" gap={3} justifyItems="start" gridTemplateColumns="20px 1fr" alignContent={"center"}>
                                 <Avatar size="sm" src={loggedinUser.avatarURL} />
                                 <Show above="900px">
-                                    <Heading flex="1" width="120px" size="md">{loggedinUser.username}</Heading>
+                                    <Heading flex="1" width="120px" size="md">
+                                        {(loggedinUser && loggedinUser.username && loggedinUser.username.length > 6)
+                                            ? loggedinUser.username.slice(0, 6) + "..."
+                                            : loggedinUser.username}
+                                    </Heading>
                                 </Show>
                             </Button>
                         ) : (

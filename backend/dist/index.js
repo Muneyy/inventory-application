@@ -99,11 +99,25 @@ app.use(passport.initialize());
 app.use(passport.session());
 // Setup Database
 const mongoDB = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@inventory.75gbkfs.mongodb.net/?retryWrites=true&w=majority`;
+mongoose_1.default.set('strictQuery', true);
 mongoose_1.default.connect(mongoDB);
 const db = mongoose_1.default.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-// Allow CORS and parse JSON
+// Allow CORS on specific URLs
 app.use(cors());
+app.use((req, res, next) => {
+    const allowedOrigins = [`http://localhost:${process.env.CLIENT_PORT}`, 'https://popit-trading.vercel.app', 'https://popit-trading.netlify.app'];
+    const origin = req.headers.origin;
+    if (origin && allowedOrigins.includes(origin)) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+        res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+        res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+        next();
+    }
+    else {
+        res.status(403).send('Forbidden');
+    }
+});
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.post("/log-in", (req, res, next) => {
@@ -155,7 +169,6 @@ app.get("/log-out", (req, res, next) => {
 // Setup Routes
 app.use("/", unprotectedRoutes);
 app.use("/", passport.authenticate('jwt', { session: false }), protectedRoutes);
-// Why does this protect other routes below it????
 app.listen(process.env.PORT, () => {
-    console.log(`Node App listening on port ${process.env.PORT}`);
+    console.log(`Server is live.`);
 });

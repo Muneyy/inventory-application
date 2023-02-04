@@ -81,10 +81,10 @@ function UsersList() {
                     }
                 >
                     {reqUserData.map((user: any) => {
-                        return loggedinUser._id ? (
-                            // Check if user is the logged in User,
-                            // if it is, then return an empty Text container
-                            loggedinUser.username == user.username ? null : (
+                        return (
+                            // Check if user is the logged in User.
+                            // If it is, then return an empty Text container.
+                            loggedinUser?.username == user.username ? null : (
                                 // TODO: move this to a separate card component :D
                                 // Do not display logged in user in list of current users
                                 <RouteLink
@@ -123,7 +123,9 @@ function UsersList() {
                                                     fontSize="xl"
                                                     fontWeight="bold"
                                                 >
-                                                    {user.username}
+                                                    {(user?.username?.length > 6)
+                                                        ? user.username.slice(0, 6) + "..."
+                                                        : user.username}
                                                 </Text>
                                                 <Text
                                                     fontSize="sm"
@@ -136,53 +138,6 @@ function UsersList() {
                                     </Container>
                                 </RouteLink>
                             )
-                        ) : (
-                            <RouteLink
-                                key={uuidv4()}
-                                to={`/${user._id}`}
-                                style={{ textDecoration: "none" }}
-                            >
-                                <Container
-                                    key={uuidv4()}
-                                    borderWidth="1px"
-                                    borderRadius="lg"
-                                    mt="12px"
-                                    px="24px"
-                                    py="8px"
-                                >
-                                    <Flex
-                                        flexDir="row"
-                                        gap={5}
-                                        alignItems="center"
-                                    >
-                                        {user.avatarURL ? (
-                                            <Image
-                                                borderRadius="full"
-                                                boxSize="50px"
-                                                src={user.avatarURL}
-                                                objectFit="cover"
-                                                alt="Avatar"
-                                            />
-                                        ) : (
-                                            <Avatar size={"md"}></Avatar>
-                                        )}
-                                        <Flex
-                                            overflow="hidden"
-                                            flexDir={"column"}
-                                        >
-                                            <Text
-                                                fontSize="xl"
-                                                fontWeight="bold"
-                                            >
-                                                {user.username}
-                                            </Text>
-                                            <Text fontSize="sm" color="gray">
-                                                @{user.handle}
-                                            </Text>
-                                        </Flex>
-                                    </Flex>
-                                </Container>
-                            </RouteLink>
                         );
                     })}
                 </Grid>

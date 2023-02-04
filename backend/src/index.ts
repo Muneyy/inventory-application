@@ -102,6 +102,7 @@ app.use(passport.session());
 
 // Setup Database
 const mongoDB = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@inventory.75gbkfs.mongodb.net/?retryWrites=true&w=majority`;
+mongoose.set('strictQuery', true);
 mongoose.connect(mongoDB);
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
@@ -182,5 +183,5 @@ app.use("/", unprotectedRoutes);
 app.use("/", passport.authenticate('jwt', { session: false }), protectedRoutes);
 
 app.listen(process.env.PORT, () => {
-    console.log(`Node App listening on port ${process.env.PORT}`);
+    console.log(`Server is live.`);
 });

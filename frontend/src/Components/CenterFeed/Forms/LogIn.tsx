@@ -32,7 +32,6 @@ function LogIn () {
             await axios.post('http://localhost:3000/log-in', submitUser)
                 .then(res => {
                     // Change REDUX current state user here
-                    console.log(res.data);
                     dispatch(login(res.data.user));
                     dispatch(setToken(res.data.token));
                     setCurrentUser(res.data.user);

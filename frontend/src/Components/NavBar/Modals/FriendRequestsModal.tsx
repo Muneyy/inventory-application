@@ -8,7 +8,7 @@ import {
     ModalContent,
     ModalHeader,
     ModalFooter,
-    ModalBody,
+    ModalBody, 
     ModalCloseButton,
     Button,
     useDisclosure,
@@ -35,7 +35,7 @@ const FriendRequestsModal = () => {
             loggedinUser?.friends?.filter((friend) => friend.status === 2)
                 .length
         );
-    }, []);
+    }, [loggedinUser]);
 
     const dispatch = useAppDispatch();
 
@@ -62,6 +62,7 @@ const FriendRequestsModal = () => {
                 console.log(err);
             });
 
+        onClose();
         await refreshUserState();
     }
 
@@ -88,6 +89,7 @@ const FriendRequestsModal = () => {
                 console.log(err);
             });
 
+        onClose();
         await refreshUserState();
     }
 

@@ -133,6 +133,7 @@ exports.post_user = [
         if (!errors.isEmpty()) {
             res.send(errors.array());
         } else {
+            // Validate if handle is unique
             User.findOne( {handle: req.body.handle})
                 .exec((err, found_user) => {
                     if (err) {
@@ -145,7 +146,10 @@ exports.post_user = [
                             if (err) {
                                 return next(err);
                             }
-                            res.send("User successfully created!");
+                            res.send({
+                                msg: "User successfully created!",
+                                user: user,
+                            });
                         });
                     }
                 });
