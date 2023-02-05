@@ -244,7 +244,6 @@ exports.update_collection = [
     },
 ];
 
-// TEST route for deleting collections
 exports.delete_collection = async (req: Request, res: Response, next: any) => {
     const requesterId = req.body.requesterId;
     const group_document = await Group.findOne({ _id: req.params.groupId })

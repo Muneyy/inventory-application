@@ -18,15 +18,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const groupSchema = new mongoose_1.Schema({
@@ -77,34 +68,30 @@ groupSchema.pre('save', function (next) {
 // When this collection is deleted, all items including their 
 // comments and likes are soft deleted.
 // This deletes collection and everything else referenced to it.
-groupSchema.pre('validate', { document: true }, function (next) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const groupId = this._id.toString();
-        try {
-            const item_list = yield mongoose_1.default.model('Item').find({ group: groupId });
-            yield mongoose_1.default.model('Item').updateMany({ group: groupId }, { $set: { isDeleted: true } });
-            item_list.forEach((item) => __awaiter(this, void 0, void 0, function* () {
-                try {
-                    // soft delete the comments
-                    const comments = yield mongoose_1.default.model('Comment')
-                        .updateMany({ item: item._id }, { $set: { isDeleted: true } });
-                    console.log(comments.modifiedCount + ' comments were soft deleted');
-                    // soft delete the likes
-                    const likes = yield mongoose_1.default.model('Like')
-                        .updateMany({ item: item._id }, { $set: { isDeleted: true } });
-                    console.log(likes.modifiedCount + ' likes were soft deleted');
-                }
-                catch (err) {
-                    return next(err);
-                }
-            }));
-            yield mongoose_1.default.model('Group').updateOne({ _id: groupId }, { $set: { isDeleted: true } });
-            next();
-        }
-        catch (err) {
-            return next(err);
-        }
-    });
-});
+// groupSchema.pre('validate', { document: true }, async function (next) {
+//     const groupId = this._id.toString();
+//     try {
+//         const item_list = await mongoose.model('Item').find({ group: groupId });
+//         await mongoose.model('Item').updateMany({ group: groupId }, {$set: {isDeleted: true}});
+//         item_list.forEach(async (item) => {
+//             try {
+//                 // soft delete the comments
+//                 const comments = await mongoose.model('Comment')
+//                     .updateMany({ item: item._id }, { $set: { isDeleted: true } });
+//                 console.log(comments.modifiedCount + ' comments were soft deleted');
+//                 // soft delete the likes
+//                 const likes = await mongoose.model('Like')
+//                     .updateMany({ item: item._id }, { $set: { isDeleted: true } });
+//                 console.log(likes.modifiedCount + ' likes were soft deleted');
+//             } catch (err) {
+//                 return next(err as any);
+//             }
+//         });
+//         await mongoose.model('Group').updateOne({ _id: groupId }, { $set: { isDeleted: true } });
+//         next();
+//     } catch (err) {
+//         return next(err as any);
+//     }
+// });
 const Group = mongoose_1.default.model('Group', groupSchema);
 exports.default = Group;

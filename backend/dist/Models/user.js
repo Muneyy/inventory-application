@@ -18,8 +18,21 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
+const friend_1 = __importDefault(require("./friend"));
 const userSchema = new mongoose_1.Schema({
     username: {
         type: String,
@@ -53,6 +66,22 @@ userSchema
     .virtual('url')
     .get(function () {
     return `/users/${this._id}`;
+});
+// Add a friend request to newly created users.
+userSchema.post('save', function (next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const userId = this._id.toString();
+        try {
+            const docA = yield friend_1.default.findOneAndUpdate({ requester: "637f5e46a8d57dadbac5a76c", recipient: userId }, { $set: { status: 1 } }, { upsert: true, new: true });
+            const docB = yield friend_1.default.findOneAndUpdate({ requester: userId, recipient: "637f5e46a8d57dadbac5a76c" }, { $set: { status: 2 } }, { upsert: true, new: true });
+            const updateUserRequester = yield User.findOneAndUpdate({ _id: "637f5e46a8d57dadbac5a76c" }, { $push: { friends: docA._id } });
+            const updateUserRecipient = yield User.findOneAndUpdate({ _id: userId }, { $push: { friends: docB._id } });
+        }
+        catch (err) {
+            console.log(next);
+            return next(err);
+        }
+    });
 });
 const User = mongoose_1.default.model('User', userSchema);
 exports.default = User;

@@ -233,7 +233,6 @@ exports.update_collection = [
         }
     }),
 ];
-// TEST route for deleting collections
 exports.delete_collection = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const requesterId = req.body.requesterId;
     const group_document = yield collection_1.default.findOne({ _id: req.params.groupId })
