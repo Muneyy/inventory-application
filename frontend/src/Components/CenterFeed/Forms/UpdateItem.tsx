@@ -48,12 +48,15 @@ function UpdateItem () {
 
     const [fetchedItem, setFetchedItem] = useState<ItemType>();
     const { itemId } = useParams();
+
     useEffect(() => {
         const fetchItem = async () => {
             try {
                 await axios.get(`http://localhost:3000/items/${itemId}`)
                     .then(res => {
-                        setFetchedItem(res.data.item)
+                        setFetchedItem(res.data.item);
+                        // update tags field to have a default value
+                        formik.setFieldValue("tags", [...res.data.item.tags]);
                     })
                 setLoadingDone(true);
             }
@@ -62,7 +65,7 @@ function UpdateItem () {
             }
         }
         fetchItem();
-    })
+    }, [])
 
     // const { collectionId } = useParams();
 
@@ -177,6 +180,11 @@ function UpdateItem () {
         setClearPictures((current) => !current)
     }
 
+    useEffect(() => {
+        console.log(fetchedItem)
+        console.log
+    }, [fetchedItem])
+
     return(
         // TODO: FIX: loading is not working as intended
         (loading)
@@ -226,7 +234,7 @@ function UpdateItem () {
                                 <Divider my="1rem"/>
                                 <FormControl>
                                     <FormLabel>Tags:</FormLabel>
-                                    <CheckboxGroup colorScheme={"teal"}>
+                                    <CheckboxGroup defaultValue={fetchedItem?.tags} colorScheme={"teal"}>
                                         <Flex wrap={"wrap"} gap={3}>
                                             {availableTags.map((tag: string) => {
                                                 return (

@@ -13,6 +13,17 @@ import CollectionType from '../../../Types/CollectionType';
 import CollectionCard from '../CardComponents/CollectionCard';
 import { useGetUserAndToken } from '../../../HelperFunctions/useGetUserandToken';
 
+// FOR MODAL to later be put into separate component
+import {
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton,
+} from '@chakra-ui/react'
+import TestAccountModal from '../../PopUpModal/TestAccountModal';
 
 function Home() {
     const [loading, setLoading] = useState(0);
@@ -26,7 +37,6 @@ function Home() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // At page mount, get users and collections to display them
         const fetchData = async () => {
             try {
                 await axios.get('http://localhost:3000/collections')
@@ -43,20 +53,6 @@ function Home() {
 
     // Logout user and then reload
     const persistor = persistStore(store);
-
-    async function testJWT () {
-        // console.log(tokenJWT);
-        const config = {
-            headers: { Authorization: `Bearer ${tokenJWT}` }
-        };
-        await axios.get('http://localhost:3000/items', config)
-            .then(res => {
-                // console.log(res);
-            })
-            .catch(err => {
-                console.log(err);
-            })
-    }
     
     const [isSmallScreen] = useMediaQuery("(max-width: 570px)");
     const [width, setWidth] = useState(isSmallScreen ? "100vw" : "570px");
@@ -76,7 +72,7 @@ function Home() {
                         )
                     })}
                     {/* </Grid> */}
-
+                    <TestAccountModal userIsLoggedIn={loggedinUser.username !== undefined ? true : false} />
                 </Center>
             )
             : (

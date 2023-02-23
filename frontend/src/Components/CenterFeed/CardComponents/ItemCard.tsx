@@ -56,6 +56,7 @@ import { useFormik } from "formik";
 import { useGetUserAndToken } from "../../../HelperFunctions/useGetUserandToken";
 import { PlusSquareIcon } from "@chakra-ui/icons";
 import DeleteItemModal from "./CardModals/DeleteItemModal";
+import TestAccountModal from "../../PopUpModal/TestAccountModal";
 
 function ItemCard(props: {
     item: ItemType;
@@ -73,6 +74,14 @@ function ItemCard(props: {
 
     // For Comment Modal
     const { isOpen, onToggle } = useDisclosure();
+    // Check if user is logged in when clicking comment button
+    function handleCommentClick () {
+        if (loggedinUser.username) {
+            onToggle()
+        } else if (loggedinUser.username === undefined) {
+            setIsUserLoggedIn(false);
+        }
+    }
 
     // Check if user has already liked the item.
     useEffect(() => {
@@ -119,11 +128,17 @@ function ItemCard(props: {
             });
     }
 
+    const [isUserLoggedIn, setIsUserLoggedIn] = useState<boolean>(true);
+
     function handleLikeClick() {
-        if (liked) {
-            unlikeItem();
-        } else {
-            likeItem();
+        if (loggedinUser.username) {
+            if (liked) {
+                unlikeItem();
+            } else {
+                likeItem();
+            }
+        } else if (loggedinUser.username === undefined) {
+            setIsUserLoggedIn(false);
         }
     }
 
@@ -337,7 +352,7 @@ function ItemCard(props: {
                     <Icon as={liked ? FcDislike : FcLike} mr={3} />
                     {liked ? "Unlike" : "Like"}
                 </Button>
-                <Button onClick={onToggle} flex="1">
+                <Button onClick={handleCommentClick} flex="1">
                     <Icon as={AiOutlineComment} mr={3} />
                     Comment
                 </Button>
@@ -415,6 +430,8 @@ function ItemCard(props: {
                     </form>
                 </Box>
             </Collapse>
+            {/* POPUP MODAL IF NOT LOGGED IN */}
+            <TestAccountModal userIsLoggedIn={isUserLoggedIn} />
         </Box>
     );
 }
