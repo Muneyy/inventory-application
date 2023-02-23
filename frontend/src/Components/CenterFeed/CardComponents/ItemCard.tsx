@@ -99,7 +99,7 @@ function ItemCard(props: {
         // every successful like or comment
         await axios
             .post(
-                `https://popit-api.onrender.com/items/${item._id}/like`,
+                `http://localhost:3000/items/${item._id}/like`,
                 {
                     liker: loggedinUser._id,
                 },
@@ -117,7 +117,7 @@ function ItemCard(props: {
         // every successful like or comment
         await axios
             .post(
-                `https://popit-api.onrender.com/items/${item._id}/unlike`,
+                `http://localhost:3000/items/${item._id}/unlike`,
                 {
                     liker: loggedinUser._id,
                 },
@@ -160,14 +160,14 @@ function ItemCard(props: {
 
             await axios
                 .post(
-                    `https://popit-api.onrender.com/items/${item._id}/comment/add`,
+                    `http://localhost:3000/items/${item._id}/comment/add`,
                     submitComment,
                     tokenJWT
                 )
                 .then(async (res) => {
                     console.log(res.data);
                     await axios
-                        .get(`https://popit-api.onrender.com/items/${item._id}`)
+                        .get(`http://localhost:3000/items/${item._id}`)
                         .then(async (res) => {
                             props.setFetchedCollectionItems(
                                 (prevCollectionItems) =>
