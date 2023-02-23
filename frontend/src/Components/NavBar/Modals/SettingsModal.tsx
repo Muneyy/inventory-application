@@ -49,6 +49,8 @@ const SettingsModal = () => {
 
     const { isOpen, onOpen, onClose } = useDisclosure();
 
+    // BAD DUPLICATE CODE
+    // TODO: REFACTOR THIS CODE TOGETHER WITH TestAccountModal
     async function createTestAccount() {
         setIsSubmitting(true);
         const testUserHandle = 'Test' + randTextRange({ min: 4, max: 8 }).replace(/\s/g,'');
@@ -86,7 +88,6 @@ const SettingsModal = () => {
             .catch(err => {
                 console.error(err);
             })
-            
     }
 
     return (
