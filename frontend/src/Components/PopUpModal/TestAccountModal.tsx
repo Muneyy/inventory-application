@@ -89,13 +89,15 @@ function TestAccountModal({userIsLoggedIn} : {
                     <Text>To be able to upload collections, add friends, like, and comment, you need an account.</Text>
                     <br></br>
                     <Text>Would you like to use a test account to have full access to these features?</Text>
+                    <br></br>
+                    <Text>You can quickly create a test account anytime on the Settings menu.</Text>
                 </ModalBody>
                 <ModalFooter>
                     <Button disabled={isSubmitting} colorScheme='yellow' mr={3} onClick={createTestAccount}>
-                        {isSubmitting ? <Spinner></Spinner> : "Test Drive an Account"}
+                        {isSubmitting ? <Spinner></Spinner> : "Create Test Account"}
                     </Button>
                     <Button colorScheme='pink' mr={3} onClick={handleClose}>
-                No Thanks
+                        No Thanks
                     </Button>
                 </ModalFooter>
             </ModalContent>

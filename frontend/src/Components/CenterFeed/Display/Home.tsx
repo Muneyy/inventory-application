@@ -72,7 +72,6 @@ function Home() {
                         )
                     })}
                     {/* </Grid> */}
-                    <TestAccountModal userIsLoggedIn={loggedinUser.username !== undefined ? true : false} />
                 </Center>
             )
             : (
