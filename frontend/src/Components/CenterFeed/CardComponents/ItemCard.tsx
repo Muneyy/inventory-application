@@ -25,6 +25,7 @@ import {
     Textarea,
     FormControl,
     FormHelperText,
+    useToast,
 } from "@chakra-ui/react";
 import "swiper/css/pagination";
 
@@ -61,7 +62,7 @@ import TestAccountModal from "../../PopUpModal/TestAccountModal";
 function ItemCard(props: {
     item: ItemType;
     pictureWidth: string;
-    setFetchedCollectionItems: React.Dispatch<React.SetStateAction<ItemType[]>>;
+    setFetchedCollectionItems?: React.Dispatch<React.SetStateAction<ItemType[]>>;
 }) {
     const [loggedinUser, tokenJWT] = useGetUserAndToken();
     const navigate = useNavigate();
@@ -158,6 +159,7 @@ function ItemCard(props: {
                 text: values.text,
             };
 
+            // Add Comments
             await axios
                 .post(
                     `http://localhost:3000/items/${item._id}/comment/add`,
@@ -169,17 +171,19 @@ function ItemCard(props: {
                     await axios
                         .get(`http://localhost:3000/items/${item._id}`)
                         .then(async (res) => {
-                            props.setFetchedCollectionItems(
-                                (prevCollectionItems) =>
-                                    prevCollectionItems.map((prevItem) => {
-                                        if (
-                                            prevItem._id === res.data.item._id
-                                        ) {
-                                            return res.data.item;
-                                        }
-                                        return prevItem;
-                                    })
-                            );
+                            if (props.setFetchedCollectionItems) {
+                                props.setFetchedCollectionItems(
+                                    (prevCollectionItems) =>
+                                        prevCollectionItems.map((prevItem) => {
+                                            if (
+                                                prevItem._id === res.data.item._id
+                                            ) {
+                                                return res.data.item;
+                                            }
+                                            return prevItem;
+                                        })
+                                );
+                            }
                         });
                 });
 
@@ -187,6 +191,17 @@ function ItemCard(props: {
             values.text = "";
         },
     });
+
+    const toast = useToast();
+    function handleShareClick () {
+        navigator.clipboard.writeText(`http://localhost:3006/items/${item._id}`);
+        toast({
+            title: 'Link has been copied to your clipboard!',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+        })
+    }
 
     return (
         <Box
@@ -218,7 +233,13 @@ function ItemCard(props: {
             </Badge>
             <Box px={5} pb={2} pt={2}>
                 <Flex justifyContent={"space-between"}>
-                    <Heading>{item.name}</Heading>
+                    <Heading>
+                        <RouteLink
+                            to={`/items/${item._id}`}
+                        >
+                            {item.name}
+                        </RouteLink>
+                    </Heading>
                     {item.user._id === loggedinUser._id ? (
                         <Popover>
                             <PopoverTrigger>
@@ -356,7 +377,7 @@ function ItemCard(props: {
                     <Icon as={AiOutlineComment} mr={3} />
                     Comment
                 </Button>
-                <Button flex="1">
+                <Button onClick={handleShareClick} flex="1">
                     <Icon as={FaShare} mr={3} />
                     Share
                 </Button>

@@ -36,6 +36,7 @@ import { useMediaQuery } from "react-responsive";
 import UpdateCollection from "./Components/CenterFeed/Forms/UpdateCollection";
 import UpdateUser from "./Components/CenterFeed/Forms/UpdateUser";
 import UpdateItem from "./Components/CenterFeed/Forms/UpdateItem";
+import ItemPage from "./Components/CenterFeed/Display/ItemPage/ItemPage";
 
 function App() {
     const isDesktopOrLaptop = useMediaQuery({
@@ -116,6 +117,10 @@ function App() {
                                             <Route
                                                 path="/collections/:collectionId/update"
                                                 element={<UpdateCollection />}
+                                            />
+                                            <Route
+                                                path="/items/:itemId"
+                                                element={<ItemPage />}
                                             />
                                             <Route
                                                 path="/items/:itemId/update"

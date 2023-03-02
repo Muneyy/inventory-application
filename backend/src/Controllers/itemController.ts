@@ -99,6 +99,7 @@ exports.get_item = (req: Request, res: Response, next: any) => {
             }
             result.name = unescapeString(result.name);
             result.description = unescapeString(result.description);
+            console.log('did it reach here?');
             res.send({
                 item: result,
             });
